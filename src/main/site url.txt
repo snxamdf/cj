@@ -1,0 +1,95 @@
+—————————————————————— 
+
+	http://pinterest.com/
+—————————————————————— 
+
+	时尚： http://www.harpersbazaar.com/fashion/ ok
+	美容： http://www.harpersbazaar.com/beauty/ ok
+—————————————————————— 
+
+	男士，时尚  http://www.fashionbeans.com/category/mens-fashion/?seeall=true ok
+	男士，街拍  http://www.fashionbeans.com/category/mens-street-style/ ok
+-------------------------------------------- 
+
+	https://chicisimo.com/     女士，街拍
+-------------------------------------------- 
+
+  	女士， 时尚	http://www.fashiongonerogue.com/fashion-editorial/ ok
+			http://www.fashiongonerogue.com/fashion-news/ ok
+			http://www.fashiongonerogue.com/beauty-news/ ok
+-------------------------------------------- 
+
+	美容－护肤：http://www.yoka.com/beauty/face/ ok
+	彩妆		http://www.yoka.com/beauty/class/ ok
+	瘦身：	http://www.yoka.com/shoushen/ ok
+	旅行		http://www.yoka.com/dna/203/370/index.html ok
+-------------------------------------------- 
+
+	汽车   http://www.yokamen.cn/auto/ ok
+-------------------------------------------- 
+
+	http://www.cosmopolitan.com.cn/
+	时髦办、美人计、大胆爱、巨好玩、乐活家
+-------------------------------------------- 
+
+	http://www.vice.cn/vice/viceArticle/index/category/read/Article_page/ ok
+-------------------------------------------- 
+
+	女士：http://www.nylon.com/fashion ok
+	美容：http://www.nylon.com/beauty ok
+-------------------------------------------- 
+
+	http://lookbook.nu/
+-------------------------------------------- 
+
+	男士： 	http://www.gq.com.cn/fashion/#pid=3 ok
+	汽车： 	http://www.gq.com.cn/auto/ ok
+	数码：	http://www.gq.com.cn/digital/ ok
+	美容－男士:	http://www.gq.com.cn/tag/39705#pid=2 ok
+-------------------------------------------- 
+
+	生活：http://www.garancedore.com/fr/category/stories/ ok
+-------------------------------------------- 
+
+	时装：http://fashion.haibao.com/rightnow/310/
+	运动：http://life.haibao.com/health/
+	新娘：http://wedding.haibao.com/rightnow/211/
+	生活：http://life.haibao.com/rightnow/520/
+	珠宝：http://jewelrywatch.haibao.com/rightnow/6863/
+	美容：http://beauty.haibao.com/rightnow/24/
+-------------------------------------------- 
+
+	街拍女：http://fashionindie.com/fashion
+	美容：http://fashionindie.com/beauty
+	拍摄：http://fashionindie.com/living
+	旅行：http://fashionindie.com/travel-journals
+-------------------------------------------- 
+
+	活动：http://www.hdb.com/find/
+-------------------------------------------- 
+
+	活动：http://www.huodongxing.com/eventlist
+-------------------------------------------- 
+
+	活动.douban ：
+	https://shanghai.douban.com/events/future-all 
+	https://beijing.douban.com/events/future-all 
+	https://shenzhen.douban.com/events/future-all 
+	https://shenzhen.douban.com/events/future-all 
+	https://www.douban.com/location/chengdu/events/week-others
+	采集：1标题，2时间，3位置，4活动详细。5图片，6来源网址 
+-------------------------------------------- 
+
+	旅行频道
+	国内:	http://www.lotour.com/guoneiyou/ ok
+	国外:	http://www.lotour.com/chujingyou/ ok
+-------------------------------------------- 
+
+	科技频道 
+	http://36kr.com/news 
+	数据URL:http://36kr.com/api/info-flow/main_site/posts?column_id=&b_id=0&per_page=20
+-------------------------------------------- 
+
+	科技频道 
+	http://www.cyzone.cn/category/765/ ok
+-------------------------------------------- 
