@@ -86,7 +86,7 @@
 -------------------------------------------- 
 
 	科技频道 
-	http://36kr.com/news 
+	http://36kr.com/news ok
 	数据URL:http://36kr.com/api/info-flow/main_site/posts?column_id=&b_id=0&per_page=20
 -------------------------------------------- 
 

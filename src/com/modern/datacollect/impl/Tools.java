@@ -14,12 +14,30 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.CookieStore;
+import org.apache.http.client.config.CookieSpecs;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.cookie.CookieSpecProvider;
+import org.apache.http.impl.client.BasicCookieStore;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.cookie.BasicClientCookie;
+import org.apache.http.impl.cookie.BestMatchSpecFactory;
+import org.apache.http.impl.cookie.BrowserCompatSpecFactory;
+import org.apache.http.util.EntityUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import com.modern.datacollect.api.Data;
 
+@SuppressWarnings("deprecation")
 public class Tools {
 
 	// 获得内容
@@ -36,12 +54,77 @@ public class Tools {
 	}
 
 	// 普通get请求
+	public static String getRequest1(String url) {
+		RecursiveCount rc = new RecursiveCount();
+		return getRequest1(url, rc.i, null);
+	}
+
+	// 普通get请求
 	public static String getRequest(String url, String charset) {
 		RecursiveCount rc = new RecursiveCount();
 		return getRequest(url, rc.i, charset);
 	}
 
-	@SuppressWarnings("deprecation")
+	private static String getRequest1(String url, int i, String charset) {
+		if (i >= 5) {
+			return null;
+		}
+		sleep();
+		CloseableHttpClient client = HttpClients.createDefault();
+		HttpGet httpGet = new HttpGet(url);
+		try {
+			HttpResponse httpResponse = client.execute(httpGet);
+			HttpEntity entity = httpResponse.getEntity();
+			if (httpResponse.getStatusLine().getStatusCode() == 200) {
+				if (entity != null) {
+					String html = null;
+					if (charset == null) {
+						html = EntityUtils.toString(entity);
+					} else {
+						html = EntityUtils.toString(entity, charset);
+					}
+					// Tools.setCookieStore(httpResponse);
+					return html;
+				}
+			}
+			return getRequest1(url, ++i, charset);
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+			return getRequest1(url, ++i, charset);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return getRequest1(url, ++i, charset);
+		} finally {
+			try {
+				client.close();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			client = null;
+		}
+	}
+
+	static CookieStore cookieStore = null;
+	static HttpClientContext context = null;
+
+	public static void setCookieStore(HttpResponse httpResponse) {
+		cookieStore = new BasicCookieStore();
+		String setCookie = httpResponse.getFirstHeader("Set-Cookie").getValue();
+		String JSESSIONID = setCookie.substring("JSESSIONID=".length(), setCookie.indexOf(";"));
+		System.out.println("JSESSIONID:" + JSESSIONID);
+		BasicClientCookie cookie = new BasicClientCookie("JSESSIONID", JSESSIONID);
+		cookie.setVersion(0);
+		cookieStore.addCookie(cookie);
+		Tools.setContext();
+	}
+
+	public static void setContext() {
+		context = HttpClientContext.create();
+		Registry<CookieSpecProvider> registry = RegistryBuilder.<CookieSpecProvider> create().register(CookieSpecs.BEST_MATCH, new BestMatchSpecFactory()).register(CookieSpecs.BROWSER_COMPATIBILITY, new BrowserCompatSpecFactory()).build();
+		context.setCookieSpecRegistry(registry);
+		context.setCookieStore(cookieStore);
+	}
+
 	private static String getRequest(String url, int i, String charset) {
 		if (i >= 5) {
 			return null;
@@ -67,12 +150,21 @@ public class Tools {
 			return getRequest(url, ++i, charset);
 		} catch (SocketTimeoutException e) {
 			e.printStackTrace();
+			method.releaseConnection();
+			method = null;
+			client = null;
 			return getRequest(url, ++i, charset);
 		} catch (ConnectTimeoutException e) {
 			e.printStackTrace();
+			method.releaseConnection();
+			method = null;
+			client = null;
 			return getRequest(url, ++i, charset);
 		} catch (IOException e) {
 			e.printStackTrace();
+			method.releaseConnection();
+			method = null;
+			client = null;
 			return getRequest(url, ++i, charset);
 		} finally {
 			method.releaseConnection();
@@ -96,9 +188,9 @@ public class Tools {
 			return null;
 		}
 		sleep();
+		HttpClient client = new HttpClient();
+		GetMethod get = new GetMethod(url);
 		try {
-			HttpClient client = new HttpClient();
-			GetMethod get = new GetMethod(url);
 			client.getHttpConnectionManager().getParams().setConnectionTimeout(30000);
 			client.getHttpConnectionManager().getParams().setSoTimeout(30000);
 			client.executeMethod(get);
@@ -110,16 +202,27 @@ public class Tools {
 			return storeFile.getPath();
 		} catch (SocketTimeoutException e) {
 			e.printStackTrace();
+			get.releaseConnection();
+			get = null;
 			return getLineFile(url, localDir, ++i);
 		} catch (ConnectTimeoutException e) {
 			e.printStackTrace();
+			get.releaseConnection();
+			get = null;
 			return getLineFile(url, localDir, ++i);
 		} catch (HttpException e) {
 			e.printStackTrace();
+			get.releaseConnection();
+			get = null;
 			return getLineFile(url, localDir, ++i);
 		} catch (IOException e) {
 			e.printStackTrace();
+			get.releaseConnection();
+			get = null;
 			return getLineFile(url, localDir, ++i);
+		} finally {
+			get.releaseConnection();
+			get = null;
 		}
 	}
 
