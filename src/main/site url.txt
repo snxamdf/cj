@@ -71,12 +71,12 @@
 	活动：http://www.huodongxing.com/eventlist
 -------------------------------------------- 
 
-	活动.douban ：
-	https://shanghai.douban.com/events/future-all 
-	https://beijing.douban.com/events/future-all 
-	https://shenzhen.douban.com/events/future-all 
-	https://shenzhen.douban.com/events/future-all 
-	https://www.douban.com/location/chengdu/events/week-others
+	活动：
+	https://beijing.douban.com/events/future-all ok 
+	https://shanghai.douban.com/events/future-all ok
+	https://shenzhen.douban.com/events/future-all ok
+	https://guangzhou.douban.com/events/future-all ok
+	https://www.douban.com/location/chengdu/events/week-others ok
 	采集：1标题，2时间，3位置，4活动详细。5图片，6来源网址 
 -------------------------------------------- 
 

@@ -41,6 +41,7 @@ public class Tools {
 		return getRequest(url, rc.i, charset);
 	}
 
+	@SuppressWarnings("deprecation")
 	private static String getRequest(String url, int i, String charset) {
 		if (i >= 5) {
 			return null;
@@ -48,6 +49,10 @@ public class Tools {
 		sleep();
 		HttpClient client = new HttpClient();
 		HttpMethod method = new GetMethod(url);
+		method.setRequestHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
+		method.setRequestHeader("Connection", "keep-alive");
+		method.setRequestHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.73 Safari/537.36");
+		method.setRequestHeader("Host", method.getHostConfiguration().getHost());
 		try {
 			client.executeMethod(method);
 			client.getHttpConnectionManager().getParams().setConnectionTimeout(30000);
