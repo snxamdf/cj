@@ -2,6 +2,8 @@ package com.modern.datacollect.api;
 
 import java.io.File;
 
+import com.modern.datacollect.impl.Tools;
+
 /**
  * 数据采集器基类，所有数据采集程序都继承这个类<br/>
  * */
@@ -65,6 +67,7 @@ public abstract class Collector {
 	 * */
 	public void whenOneData(Data data) {
 		System.out.println("Got one data:" + data);
+		Tools.write(data.toString());
 	}
 
 	/**

@@ -51,12 +51,12 @@
 	生活：http://www.garancedore.com/fr/category/stories/ ok
 -------------------------------------------- 
 
-	时装：http://fashion.haibao.com/rightnow/310/
-	运动：http://life.haibao.com/health/
-	新娘：http://wedding.haibao.com/rightnow/211/
-	生活：http://life.haibao.com/rightnow/520/
-	珠宝：http://jewelrywatch.haibao.com/rightnow/6863/
-	美容：http://beauty.haibao.com/rightnow/24/
+	时装：http://fashion.haibao.com/rightnow/310/ ok
+	运动：http://life.haibao.com/health/ ok
+	新娘：http://wedding.haibao.com/rightnow/211/ ok
+	生活：http://life.haibao.com/rightnow/520/ ok
+	珠宝：http://jewelrywatch.haibao.com/rightnow/6863/ ok
+	美容：http://beauty.haibao.com/rightnow/24/ ok
 -------------------------------------------- 
 
 	街拍女：http://fashionindie.com/fashion

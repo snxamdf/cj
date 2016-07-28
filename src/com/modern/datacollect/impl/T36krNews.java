@@ -124,7 +124,6 @@ public class T36krNews extends Collector {
 					variable = variable.trim();
 					if (variable.contains("=") || variable.contains("props")) {
 						html = variable.substring(6, variable.length());
-						System.out.println(variable);
 					}
 				}
 			}

@@ -2,8 +2,10 @@ package com.modern.datacollect.impl;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.SocketTimeoutException;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
@@ -57,6 +59,12 @@ public class Tools {
 	public static String getRequest1(String url) {
 		RecursiveCount rc = new RecursiveCount();
 		return getRequest1(url, rc.i, null);
+	}
+
+	// 普通get请求
+	public static String getRequest1(String url, String charset) {
+		RecursiveCount rc = new RecursiveCount();
+		return getRequest1(url, rc.i, charset);
 	}
 
 	// 普通get请求
@@ -285,6 +293,9 @@ public class Tools {
 		if (url.indexOf("?") != -1) {
 			url = url.substring(0, url.indexOf("?"));
 		}
+		if (url.indexOf("!") != -1) {
+			url = url.substring(0, url.indexOf("!"));
+		}
 		return url;
 	}
 
@@ -336,6 +347,19 @@ public class Tools {
 		StringBuffer sb = new StringBuffer();
 		sb.append(data.getTitle()).append(data.getContent()).append(data.getAddress()).append(data.getKeywords());
 		return sb.toString();
+	}
+
+	// 测试数据
+	public static void write(String data) {
+		try {
+			OutputStream out = new FileOutputStream(new File("D:\\data_test.txt"), true);
+			out.write(data.getBytes());
+			out.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }
 
