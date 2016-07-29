@@ -53,11 +53,11 @@ public class NylonFashionCollector extends Collector {
 		String html = null;
 
 		for (;;) {
-			url = dataUrl.replace("{page}", page.toString());
-			config.setSiteConfig("{'page':" + (page) + ",'dataUrl':'https://api.nylon.com/api/v2/page/fashion/page-{page}'}");
-			updateSiteConfig(config.getSiteConfig());
-			html = Tools.getRequest(url);
 			try {
+				url = dataUrl.replace("{page}", page.toString());
+				config.setSiteConfig("{'page':" + (page) + ",'dataUrl':'https://api.nylon.com/api/v2/page/fashion/page-{page}'}");
+				updateSiteConfig(config.getSiteConfig());
+				html = Tools.getRequest(url);
 				JSONObject obj = new JSONObject(html);
 				obj = obj.getJSONObject("posts");
 				if (obj.length() > 0) {
@@ -89,9 +89,20 @@ public class NylonFashionCollector extends Collector {
 			}
 			JSONObject featuredImage = dataObj.getJSONObject("featured_image");
 			String imgSrc = "http:" + featuredImage.getString("url");
-			String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
 			// 数据保存对像
 			Data data = new Data();
+			URL url;
+			try {
+				url = new URL(href);
+				href = url.getPath();
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			}
+			data.setContentId(Tools.string2MD5(href));
+			if (isDataExists(data.getContentId())) {
+				continue;
+			}
+			String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
 			// 通过工具类 将图片保存到正式目录
 			File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
 			if (dest != null) {
@@ -115,16 +126,8 @@ public class NylonFashionCollector extends Collector {
 			}
 			// 获取内容
 			String content = ebody.toString();
-			URL url;
-			try {
-				url = new URL(href);
-				href = url.getPath();
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			}
 			data.setTitle(title);
 			data.setContent(content);
-			data.setContentId(Tools.string2MD5(href));
 			data.setKeywords(keywords.toString());
 			whenOneData(data);
 		}

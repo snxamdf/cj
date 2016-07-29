@@ -51,19 +51,22 @@ public class Haibao520Collector extends Collector {
 		String html = null;
 
 		for (;;) {
-			url = config.getSiteUrl() + dataUrl.replace("{page}", page.toString());
-			config.setSiteConfig("{'page':" + (page) + ",'dataUrl':'{page}.htm'}");
-			updateSiteConfig(config.getSiteConfig());
-			html = Tools.getRequest1(url, "UTF-8");
-			Elements body = Tools.getBody("div[class=\"hb_fl contentleft\"]", html);
-			Elements pages = Tools.getBody(".pages", html);
-			body = body.select(".todya_new_list").select("li");
-			pages.select(".next").remove();
-			String num = pages.select("a").last().text();
-			this.dealwith(body, tempFileDir, targetFileDir, config);
-			if (page >= Integer.parseInt(num)) {
-				stop();
-				break;
+			try {
+				url = config.getSiteUrl() + dataUrl.replace("{page}", page.toString());
+				config.setSiteConfig("{'page':" + (page) + ",'dataUrl':'{page}.htm'}");
+				updateSiteConfig(config.getSiteConfig());
+				html = Tools.getRequest1(url, "UTF-8");
+				Elements body = Tools.getBody("div[class=\"hb_fl contentleft\"]", html);
+				Elements pages = Tools.getBody(".pages", html);
+				body = body.select(".todya_new_list").select("li");
+				pages.select(".next").remove();
+				String num = pages.select("a").last().text();
+				this.dealwith(body, tempFileDir, targetFileDir, config);
+				if (page >= Integer.parseInt(num)) {
+					stop();
+					break;
+				}
+			} catch (Exception e) {
 			}
 			page++;
 		}
@@ -75,6 +78,18 @@ public class Haibao520Collector extends Collector {
 			String href = emt.select("div.hb_fl").select("a").attr("href");
 			String imgSrc = emt.select("a").eq(0).select("img").attr("data-lazy-src");
 			Data data = new Data();
+			URL url = null;
+			try {
+				url = new URL(href);
+				href = url.getPath();
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			}
+			data.setContentId(Tools.string2MD5(href));
+			if (isDataExists(data.getContentId())) {
+				continue;
+			}
+
 			String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
 			File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
 			if (dest != null) {
@@ -93,13 +108,6 @@ public class Haibao520Collector extends Collector {
 			this.downImg(ebody2, tempFileDir, targetFileDir);
 			String content = btcenter.toString() + body1 + ebody2.toString();
 			Elements pages = ebody.select(".pages");
-			URL url = null;
-			try {
-				url = new URL(href);
-				href = url.getPath();
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			}
 			String result = null;
 			if (pages.size() > 0) {
 				pages.select(".next").remove();
@@ -112,7 +120,6 @@ public class Haibao520Collector extends Collector {
 			}
 			data.setTitle(title);
 			data.setContent(content);
-			data.setContentId(Tools.string2MD5(href));
 			whenOneData(data);
 		}
 	}

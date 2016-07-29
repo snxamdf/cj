@@ -47,16 +47,19 @@ public class HarpersbazaarFashionCollector extends Collector {
 		}
 		String html = null;
 		for (;;) {
-			url = dataUrl + param.replace("{page}", page.toString()).replace("{feedTime}", new Date().getTime() + "");
-			config.setSiteConfig("{'page':" + page + ",'dataUrl':'http://www.harpersbazaar.com/landing-feed/','param':'?template=section&landingTemplate=standard&id=3&pageNumber={page}&feedTime={feedTime}'}");
-			updateSiteConfig(config.getSiteConfig());
-			html = Tools.getRequest(url);
-			Elements body = Tools.getBody(".landing-feed--story", html);
-			if (body.size() == 0) {
-				stop();
-				break;
+			try {
+				url = dataUrl + param.replace("{page}", page.toString()).replace("{feedTime}", new Date().getTime() + "");
+				config.setSiteConfig("{'page':" + page + ",'dataUrl':'http://www.harpersbazaar.com/landing-feed/','param':'?template=section&landingTemplate=standard&id=3&pageNumber={page}&feedTime={feedTime}'}");
+				updateSiteConfig(config.getSiteConfig());
+				html = Tools.getRequest(url);
+				Elements body = Tools.getBody(".landing-feed--story", html);
+				if (body.size() == 0) {
+					stop();
+					break;
+				}
+				this.dealwith(body, tempFileDir, targetFileDir, config);
+			} catch (Exception e) {
 			}
-			this.dealwith(body, tempFileDir, targetFileDir, config);
 			page++;
 		}
 	}
@@ -65,7 +68,6 @@ public class HarpersbazaarFashionCollector extends Collector {
 		for (Element emt : body) {
 			Elements emtImage = emt.select(".landing-feed--story-image").select("img");
 			String imgSrc = emtImage.attr("data-src");
-			String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
 			Elements emtContent = emt.select(".landing-feed--story-content");
 			Elements emtTitle = emtContent.select(".landing-feed--story-title");
 			Elements emtAbstract = emtContent.select(".landing-feed--story-abstract");
@@ -76,9 +78,22 @@ public class HarpersbazaarFashionCollector extends Collector {
 			}
 			String contentUrl = config.getSiteUrl() + href;
 			String title = emtTitle.text();
+
+			// 数据保存对像
+			Data data = new Data();
+			URL url;
+			try {
+				url = new URL(contentUrl);
+				contentUrl = url.getPath();
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			}
+			data.setContentId(Tools.string2MD5(contentUrl));
+			if (isDataExists(data.getContentId())) {
+				continue;
+			}
+			String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
 			if (tempFilePath != null) {
-				// 数据保存对像
-				Data data = new Data();
 				File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
 				List<File> picList = new ArrayList<File>();
 				if (dest != null) {
@@ -86,7 +101,7 @@ public class HarpersbazaarFashionCollector extends Collector {
 				}
 				String html = Tools.getRequest(contentUrl);
 				Elements container = Tools.getBody(".standard-article", html);
-				
+
 				container.select(".embed--iframe-container").remove();
 				container.select(".standard-article--secondary-content").remove();
 				container.select(".zoomable-expand").remove();
@@ -107,14 +122,6 @@ public class HarpersbazaarFashionCollector extends Collector {
 				data.setTitle(title);// title
 				data.setContent(content);// 获取内容
 				data.setKeywords(text);
-				URL url;
-				try {
-					url = new URL(contentUrl);
-					contentUrl = url.getPath();
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
-				}
-				data.setContentId(Tools.string2MD5(contentUrl));
 				data.setPicList(picList);
 				whenOneData(data);
 			}

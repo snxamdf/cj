@@ -80,20 +80,31 @@ public class GqTag39705Collector extends Collector {
 			String title = jsonObj.getString("title");
 			String imgSrc = jsonObj.getString("normalpic");
 			String href = jsonObj.getString("link");
+			StringBuffer keywords = new StringBuffer();
+			JSONArray tagObj = jsonObj.getJSONArray("tag");
+			for (int j = 0; tagObj != null && j < tagObj.length(); j++) {
+				if (j > 0) {
+					keywords.append(",");
+				}
+				keywords.append(tagObj.getJSONObject(j).getString("tagname"));
+			}
+			URL url;
+			try {
+				url = new URL(href);
+				href = url.getPath();
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			}
+			data.setContentId(Tools.string2MD5(href));
+			if (isDataExists(data.getContentId())) {
+				continue;
+			}
 			String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
 			File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
 			if (dest != null) {
 				List<File> picList = new ArrayList<File>();
 				picList.add(dest);
 				data.setPicList(picList);
-			}
-			StringBuffer keywords = new StringBuffer();
-			JSONArray tagObj = jsonObj.getJSONArray("tag");
-			for (int j = 0; tagObj != null && j < tagObj.length(); j++) {
-				if(j>0){
-					keywords.append(",");
-				}
-				keywords.append(tagObj.getJSONObject(j).getString("tagname"));
 			}
 			String html = Tools.getRequest(href);
 			Elements ebody = null;
@@ -124,16 +135,8 @@ public class GqTag39705Collector extends Collector {
 
 			// 获取内容
 			String content = ebody.toString();
-			URL url;
-			try {
-				url = new URL(href);
-				href = url.getPath();
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			}
 			data.setTitle(title);
 			data.setContent(content);
-			data.setContentId(Tools.string2MD5(href));
 			data.setKeywords(keywords.toString());
 			whenOneData(data);
 		}

@@ -52,18 +52,21 @@ public class Cyzone765Collector extends Collector {
 		String html = null;
 
 		for (;;) {
-			url = config.getSiteUrl() + dataUrl.replace("{page}", page.toString());
-			config.setSiteConfig("{'page':" + (page) + ",'dataUrl':'index_{page}.html'}");
-			updateSiteConfig(config.getSiteConfig());
-			html = Tools.getRequest(url,"UTF-8");
-			Elements body = Tools.getBody(".school-list", html);
-			Elements pages = body.select(".page-box");
-			pages.select("#lastpage").remove();
-			String num = pages.select("a").last().text();
-			this.dealwith(body.select(".article-item"), tempFileDir, targetFileDir);
-			if (page >= Integer.parseInt(num)) {
-				stop();
-				break;
+			try {
+				url = config.getSiteUrl() + dataUrl.replace("{page}", page.toString());
+				config.setSiteConfig("{'page':" + (page) + ",'dataUrl':'index_{page}.html'}");
+				updateSiteConfig(config.getSiteConfig());
+				html = Tools.getRequest(url, "UTF-8");
+				Elements body = Tools.getBody(".school-list", html);
+				Elements pages = body.select(".page-box");
+				pages.select("#lastpage").remove();
+				String num = pages.select("a").last().text();
+				this.dealwith(body.select(".article-item"), tempFileDir, targetFileDir);
+				if (page >= Integer.parseInt(num)) {
+					stop();
+					break;
+				}
+			} catch (Exception e) {
 			}
 			page++;
 		}
@@ -71,18 +74,29 @@ public class Cyzone765Collector extends Collector {
 
 	public void dealwith(Elements body, String tempFileDir, String targetFileDir) {
 		for (Element elm : body) {
+			Data data = new Data();
 			String title = elm.select(".item-title").text();
 			String href = elm.select(".item-title").attr("href");
+			URL url;
+			try {
+				url = new URL(href);
+				href = url.getPath();
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			}
+			data.setContentId(Tools.string2MD5(href));
+			if (isDataExists(data.getContentId())) {
+				continue;
+			}
 			String imgSrc = elm.select("img").attr("src");
 			String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
-			Data data = new Data();
 			File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
 			if (dest != null) {
 				List<File> picList = new ArrayList<File>();
 				picList.add(dest);
 				data.setPicList(picList);
 			}
-			String html = Tools.getRequest(href,"UTF-8");
+			String html = Tools.getRequest(href, "UTF-8");
 			Elements ebody = Tools.getBody(".article-content", html);
 			Elements tags = Tools.getBody(".article-tags", html);
 			ebody.select("a").attr("href", "javascript:void(0)");
@@ -100,16 +114,8 @@ public class Cyzone765Collector extends Collector {
 
 			// 获取内容
 			String content = tags.toString() + ebody.toString();
-			URL url;
-			try {
-				url = new URL(href);
-				href = url.getPath();
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			}
 			data.setTitle(title);
 			data.setContent(content);
-			data.setContentId(Tools.string2MD5(href));
 			whenOneData(data);
 		}
 	}

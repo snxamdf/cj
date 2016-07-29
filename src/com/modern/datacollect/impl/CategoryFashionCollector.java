@@ -107,61 +107,61 @@ public class CategoryFashionCollector extends Collector {
 		Elements catArticles = catmainBody.select(".catArticles");
 		// 遍历
 		for (Element el : catArticles) {
+			// 数据保存对像
+			Data data = new Data();
+			// 获取title
+			Elements atitle = el.select("h2").select("a");
+			String href = atitle.attr("href");
+			URL url;
+			try {
+				url = new URL(href);
+				href = url.getPath();
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			}
+			// 数据id 生成的md5值 唯一性
+			data.setContentId(Tools.string2MD5(href));
+			if (isDataExists(data.getContentId())) {
+				continue;
+			}
 			// 获得img
 			String imgSrc = el.select("img").attr("src");
 			// 通过工具类 将图片下载到临时目录
 			String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
-			if (tempFilePath != null) {
-				// 数据保存对像
-				Data data = new Data();
-				// 通过工具类 将图片保存到正式目录
-				File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
-				if (dest != null) {
-					// 将文件对像保存到picList
-					List<File> picList = new ArrayList<File>();
-					picList.add(dest);
-					data.setPicList(picList);
-				}
-				// 获取title
-				Elements atitle = el.select("h2").select("a");
-				String title = atitle.text();
-				String href = atitle.attr("href");
-
-				String html = Tools.getRequest(href);
-				Elements wrapper = Tools.getBody("#wrapper", html);
-				wrapper.select(".sidebar").remove();
-				wrapper.select("#singleOutline").select(".metaNewArticles").remove();
-				wrapper.select("#singleOutline").select(".social-container-small").remove();
-				wrapper.select("#singleOutline").select(".social-sharing-footer").remove();
-				wrapper.select("#singleOutline").select("#ob_holder").remove();
-				wrapper.select("#singleOutline").select(".OUTBRAIN").remove();
-				wrapper.select("#singleOutline").select(".articleComments").remove();
-				Elements cimg = wrapper.select("img");
-				for (Element cimgemt : cimg) {
-					String cimgSrc = cimgemt.attr("src");
-					if (!"".equals(cimgSrc)) {
-						String ctempFilePath = Tools.getLineFile(cimgSrc, tempFileDir);
-						File cdest = Tools.copyFileChannel(ctempFilePath, targetFileDir);
-						String mydest = getMySiteImgSrc(cdest);
-						cimgemt.attr("src", mydest);
-					}
-				}
-				// 获取内容
-				String content = wrapper.toString();
-				URL url;
-				try {
-					url = new URL(href);
-					href = url.getPath();
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
-				}
-				data.setTitle(title);// title
-				data.setContent(content);// 获取内容
-				// 数据id 生成的md5值 唯一性
-				data.setContentId(Tools.string2MD5(href));
-				// 最终调用 whenOneData
-				whenOneData(data);
+			// 通过工具类 将图片保存到正式目录
+			File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
+			if (dest != null) {
+				// 将文件对像保存到picList
+				List<File> picList = new ArrayList<File>();
+				picList.add(dest);
+				data.setPicList(picList);
 			}
+			String title = atitle.text();
+			String html = Tools.getRequest(href);
+			Elements wrapper = Tools.getBody("#wrapper", html);
+			wrapper.select(".sidebar").remove();
+			wrapper.select("#singleOutline").select(".metaNewArticles").remove();
+			wrapper.select("#singleOutline").select(".social-container-small").remove();
+			wrapper.select("#singleOutline").select(".social-sharing-footer").remove();
+			wrapper.select("#singleOutline").select("#ob_holder").remove();
+			wrapper.select("#singleOutline").select(".OUTBRAIN").remove();
+			wrapper.select("#singleOutline").select(".articleComments").remove();
+			Elements cimg = wrapper.select("img");
+			for (Element cimgemt : cimg) {
+				String cimgSrc = cimgemt.attr("src");
+				if (!"".equals(cimgSrc)) {
+					String ctempFilePath = Tools.getLineFile(cimgSrc, tempFileDir);
+					File cdest = Tools.copyFileChannel(ctempFilePath, targetFileDir);
+					String mydest = getMySiteImgSrc(cdest);
+					cimgemt.attr("src", mydest);
+				}
+			}
+			// 获取内容
+			String content = wrapper.toString();
+			data.setTitle(title);// title
+			data.setContent(content);// 获取内容
+			// 最终调用 whenOneData
+			whenOneData(data);
 		}
 	}
 }

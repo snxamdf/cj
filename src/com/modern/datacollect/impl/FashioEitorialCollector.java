@@ -51,20 +51,23 @@ public class FashioEitorialCollector extends Collector {
 		String html = null;
 
 		for (;;) {
-			if (page == 1) {
-				url = config.getSiteUrl();
-			} else {
-				url = config.getSiteUrl() + "/page/" + page;
-			}
-			config.setSiteConfig("{'page':" + page+"}");
-			updateSiteConfig(config.getSiteConfig());
-			html = Tools.getRequest(url);
-			Elements content = Tools.getBody(".content", html);
-			Elements article = content.select("article");
-			this.dealwith(article, tempFileDir, targetFileDir, config);
-			if (article.size() < 2) {
-				stop();
-				break;
+			try {
+				if (page == 1) {
+					url = config.getSiteUrl();
+				} else {
+					url = config.getSiteUrl() + "/page/" + page;
+				}
+				config.setSiteConfig("{'page':" + page + "}");
+				updateSiteConfig(config.getSiteConfig());
+				html = Tools.getRequest(url);
+				Elements content = Tools.getBody(".content", html);
+				Elements article = content.select("article");
+				this.dealwith(article, tempFileDir, targetFileDir, config);
+				if (article.size() < 2) {
+					stop();
+					break;
+				}
+			} catch (Exception e) {
 			}
 			page++;
 		}
@@ -77,8 +80,19 @@ public class FashioEitorialCollector extends Collector {
 			String title = emtTitle.text();
 			Elements emtContent = emt.select(".entry-content");
 			String imgSrc = emtContent.select("img").attr("src");
-			String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
 			Data data = new Data();
+			URL url;
+			try {
+				url = new URL(href);
+				href = url.getPath();
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			}
+			data.setContentId(Tools.string2MD5(href));
+			if (isDataExists(data.getContentId())) {
+				continue;
+			}
+			String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
 			List<File> picList = new ArrayList<File>();
 			if (!"".equals(tempFilePath)) {
 				File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
@@ -106,14 +120,6 @@ public class FashioEitorialCollector extends Collector {
 			String content = emtContent.toString();
 			data.setTitle(title);// title
 			data.setContent(content);// 获取内容
-			URL url;
-			try {
-				url = new URL(href);
-				href = url.getPath();
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			}
-			data.setContentId(Tools.string2MD5(href));
 			data.setPicList(picList);
 			whenOneData(data);
 		}

@@ -52,24 +52,27 @@ public class YokaShouShenCollector extends Collector {
 		String html = null;
 
 		for (;;) {
-			if (page == 1) {
-				url = config.getSiteUrl();
-			} else {
-				url = config.getSiteUrl() + dataUrl.replace("{page}", page.toString());
-			}
-			config.setSiteConfig("{'page':" + page + ",'dataUrl':'/list_{page}.shtml'}");
-			updateSiteConfig(config.getSiteConfig());
-			html = Tools.getRequest(url, "GB2312");
-			Elements body = Tools.getBody("#gotolist", html);
-			Elements pages = body.select(".pages");
-			pages.select(".next").remove();
-			String num = pages.select("a").last().text();
+			try {
+				if (page == 1) {
+					url = config.getSiteUrl();
+				} else {
+					url = config.getSiteUrl() + dataUrl.replace("{page}", page.toString());
+				}
+				config.setSiteConfig("{'page':" + page + ",'dataUrl':'/list_{page}.shtml'}");
+				updateSiteConfig(config.getSiteConfig());
+				html = Tools.getRequest(url, "GB2312");
+				Elements body = Tools.getBody("#gotolist", html);
+				Elements pages = body.select(".pages");
+				pages.select(".next").remove();
+				String num = pages.select("a").last().text();
 
-			body = body.select(".listInfo");
-			this.dealwith(body, tempFileDir, targetFileDir, config);
-			if (page >= Integer.parseInt(num)) {
-				stop();
-				break;
+				body = body.select(".listInfo");
+				this.dealwith(body, tempFileDir, targetFileDir, config);
+				if (page >= Integer.parseInt(num)) {
+					stop();
+					break;
+				}
+			} catch (Exception e) {
 			}
 			page++;
 		}
@@ -82,8 +85,20 @@ public class YokaShouShenCollector extends Collector {
 			String href = emtTitle.attr("href");
 			Elements emtImg = emt.select("dt").select("a").select("img");
 			String imgSrc = emtImg.attr("src");
-			String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
 			Data data = new Data();
+			URL url;
+			try {
+				url = new URL(href);
+				href = url.getPath();
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			}
+			data.setContentId(Tools.string2MD5(href));
+
+			if (isDataExists(data.getContentId())) {
+				continue;
+			}
+			String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
 			List<File> picList = new ArrayList<File>();
 			if (!"".equals(tempFilePath)) {
 				File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
@@ -95,14 +110,6 @@ public class YokaShouShenCollector extends Collector {
 			String content = this.ebody(html, 0, "", null, tempFileDir, targetFileDir, config);
 			data.setTitle(title);// title
 			data.setContent(content);// 获取内容
-			URL url;
-			try {
-				url = new URL(href);
-				href = url.getPath();
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			}
-			data.setContentId(Tools.string2MD5(href));
 			data.setPicList(picList);
 			whenOneData(data);
 		}

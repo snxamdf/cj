@@ -75,6 +75,17 @@ public class Haibao211Collector extends Collector {
 			String href = emt.select("div.hb_fl").select("a").attr("href");
 			String imgSrc = emt.select("a").eq(0).select("img").attr("data-lazy-src");
 			Data data = new Data();
+			URL url = null;
+			try {
+				url = new URL(href);
+				href = url.getPath();
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			}
+			data.setContentId(Tools.string2MD5(href));
+			if (isDataExists(data.getContentId())) {
+				continue;
+			}
 			String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
 			File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
 			if (dest != null) {
@@ -82,6 +93,7 @@ public class Haibao211Collector extends Collector {
 				picList.add(dest);
 				data.setPicList(picList);
 			}
+			
 			String html = Tools.getRequest1(href);
 			Elements ebody = Tools.getBody("div[class=\"wr content\"]", html);
 
@@ -93,13 +105,6 @@ public class Haibao211Collector extends Collector {
 			this.downImg(ebody2, tempFileDir, targetFileDir);
 			String content = btcenter.toString() + body1 + ebody2.toString();
 			Elements pages = ebody.select(".pages");
-			URL url = null;
-			try {
-				url = new URL(href);
-				href = url.getPath();
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			}
 			String result = null;
 			if (pages.size() > 0) {
 				pages.select(".next").remove();
@@ -112,7 +117,6 @@ public class Haibao211Collector extends Collector {
 			}
 			data.setTitle(title);
 			data.setContent(content);
-			data.setContentId(Tools.string2MD5(href));
 			whenOneData(data);
 		}
 	}

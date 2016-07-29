@@ -49,16 +49,19 @@ public class YokaDna370Collector extends Collector {
 			e1.printStackTrace();
 		}
 		for (;;) {
-			config.setSiteConfig("{'page':" + page + ",'currUrl':'" + url + "'}");
-			updateSiteConfig(config.getSiteConfig());
-			String html = Tools.getRequest(url);
-			Elements body = Tools.getBody("#pbox", html);
-			Elements pages = Tools.getBody("#m-pages", html);
-			this.dealwith(body.select("dl"), tempFileDir, targetFileDir, config);
-			url = this.nextUrl(page, pages);
-			if (url == null) {
-				stop();
-				break;
+			try {
+				config.setSiteConfig("{'page':" + page + ",'currUrl':'" + url + "'}");
+				updateSiteConfig(config.getSiteConfig());
+				String html = Tools.getRequest(url);
+				Elements body = Tools.getBody("#pbox", html);
+				Elements pages = Tools.getBody("#m-pages", html);
+				this.dealwith(body.select("dl"), tempFileDir, targetFileDir, config);
+				url = this.nextUrl(page, pages);
+				if (url == null) {
+					stop();
+					break;
+				}
+			} catch (Exception e) {
 			}
 			page++;
 		}
@@ -73,6 +76,18 @@ public class YokaDna370Collector extends Collector {
 				String href = emt.select("dt").get(0).parent().parent().attr("href");
 				href = "http://www.yoka.com" + href;
 				String title = emt.select("dt").select("img").attr("alt");
+				URL url;
+				try {
+					url = new URL(href);
+					href = url.getPath();
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+				}
+				data.setContentId(Tools.string2MD5(href));
+
+				if (isDataExists(data.getContentId())) {
+					continue;
+				}
 				String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
 				File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
 				List<File> picList = new ArrayList<File>();
@@ -97,14 +112,6 @@ public class YokaDna370Collector extends Collector {
 				String content = ebody.toString();
 				data.setTitle(title);// title
 				data.setContent(content);// 获取内容
-				URL url;
-				try {
-					url = new URL(href);
-					href = url.getPath();
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
-				}
-				data.setContentId(Tools.string2MD5(href));
 				data.setPicList(picList);
 				whenOneData(data);
 			}

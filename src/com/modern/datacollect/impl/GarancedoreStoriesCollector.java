@@ -51,28 +51,31 @@ public class GarancedoreStoriesCollector extends Collector {
 		}
 		String html = null;
 		for (;;) {
-			if (page == 1) {
-				url = config.getSiteUrl();
-			} else {
-				url = config.getSiteUrl() + dataUrl.replace("{page}", page.toString());
-			}
-			config.setSiteConfig("{'page':" + (page) + ",'dataUrl':'page/{page}'}");
-			updateSiteConfig(config.getSiteConfig());
-			html = Tools.getRequest(url);
-			Elements body = Tools.getBody("div[class=\"row\"]", html);
-			Elements pager = body.select(".pager");
-			pager.select("li[class=\"next active\"]").remove();
-			String num = pager.select("a").last().text();
-			// body.select("div[class=\"col-md-4 col-sm-6 col-xs-12 hidden-xs hidden-md hidden-lg\"]").remove();
-			// body.select("div[class=\"col-md-12 col-sm-12 col-xs-12\"]").remove();
-			// body.select("div[class=\"col-md-4 col-sm-6 col-xs-12 hidden-sm\"]").remove();
-			// body.select("div[class=\"col-sm-12 visible-sm\"]").remove();
+			try {
+				if (page == 1) {
+					url = config.getSiteUrl();
+				} else {
+					url = config.getSiteUrl() + dataUrl.replace("{page}", page.toString());
+				}
+				config.setSiteConfig("{'page':" + (page) + ",'dataUrl':'page/{page}'}");
+				updateSiteConfig(config.getSiteConfig());
+				html = Tools.getRequest(url);
+				Elements body = Tools.getBody("div[class=\"row\"]", html);
+				Elements pager = body.select(".pager");
+				pager.select("li[class=\"next active\"]").remove();
+				String num = pager.select("a").last().text();
+				// body.select("div[class=\"col-md-4 col-sm-6 col-xs-12 hidden-xs hidden-md hidden-lg\"]").remove();
+				// body.select("div[class=\"col-md-12 col-sm-12 col-xs-12\"]").remove();
+				// body.select("div[class=\"col-md-4 col-sm-6 col-xs-12 hidden-sm\"]").remove();
+				// body.select("div[class=\"col-sm-12 visible-sm\"]").remove();
 
-			this.dealwith(body.select(".col-md-4"), tempFileDir, targetFileDir);
-			this.dealwith(body.select(".col-md-8"), tempFileDir, targetFileDir);
-			if (page >= Integer.parseInt(num)) {
-				stop();
-				break;
+				this.dealwith(body.select(".col-md-4"), tempFileDir, targetFileDir);
+				this.dealwith(body.select(".col-md-8"), tempFileDir, targetFileDir);
+				if (page >= Integer.parseInt(num)) {
+					stop();
+					break;
+				}
+			} catch (Exception e) {
 			}
 			page++;
 		}
@@ -86,9 +89,21 @@ public class GarancedoreStoriesCollector extends Collector {
 				if (tmpTitle == null) {
 					tmpTitle = title;
 				}
-				
+
 				Data data = new Data();
 				String href = elm.select("h3[class=\"post-title\"]").select("a").attr("href");
+
+				URL url;
+				try {
+					url = new URL(href);
+					href = url.getPath();
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+				}
+				data.setContentId(Tools.string2MD5(href));
+				if (isDataExists(data.getContentId())) {
+					continue;
+				}
 				String imgSrc = elm.select(".post-thumb").select("img").attr("data-src");
 				String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
 				File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
@@ -120,16 +135,8 @@ public class GarancedoreStoriesCollector extends Collector {
 
 				// 获取内容
 				String content = ebody.toString();
-				URL url;
-				try {
-					url = new URL(href);
-					href = url.getPath();
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
-				}
 				data.setTitle(title);
 				data.setContent(content);
-				data.setContentId(Tools.string2MD5(href));
 				whenOneData(data);
 			}
 		}

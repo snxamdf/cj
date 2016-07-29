@@ -54,18 +54,18 @@ public class GqDigitalCollector extends Collector {
 		String html = null;
 
 		for (;;) {
-			if (page == 0) {
-				url = config.getSiteUrl();
-				html = Tools.getRequest(url);
-				Elements body = Tools.getBody("div[class=\"gray\"]", html);
-				this.dealwith(body.select(".articleboxmin"), tempFileDir, targetFileDir);
-				page++;
-			}
-			url = dataUrl.replace("{page}", page.toString());
-			config.setSiteConfig("{'page':" + (page) + ",'dataUrl':'http://www.gq.com.cn/front_ajax_channel_v1/readchannelmore/37/?pg={page}'}");
-			updateSiteConfig(config.getSiteConfig());
-			html = Tools.getRequest(url);
 			try {
+				if (page == 0) {
+					url = config.getSiteUrl();
+					html = Tools.getRequest(url);
+					Elements body = Tools.getBody("div[class=\"gray\"]", html);
+					this.dealwith(body.select(".articleboxmin"), tempFileDir, targetFileDir);
+					page++;
+				}
+				url = dataUrl.replace("{page}", page.toString());
+				config.setSiteConfig("{'page':" + (page) + ",'dataUrl':'http://www.gq.com.cn/front_ajax_channel_v1/readchannelmore/37/?pg={page}'}");
+				updateSiteConfig(config.getSiteConfig());
+				html = Tools.getRequest(url);
 				JSONArray array = new JSONArray(html);
 				if (array.length() > 0) {
 					array = array.getJSONObject(0).getJSONArray("info");
@@ -92,6 +92,18 @@ public class GqDigitalCollector extends Collector {
 			String title = elm.select("a").eq(1).text();
 			String imgSrc = elm.select("img").attr("src");
 			String href = elm.select("a").eq(1).attr("href");
+
+			URL url;
+			try {
+				url = new URL(href);
+				href = url.getPath();
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			}
+			data.setContentId(Tools.string2MD5(href));
+			if (isDataExists(data.getContentId())) {
+				continue;
+			}
 			String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
 			File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
 			if (dest != null) {
@@ -128,16 +140,8 @@ public class GqDigitalCollector extends Collector {
 
 			// 获取内容
 			String content = ebody.toString();
-			URL url;
-			try {
-				url = new URL(href);
-				href = url.getPath();
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			}
 			data.setTitle(title);
 			data.setContent(content);
-			data.setContentId(Tools.string2MD5(href));
 			whenOneData(data);
 		}
 	}

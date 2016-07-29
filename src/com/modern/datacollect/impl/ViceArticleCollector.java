@@ -50,16 +50,19 @@ public class ViceArticleCollector extends Collector {
 		String html = null;
 
 		for (;;) {
-			url = config.getSiteUrl() + page.toString();
-			config.setSiteConfig("{'page':" + (page) + "}");
-			updateSiteConfig(config.getSiteConfig());
-			html = Tools.getRequest(url, "UTF-8");
-			Elements body = Tools.getBody(".story_list", html);
-			body = body.select("article");
-			this.dealwith(body, tempFileDir, targetFileDir);
-			if (page >= 685) {
-				stop();
-				break;
+			try {
+				url = config.getSiteUrl() + page.toString();
+				config.setSiteConfig("{'page':" + (page) + "}");
+				updateSiteConfig(config.getSiteConfig());
+				html = Tools.getRequest(url, "UTF-8");
+				Elements body = Tools.getBody(".story_list", html);
+				body = body.select("article");
+				this.dealwith(body, tempFileDir, targetFileDir);
+				if (page >= 685) {
+					stop();
+					break;
+				}
+			} catch (Exception e) {
 			}
 			page++;
 		}
@@ -71,9 +74,20 @@ public class ViceArticleCollector extends Collector {
 			String href = elm.select(".entry-title").select("a").attr("href");
 			href = "http://www.vice.cn" + href;
 			String imgSrc = elm.select(".entry-image").select("img").attr("src");
-			String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
 			// 数据保存对像
 			Data data = new Data();
+			URL url;
+			try {
+				url = new URL(href);
+				href = url.getPath();
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			}
+			data.setContentId(Tools.string2MD5(href));
+			if (isDataExists(data.getContentId())) {
+				continue;
+			}
+			String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
 			// 通过工具类 将图片保存到正式目录
 			File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
 			if (dest != null) {
@@ -82,7 +96,7 @@ public class ViceArticleCollector extends Collector {
 				picList.add(dest);
 				data.setPicList(picList);
 			}
-			String html = Tools.getRequest(href,"UTF-8");
+			String html = Tools.getRequest(href, "UTF-8");
 			Elements ebody = Tools.getBody(".article_content", html);
 			ebody.select("a").attr("href", "javascript:void(0)");
 			Elements keywords = Tools.getBody("#tags-box", html);
@@ -99,16 +113,8 @@ public class ViceArticleCollector extends Collector {
 			}
 			// 获取内容
 			String content = ebody.toString();
-			URL url;
-			try {
-				url = new URL(href);
-				href = url.getPath();
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			}
 			data.setTitle(title);
 			data.setContent(content);
-			data.setContentId(Tools.string2MD5(href));
 			data.setKeywords(keywords.toString());
 			whenOneData(data);
 		}

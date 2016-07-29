@@ -51,18 +51,21 @@ public class DoubanBeijingWeekallCollector extends Collector {
 		}
 		String html = null;
 		for (;;) {
-			url = config.getSiteUrl() + dataUrl.replace("{page}", (page * 10) + "");
-			config.setSiteConfig("{'page':" + (page) + ",'dataUrl':'?start={page}'}");
-			updateSiteConfig(config.getSiteConfig());
-			html = Tools.getRequest(url);
-			Elements body = Tools.getBody("#db-events-list", html);
-			Elements pages = body.select("div[class=\"paginator\"]");
-			pages.select(".next").remove();
-			this.dealwith(body.select(".events-list").select(".list-entry"), tempFileDir, targetFileDir);
-			String num = pages.select("a").last().text();
-			if (page >= Integer.parseInt(num)) {
-				stop();
-				break;
+			try {
+				url = config.getSiteUrl() + dataUrl.replace("{page}", (page * 10) + "");
+				config.setSiteConfig("{'page':" + (page) + ",'dataUrl':'?start={page}'}");
+				updateSiteConfig(config.getSiteConfig());
+				html = Tools.getRequest(url);
+				Elements body = Tools.getBody("#db-events-list", html);
+				Elements pages = body.select("div[class=\"paginator\"]");
+				pages.select(".next").remove();
+				this.dealwith(body.select(".events-list").select(".list-entry"), tempFileDir, targetFileDir);
+				String num = pages.select("a").last().text();
+				if (page >= Integer.parseInt(num)) {
+					stop();
+					break;
+				}
+			} catch (Exception e) {
 			}
 			page++;
 		}
@@ -84,6 +87,18 @@ public class DoubanBeijingWeekallCollector extends Collector {
 			String addr = elm.select(".event-meta").select("li[title]").attr("title");
 			String imgSrc = elm.select(".pic").select("img").attr("data-lazy");
 			Data data = new Data();
+
+			URL url;
+			try {
+				url = new URL(href);
+				href = url.getPath();
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			}
+			data.setContentId(Tools.string2MD5(href));
+			if (isDataExists(data.getContentId())) {
+				continue;
+			}
 			String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
 			File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
 			if (dest != null) {
@@ -112,16 +127,8 @@ public class DoubanBeijingWeekallCollector extends Collector {
 
 			// 获取内容
 			String content = ebody.toString();
-			URL url;
-			try {
-				url = new URL(href);
-				href = url.getPath();
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			}
 			data.setTitle(title);
 			data.setContent(content);
-			data.setContentId(Tools.string2MD5(href));
 			data.setKeywords(keywords.toString());
 			data.setAddress(addr);
 			whenOneData(data);

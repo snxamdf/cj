@@ -56,12 +56,12 @@ public class T36krNews extends Collector {
 		String firstId = null;
 		String b_id = page.toString();
 		for (;;) {
-			url = dataUrl.replace("{page}", b_id);
-			config.setSiteConfig("{'page':" + (b_id) + ",'dataUrl':'http://36kr.com/api/info-flow/main_site/posts?column_id=&b_id={page}&per_page=20'}");
-			updateSiteConfig(config.getSiteConfig());
-			// Tools.getRequest("http://10.10.38.143:89/cookie/flashcookie.html");
-			html = Tools.getRequest1(url);
 			try {
+				url = dataUrl.replace("{page}", b_id);
+				config.setSiteConfig("{'page':" + (b_id) + ",'dataUrl':'http://36kr.com/api/info-flow/main_site/posts?column_id=&b_id={page}&per_page=20'}");
+				updateSiteConfig(config.getSiteConfig());
+				// Tools.getRequest("http://10.10.38.143:89/cookie/flashcookie.html");
+				html = Tools.getRequest1(url);
 				JSONObject json = new JSONObject(html);
 				json = json.getJSONObject("data");
 				if (json != null && json.length() > 0) {
@@ -107,6 +107,18 @@ public class T36krNews extends Collector {
 				}
 				keywords.append(tagArr.getJSONArray(j).getString(0));
 			}
+			String href = "http://36kr.com/p/" + json.getString("id") + ".html";
+			URL url;
+			try {
+				url = new URL(href);
+				href = url.getPath();
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			}
+			data.setContentId(Tools.string2MD5(href));
+			if (isDataExists(data.getContentId())) {
+				continue;
+			}
 			String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
 			File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
 			if (dest != null) {
@@ -114,7 +126,6 @@ public class T36krNews extends Collector {
 				picList.add(dest);
 				data.setPicList(picList);
 			}
-			String href = "http://36kr.com/p/" + json.getString("id") + ".html";
 			String html = Tools.getRequest1(href);
 			Elements ebody = Tools.getBody("script", html);
 			html = null;
@@ -132,7 +143,7 @@ public class T36krNews extends Collector {
 				jsonObj = jsonObj.getJSONObject("detailArticle|post");
 				String content = jsonObj.getString("content");
 				org.jsoup.nodes.Document doc = Jsoup.parse(content);
-				ebody=doc.select("body");
+				ebody = doc.select("body");
 				ebody.select("a").attr("href", "javascript:void(0)");
 				Elements cimg = ebody.select("img");
 				for (Element cimgemt : cimg) {
@@ -147,16 +158,8 @@ public class T36krNews extends Collector {
 
 				// 获取内容
 				content = ebody.html();
-				URL url;
-				try {
-					url = new URL(href);
-					href = url.getPath();
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
-				}
 				data.setTitle(title);
 				data.setContent(content);
-				data.setContentId(Tools.string2MD5(href));
 				data.setKeywords(keywords.toString());
 				whenOneData(data);
 			}

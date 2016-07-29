@@ -53,11 +53,11 @@ public class LotourChujingyouCollector extends Collector {
 		String html = null;
 
 		for (;;) {
-			url = dataUrl.replace("{page}", page.toString());
-			config.setSiteConfig("{'page':" + (page) + ",'dataUrl':'http://api.lotour.net/brandhome/water/SelectDiscoverList?regionId=0&pageSize=50&pageIndex={page}&isbroad=0'}");
-			updateSiteConfig(config.getSiteConfig());
-			html = Tools.getRequest(url);
 			try {
+				url = dataUrl.replace("{page}", page.toString());
+				config.setSiteConfig("{'page':" + (page) + ",'dataUrl':'http://api.lotour.net/brandhome/water/SelectDiscoverList?regionId=0&pageSize=50&pageIndex={page}&isbroad=0'}");
+				updateSiteConfig(config.getSiteConfig());
+				html = Tools.getRequest(url);
 				JSONArray array = new JSONArray(html);
 				if (array.length() > 0) {
 					this.dealwith(array, tempFileDir, targetFileDir);
@@ -81,6 +81,17 @@ public class LotourChujingyouCollector extends Collector {
 			String imgSrc = jsonObj.getString("PicUrl");
 			String address = jsonObj.getString("RegionName");
 			String href = jsonObj.getString("ArticleURL");
+			URL url;
+			try {
+				url = new URL(href);
+				href = url.getPath();
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			}
+			data.setContentId(Tools.string2MD5(href));
+			if (isDataExists(data.getContentId())) {
+				continue;
+			}
 			String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
 			File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
 			if (dest != null) {
@@ -111,16 +122,8 @@ public class LotourChujingyouCollector extends Collector {
 
 			// 获取内容
 			String content = ebody.toString();
-			URL url;
-			try {
-				url = new URL(href);
-				href = url.getPath();
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			}
 			data.setTitle(title);
 			data.setContent(content);
-			data.setContentId(Tools.string2MD5(href));
 			data.setAddress(address);
 			whenOneData(data);
 		}

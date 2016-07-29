@@ -47,16 +47,19 @@ public class HarpersbazaarBeautyCollector extends Collector {
 		}
 		String html = null;
 		for (;;) {
-			url = dataUrl + param.replace("{page}", page.toString()).replace("{feedTime}", new Date().getTime() + "");
-			config.setSiteConfig("{'page':" + page + ",'dataUrl':'http://www.harpersbazaar.com/landing-feed/','param':'?template=section&landingTemplate=standard&id=3&pageNumber={page}&feedTime={feedTime}'}");
-			updateSiteConfig(config.getSiteConfig());
-			html = Tools.getRequest(url);
-			Elements body = Tools.getBody(".landing-feed--story", html);
-			if (body.size() == 0) {
-				stop();
-				break;
+			try {
+				url = dataUrl + param.replace("{page}", page.toString()).replace("{feedTime}", new Date().getTime() + "");
+				config.setSiteConfig("{'page':" + page + ",'dataUrl':'http://www.harpersbazaar.com/landing-feed/','param':'?template=section&landingTemplate=standard&id=3&pageNumber={page}&feedTime={feedTime}'}");
+				updateSiteConfig(config.getSiteConfig());
+				html = Tools.getRequest(url);
+				Elements body = Tools.getBody(".landing-feed--story", html);
+				if (body.size() == 0) {
+					stop();
+					break;
+				}
+				this.dealwith(body, tempFileDir, targetFileDir, config);
+			} catch (Exception e) {
 			}
-			this.dealwith(body, tempFileDir, targetFileDir, config);
 			page++;
 		}
 	}
@@ -75,10 +78,23 @@ public class HarpersbazaarBeautyCollector extends Collector {
 				href = href.substring(7, href.length());
 			}
 			String contentUrl = config.getSiteUrl() + href;
+
+			// 数据保存对像
+			Data data = new Data();
+			URL url;
+			try {
+				url = new URL(contentUrl);
+				contentUrl = url.getPath();
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			}
+			data.setContentId(Tools.string2MD5(contentUrl));
+			if (isDataExists(data.getContentId())) {
+				continue;
+			}
+
 			String title = emtTitle.text();
 			if (tempFilePath != null) {
-				// 数据保存对像
-				Data data = new Data();
 				File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
 				List<File> picList = new ArrayList<File>();
 				if (dest != null) {
@@ -106,14 +122,6 @@ public class HarpersbazaarBeautyCollector extends Collector {
 				data.setTitle(title);// title
 				data.setContent(content);// 获取内容
 				data.setKeywords(text);
-				URL url;
-				try {
-					url = new URL(contentUrl);
-					contentUrl = url.getPath();
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
-				}
-				data.setContentId(Tools.string2MD5(contentUrl));
 				data.setPicList(picList);
 				whenOneData(data);
 			}
