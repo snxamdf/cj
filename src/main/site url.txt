@@ -60,10 +60,10 @@
 	美容：http://beauty.haibao.com/rightnow/24/ ok
 -------------------------------------------- 
 
-	街拍女：http://fashionindie.com/fashion
-	美容：http://fashionindie.com/beauty
-	拍摄：http://fashionindie.com/living
-	旅行：http://fashionindie.com/travel-journals
+	街拍女：http://fashionindie.com/fashion ok
+	美容：http://fashionindie.com/beauty ok
+	拍摄：http://fashionindie.com/living ok
+	旅行：http://fashionindie.com/travel-journals ok
 -------------------------------------------- 
 
 	活动：http://www.hdb.com/find/

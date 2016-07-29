@@ -6,7 +6,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
+import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.security.MessageDigest;
@@ -138,6 +140,7 @@ public class Tools {
 			return null;
 		}
 		sleep();
+		System.out.println("REQ URL: " + url);
 		HttpClient client = new HttpClient();
 		HttpMethod method = new GetMethod(url);
 		method.setRequestHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
@@ -196,6 +199,7 @@ public class Tools {
 			return null;
 		}
 		sleep();
+		System.out.println("REQ URL: " + url);
 		HttpClient client = new HttpClient();
 		GetMethod get = new GetMethod(url);
 		try {
@@ -361,6 +365,17 @@ public class Tools {
 			e.printStackTrace();
 		}
 	}
+
+	public static URL url(String url) {
+		try {
+			URL u = new URL(url);
+			return u;
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 }
 
 class RecursiveCount {

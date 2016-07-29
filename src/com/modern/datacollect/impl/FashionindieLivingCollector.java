@@ -13,7 +13,7 @@ import com.modern.datacollect.api.Collector;
 import com.modern.datacollect.api.Config;
 import com.modern.datacollect.api.Data;
 
-public class FashionindieFashionCollector extends Collector {
+public class FashionindieLivingCollector extends Collector {
 
 	@Override
 	public void begin() {
@@ -27,7 +27,7 @@ public class FashionindieFashionCollector extends Collector {
 		if (config == null) {// 开发时用到的，自己配置
 			config = new Config();
 			// 配置网站url 这个url是一个主要的，如果在抓取的时候变动需要自己拼接
-			config.setSiteUrl("http://fashionindie.com/fashion/");
+			config.setSiteUrl("http://fashionindie.com/living/");
 			// 更新配置每次抓取一页数据,可用用于配置，当前抓取第几页，第几条数据。
 			config.setSiteConfig("{'page':1,'dataUrl':'page/{page}'}");
 			// 文件的保存正式目录
