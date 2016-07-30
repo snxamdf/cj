@@ -84,60 +84,64 @@ public class GarancedoreStoriesCollector extends Collector {
 	public void dealwith(Elements body, String tempFileDir, String targetFileDir) {
 		String tmpTitle = null;
 		for (Element elm : body) {
-			String title = elm.select("h3[class=\"post-title\"]").text();
-			if (!"".equals(title)) {
-				if (tmpTitle == null) {
-					tmpTitle = title;
-				}
-
-				Data data = new Data();
-				String href = elm.select("h3[class=\"post-title\"]").select("a").attr("href");
-
-				URL url;
-				try {
-					url = new URL(href);
-					href = url.getPath();
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
-				}
-				data.setContentId(Tools.string2MD5(href));
-				if (isDataExists(data.getContentId())) {
-					continue;
-				}
-				String imgSrc = elm.select(".post-thumb").select("img").attr("data-src");
-				String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
-				File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
-				if (dest != null) {
-					List<File> picList = new ArrayList<File>();
-					picList.add(dest);
-					data.setPicList(picList);
-				}
-				String html = Tools.getRequest(href);
-				Elements ebody = Tools.getBody(".main-post-content", html);
-				ebody = ebody.select(".post-txt-loop");
-				ebody.select("a").attr("href", "javascript:void(0)");
-				Elements cimg = ebody.select("img");
-				for (Element cimgemt : cimg) {
-					String cimgSrc = cimgemt.attr("src");
-					if ("".equals(cimgSrc)) {
-						cimgSrc = cimgemt.attr("data-src");
+			try {
+				String title = elm.select("h3[class=\"post-title\"]").text();
+				if (!"".equals(title)) {
+					if (tmpTitle == null) {
+						tmpTitle = title;
 					}
-					if (!"".equals(cimgSrc)) {
-						String ctempFilePath = Tools.getLineFile(cimgSrc, tempFileDir);
-						File cdest = Tools.copyFileChannel(ctempFilePath, targetFileDir);
-						String mydest = getMySiteImgSrc(cdest);
-						cimgemt.attr("src", mydest);
-						cimgemt.removeAttr("sizes");
-						cimgemt.removeAttr("srcset");
-						cimgemt.removeAttr("class");
-					}
-				}
 
-				// 获取内容
-				String content = ebody.toString();
-				data.setTitle(title);
-				data.setContent(content);
-				whenOneData(data);
+					Data data = new Data();
+					String href = elm.select("h3[class=\"post-title\"]").select("a").attr("href");
+
+					URL url;
+					try {
+						url = new URL(href);
+						data.setContentId(Tools.string2MD5(url.getPath()));
+					} catch (MalformedURLException e) {
+						e.printStackTrace();
+					}
+
+					if (isDataExists(data.getContentId())) {
+						continue;
+					}
+					String imgSrc = elm.select(".post-thumb").select("img").attr("data-src");
+					String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
+					File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
+					if (dest != null) {
+						List<File> picList = new ArrayList<File>();
+						picList.add(dest);
+						data.setPicList(picList);
+					}
+					String html = Tools.getRequest(href);
+					Elements ebody = Tools.getBody(".main-post-content", html);
+					ebody = ebody.select(".post-txt-loop");
+					ebody.select("a").attr("href", "javascript:void(0)");
+					Elements cimg = ebody.select("img");
+					for (Element cimgemt : cimg) {
+						String cimgSrc = cimgemt.attr("src");
+						if ("".equals(cimgSrc)) {
+							cimgSrc = cimgemt.attr("data-src");
+						}
+						if (!"".equals(cimgSrc)) {
+							String ctempFilePath = Tools.getLineFile(cimgSrc, tempFileDir);
+							File cdest = Tools.copyFileChannel(ctempFilePath, targetFileDir);
+							String mydest = getMySiteImgSrc(cdest);
+							if (mydest != null)
+								cimgemt.attr("src", mydest);
+							cimgemt.removeAttr("sizes");
+							cimgemt.removeAttr("srcset");
+							cimgemt.removeAttr("class");
+						}
+					}
+
+					// 获取内容
+					String content = ebody.toString();
+					data.setTitle(title);
+					data.setContent(content);
+					whenOneData(data);
+				}
+			} catch (Exception e) {
 			}
 		}
 	}

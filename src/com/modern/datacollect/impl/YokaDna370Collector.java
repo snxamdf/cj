@@ -69,51 +69,54 @@ public class YokaDna370Collector extends Collector {
 
 	public void dealwith(Elements body, String tempFileDir, String targetFileDir, Config config) {
 		for (Element emt : body) {
-			String imgSrc = emt.select("dt").select("img").attr("src");
-			if (!"".equals(imgSrc)) {
-				// 数据保存对像
-				Data data = new Data();
-				String href = emt.select("dt").get(0).parent().parent().attr("href");
-				href = "http://www.yoka.com" + href;
-				String title = emt.select("dt").select("img").attr("alt");
-				URL url;
-				try {
-					url = new URL(href);
-					href = url.getPath();
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
-				}
-				data.setContentId(Tools.string2MD5(href));
-
-				if (isDataExists(data.getContentId())) {
-					continue;
-				}
-				String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
-				File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
-				List<File> picList = new ArrayList<File>();
-				if (dest != null) {
-					picList.add(dest);
-				}
-				String html = Tools.getRequest(href);
-				Elements ebody = Tools.getBody("#topic-context", html).select(".conts");
-				ebody.select("h1").remove();
-				ebody.select("a").attr("href", "javascript:void(0)");
-				Elements cimg = ebody.select("img");
-				for (Element cimgemt : cimg) {
-					String cimgSrc = cimgemt.attr("_src");
-					cimgemt.removeAttr("_src");
-					if (!"".equals(cimgSrc)) {
-						String ctempFilePath = Tools.getLineFile(cimgSrc, tempFileDir);
-						File cdest = Tools.copyFileChannel(ctempFilePath, targetFileDir);
-						String mydest = getMySiteImgSrc(cdest);
-						cimgemt.attr("src", mydest);
+			try {
+				String imgSrc = emt.select("dt").select("img").attr("src");
+				if (!"".equals(imgSrc)) {
+					// 数据保存对像
+					Data data = new Data();
+					String href = emt.select("dt").get(0).parent().parent().attr("href");
+					href = "http://www.yoka.com" + href;
+					String title = emt.select("dt").select("img").attr("alt");
+					URL url;
+					try {
+						url = new URL(href);
+						data.setContentId(Tools.string2MD5(url.getPath()));
+					} catch (MalformedURLException e) {
+						e.printStackTrace();
 					}
+
+					if (isDataExists(data.getContentId())) {
+						continue;
+					}
+					String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
+					File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
+					List<File> picList = new ArrayList<File>();
+					if (dest != null) {
+						picList.add(dest);
+					}
+					String html = Tools.getRequest(href);
+					Elements ebody = Tools.getBody("#topic-context", html).select(".conts");
+					ebody.select("h1").remove();
+					ebody.select("a").attr("href", "javascript:void(0)");
+					Elements cimg = ebody.select("img");
+					for (Element cimgemt : cimg) {
+						String cimgSrc = cimgemt.attr("_src");
+						cimgemt.removeAttr("_src");
+						if (!"".equals(cimgSrc)) {
+							String ctempFilePath = Tools.getLineFile(cimgSrc, tempFileDir);
+							File cdest = Tools.copyFileChannel(ctempFilePath, targetFileDir);
+							String mydest = getMySiteImgSrc(cdest);
+							if (mydest != null)
+								cimgemt.attr("src", mydest);
+						}
+					}
+					String content = ebody.toString();
+					data.setTitle(title);// title
+					data.setContent(content);// 获取内容
+					data.setPicList(picList);
+					whenOneData(data);
 				}
-				String content = ebody.toString();
-				data.setTitle(title);// title
-				data.setContent(content);// 获取内容
-				data.setPicList(picList);
-				whenOneData(data);
+			} catch (Exception e) {
 			}
 		}
 	}

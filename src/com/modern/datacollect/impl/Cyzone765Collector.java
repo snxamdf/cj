@@ -74,49 +74,52 @@ public class Cyzone765Collector extends Collector {
 
 	public void dealwith(Elements body, String tempFileDir, String targetFileDir) {
 		for (Element elm : body) {
-			Data data = new Data();
-			String title = elm.select(".item-title").text();
-			String href = elm.select(".item-title").attr("href");
-			URL url;
 			try {
-				url = new URL(href);
-				href = url.getPath();
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			}
-			data.setContentId(Tools.string2MD5(href));
-			if (isDataExists(data.getContentId())) {
-				continue;
-			}
-			String imgSrc = elm.select("img").attr("src");
-			String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
-			File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
-			if (dest != null) {
-				List<File> picList = new ArrayList<File>();
-				picList.add(dest);
-				data.setPicList(picList);
-			}
-			String html = Tools.getRequest(href, "UTF-8");
-			Elements ebody = Tools.getBody(".article-content", html);
-			Elements tags = Tools.getBody(".article-tags", html);
-			ebody.select("a").attr("href", "javascript:void(0)");
-			tags.select("a").attr("href", "javascript:void(0)");
-			Elements cimg = ebody.select("img");
-			for (Element cimgemt : cimg) {
-				String cimgSrc = cimgemt.attr("src");
-				if (!"".equals(cimgSrc)) {
-					String ctempFilePath = Tools.getLineFile(cimgSrc, tempFileDir);
-					File cdest = Tools.copyFileChannel(ctempFilePath, targetFileDir);
-					String mydest = getMySiteImgSrc(cdest);
-					cimgemt.attr("src", mydest);
+				Data data = new Data();
+				String title = elm.select(".item-title").text();
+				String href = elm.select(".item-title").attr("href");
+				URL url;
+				try {
+					url = new URL(href);
+					data.setContentId(Tools.string2MD5(url.getPath()));
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
 				}
-			}
+				if (isDataExists(data.getContentId())) {
+					continue;
+				}
+				String imgSrc = elm.select("img").attr("src");
+				String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
+				File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
+				if (dest != null) {
+					List<File> picList = new ArrayList<File>();
+					picList.add(dest);
+					data.setPicList(picList);
+				}
+				String html = Tools.getRequest(href, "UTF-8");
+				Elements ebody = Tools.getBody(".article-content", html);
+				Elements tags = Tools.getBody(".article-tags", html);
+				ebody.select("a").attr("href", "javascript:void(0)");
+				tags.select("a").attr("href", "javascript:void(0)");
+				Elements cimg = ebody.select("img");
+				for (Element cimgemt : cimg) {
+					String cimgSrc = cimgemt.attr("src");
+					if (!"".equals(cimgSrc)) {
+						String ctempFilePath = Tools.getLineFile(cimgSrc, tempFileDir);
+						File cdest = Tools.copyFileChannel(ctempFilePath, targetFileDir);
+						String mydest = getMySiteImgSrc(cdest);
+						if (mydest != null)
+							cimgemt.attr("src", mydest);
+					}
+				}
 
-			// 获取内容
-			String content = tags.toString() + ebody.toString();
-			data.setTitle(title);
-			data.setContent(content);
-			whenOneData(data);
+				// 获取内容
+				String content = tags.toString() + ebody.toString();
+				data.setTitle(title);
+				data.setContent(content);
+				whenOneData(data);
+			} catch (Exception e) {
+			}
 		}
 	}
 }

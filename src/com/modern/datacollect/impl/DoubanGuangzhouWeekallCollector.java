@@ -73,64 +73,69 @@ public class DoubanGuangzhouWeekallCollector extends Collector {
 
 	public void dealwith(Elements body, String tempFileDir, String targetFileDir) {
 		for (Element elm : body) {
-			String title = elm.select(".title").select("a").text();
-			String href = elm.select(".title").select("a").attr("href");
-			StringBuffer keywords = new StringBuffer();
-			Elements elmKey = elm.select(".event-cate-tag").select("a");
-			for (int i = 0; elmKey != null && i < elmKey.size(); i++) {
-				if (i > 0) {
-					keywords.append(",");
-				}
-				keywords.append(elmKey.get(i).text());
-			}
-			String time = elm.select(".event-meta").select(".event-time").text();
-			String addr = elm.select(".event-meta").select("li[title]").attr("title");
-
-			Data data = new Data();
-			URL url;
 			try {
-				url = new URL(href);
-				href = url.getPath();
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			}
-			data.setContentId(Tools.string2MD5(href));
-			if (isDataExists(data.getContentId())) {
-				continue;
-			}String imgSrc = elm.select(".pic").select("img").attr("data-lazy");
-			String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
-			File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
-			if (dest != null) {
-				List<File> picList = new ArrayList<File>();
-				picList.add(dest);
-				data.setPicList(picList);
-			}
-			String html = Tools.getRequest(href);
-			Elements ebody = Tools.getBody("#link-report", html);
-			ebody.select("div").removeAttr("style");
-			ebody.select("a").attr("href", "javascript:void(0)");
-			Elements cimg = ebody.select("img");
-			for (Element cimgemt : cimg) {
-				String cimgSrc = cimgemt.attr("data-lazy");
-				if ("".equals(cimgSrc)) {
-					cimgSrc = cimgemt.attr("src");
+				String title = elm.select(".title").select("a").text();
+				String href = elm.select(".title").select("a").attr("href");
+				StringBuffer keywords = new StringBuffer();
+				Elements elmKey = elm.select(".event-cate-tag").select("a");
+				for (int i = 0; elmKey != null && i < elmKey.size(); i++) {
+					if (i > 0) {
+						keywords.append(",");
+					}
+					keywords.append(elmKey.get(i).text());
 				}
-				if (!"".equals(cimgSrc)) {
-					String ctempFilePath = Tools.getLineFile(cimgSrc, tempFileDir);
-					File cdest = Tools.copyFileChannel(ctempFilePath, targetFileDir);
-					String mydest = getMySiteImgSrc(cdest);
-					cimgemt.attr("src", mydest);
-					cimgemt.removeAttr("data-original");
-				}
-			}
+				String time = elm.select(".event-meta").select(".event-time").text();
+				String addr = elm.select(".event-meta").select("li[title]").attr("title");
 
-			// 获取内容
-			String content = ebody.toString();
-			data.setTitle(title);
-			data.setContent(content);
-			data.setKeywords(keywords.toString());
-			data.setAddress(addr);
-			whenOneData(data);
+				Data data = new Data();
+				URL url;
+				try {
+					url = new URL(href);
+					data.setContentId(Tools.string2MD5(url.getPath()));
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+				}
+
+				if (isDataExists(data.getContentId())) {
+					continue;
+				}
+				String imgSrc = elm.select(".pic").select("img").attr("data-lazy");
+				String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
+				File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
+				if (dest != null) {
+					List<File> picList = new ArrayList<File>();
+					picList.add(dest);
+					data.setPicList(picList);
+				}
+				String html = Tools.getRequest(href);
+				Elements ebody = Tools.getBody("#link-report", html);
+				ebody.select("div").removeAttr("style");
+				ebody.select("a").attr("href", "javascript:void(0)");
+				Elements cimg = ebody.select("img");
+				for (Element cimgemt : cimg) {
+					String cimgSrc = cimgemt.attr("data-lazy");
+					if ("".equals(cimgSrc)) {
+						cimgSrc = cimgemt.attr("src");
+					}
+					if (!"".equals(cimgSrc)) {
+						String ctempFilePath = Tools.getLineFile(cimgSrc, tempFileDir);
+						File cdest = Tools.copyFileChannel(ctempFilePath, targetFileDir);
+						String mydest = getMySiteImgSrc(cdest);
+						if (mydest != null)
+							cimgemt.attr("src", mydest);
+						cimgemt.removeAttr("data-original");
+					}
+				}
+
+				// 获取内容
+				String content = ebody.toString();
+				data.setTitle(title);
+				data.setContent(content);
+				data.setKeywords(keywords.toString());
+				data.setAddress(addr);
+				whenOneData(data);
+			} catch (Exception e) {
+			}
 		}
 	}
 }

@@ -70,53 +70,57 @@ public class ViceArticleCollector extends Collector {
 
 	public void dealwith(Elements body, String tempFileDir, String targetFileDir) {
 		for (Element elm : body) {
-			String title = elm.select(".entry-title").select("a").text();
-			String href = elm.select(".entry-title").select("a").attr("href");
-			href = "http://www.vice.cn" + href;
-			String imgSrc = elm.select(".entry-image").select("img").attr("src");
-			// 数据保存对像
-			Data data = new Data();
-			URL url;
 			try {
-				url = new URL(href);
-				href = url.getPath();
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			}
-			data.setContentId(Tools.string2MD5(href));
-			if (isDataExists(data.getContentId())) {
-				continue;
-			}
-			String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
-			// 通过工具类 将图片保存到正式目录
-			File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
-			if (dest != null) {
-				// 将文件对像保存到picList
-				List<File> picList = new ArrayList<File>();
-				picList.add(dest);
-				data.setPicList(picList);
-			}
-			String html = Tools.getRequest(href, "UTF-8");
-			Elements ebody = Tools.getBody(".article_content", html);
-			ebody.select("a").attr("href", "javascript:void(0)");
-			Elements keywords = Tools.getBody("#tags-box", html);
-			keywords.select("a").attr("href", "javascript:void(0)");
-			Elements cimg = ebody.select("img");
-			for (Element cimgemt : cimg) {
-				String cimgSrc = cimgemt.attr("src");
-				if (!"".equals(cimgSrc)) {
-					String ctempFilePath = Tools.getLineFile(cimgSrc, tempFileDir);
-					File cdest = Tools.copyFileChannel(ctempFilePath, targetFileDir);
-					String mydest = getMySiteImgSrc(cdest);
-					cimgemt.attr("src", mydest);
+				String title = elm.select(".entry-title").select("a").text();
+				String href = elm.select(".entry-title").select("a").attr("href");
+				href = "http://www.vice.cn" + href;
+				String imgSrc = elm.select(".entry-image").select("img").attr("src");
+				// 数据保存对像
+				Data data = new Data();
+				URL url;
+				try {
+					url = new URL(href);
+					data.setContentId(Tools.string2MD5(url.getPath()));
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
 				}
+
+				if (isDataExists(data.getContentId())) {
+					continue;
+				}
+				String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
+				// 通过工具类 将图片保存到正式目录
+				File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
+				if (dest != null) {
+					// 将文件对像保存到picList
+					List<File> picList = new ArrayList<File>();
+					picList.add(dest);
+					data.setPicList(picList);
+				}
+				String html = Tools.getRequest(href, "UTF-8");
+				Elements ebody = Tools.getBody(".article_content", html);
+				ebody.select("a").attr("href", "javascript:void(0)");
+				Elements keywords = Tools.getBody("#tags-box", html);
+				keywords.select("a").attr("href", "javascript:void(0)");
+				Elements cimg = ebody.select("img");
+				for (Element cimgemt : cimg) {
+					String cimgSrc = cimgemt.attr("src");
+					if (!"".equals(cimgSrc)) {
+						String ctempFilePath = Tools.getLineFile(cimgSrc, tempFileDir);
+						File cdest = Tools.copyFileChannel(ctempFilePath, targetFileDir);
+						String mydest = getMySiteImgSrc(cdest);
+						if (mydest != null)
+							cimgemt.attr("src", mydest);
+					}
+				}
+				// 获取内容
+				String content = ebody.toString();
+				data.setTitle(title);
+				data.setContent(content);
+				data.setKeywords(keywords.toString());
+				whenOneData(data);
+			} catch (Exception e) {
 			}
-			// 获取内容
-			String content = ebody.toString();
-			data.setTitle(title);
-			data.setContent(content);
-			data.setKeywords(keywords.toString());
-			whenOneData(data);
 		}
 	}
 }

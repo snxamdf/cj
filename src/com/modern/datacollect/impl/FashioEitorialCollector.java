@@ -75,53 +75,57 @@ public class FashioEitorialCollector extends Collector {
 
 	public void dealwith(Elements body, String tempFileDir, String targetFileDir, Config config) {
 		for (Element emt : body) {
-			Elements emtTitle = emt.select(".entry-header").select("h2").select("a");
-			String href = emtTitle.attr("href");
-			String title = emtTitle.text();
-			Elements emtContent = emt.select(".entry-content");
-			String imgSrc = emtContent.select("img").attr("src");
-			Data data = new Data();
-			URL url;
 			try {
-				url = new URL(href);
-				href = url.getPath();
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			}
-			data.setContentId(Tools.string2MD5(href));
-			if (isDataExists(data.getContentId())) {
-				continue;
-			}
-			String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
-			List<File> picList = new ArrayList<File>();
-			if (!"".equals(tempFilePath)) {
-				File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
-				if (dest != null) {
-					picList.add(dest);
+				Elements emtTitle = emt.select(".entry-header").select("h2").select("a");
+				String href = emtTitle.attr("href");
+				String title = emtTitle.text();
+				Elements emtContent = emt.select(".entry-content");
+				String imgSrc = emtContent.select("img").attr("src");
+				Data data = new Data();
+				URL url;
+				try {
+					url = new URL(href);
+					data.setContentId(Tools.string2MD5(url.getPath()));
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
 				}
-			}
-			String html = Tools.getRequest(href);
-			emtContent = Tools.getBody(".content-sidebar-wrap", html).select(".entry-content");
-			emtContent.select(".fashi-in-post-wide-ad").remove();
-			emtContent.select(".sharedaddy").remove();
-			emtContent.select("#jp-relatedposts").remove();
-			emtContent.select("div").remove();
-			Elements cimg = emtContent.select("img");
-			for (Element cimgemt : cimg) {
-				String cimgSrc = cimgemt.attr("src");
-				if (!"".equals(cimgSrc)) {
-					String ctempFilePath = Tools.getLineFile(cimgSrc, tempFileDir);
-					File cdest = Tools.copyFileChannel(ctempFilePath, targetFileDir);
-					String mydest = getMySiteImgSrc(cdest);
-					cimgemt.attr("src", mydest);
-				}
-			}
 
-			String content = emtContent.toString();
-			data.setTitle(title);// title
-			data.setContent(content);// 获取内容
-			data.setPicList(picList);
-			whenOneData(data);
+				if (isDataExists(data.getContentId())) {
+					continue;
+				}
+				String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
+				List<File> picList = new ArrayList<File>();
+				if (!"".equals(tempFilePath)) {
+					File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
+					if (dest != null) {
+						picList.add(dest);
+					}
+				}
+				String html = Tools.getRequest(href);
+				emtContent = Tools.getBody(".content-sidebar-wrap", html).select(".entry-content");
+				emtContent.select(".fashi-in-post-wide-ad").remove();
+				emtContent.select(".sharedaddy").remove();
+				emtContent.select("#jp-relatedposts").remove();
+				emtContent.select("div").remove();
+				Elements cimg = emtContent.select("img");
+				for (Element cimgemt : cimg) {
+					String cimgSrc = cimgemt.attr("src");
+					if (!"".equals(cimgSrc)) {
+						String ctempFilePath = Tools.getLineFile(cimgSrc, tempFileDir);
+						File cdest = Tools.copyFileChannel(ctempFilePath, targetFileDir);
+						String mydest = getMySiteImgSrc(cdest);
+						if (mydest != null)
+							cimgemt.attr("src", mydest);
+					}
+				}
+
+				String content = emtContent.toString();
+				data.setTitle(title);// title
+				data.setContent(content);// 获取内容
+				data.setPicList(picList);
+				whenOneData(data);
+			} catch (Exception e) {
+			}
 		}
 	}
 

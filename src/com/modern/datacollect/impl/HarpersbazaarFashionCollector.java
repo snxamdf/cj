@@ -66,64 +66,67 @@ public class HarpersbazaarFashionCollector extends Collector {
 
 	public void dealwith(Elements body, String tempFileDir, String targetFileDir, Config config) {
 		for (Element emt : body) {
-			Elements emtImage = emt.select(".landing-feed--story-image").select("img");
-			String imgSrc = emtImage.attr("data-src");
-			Elements emtContent = emt.select(".landing-feed--story-content");
-			Elements emtTitle = emtContent.select(".landing-feed--story-title");
-			Elements emtAbstract = emtContent.select(".landing-feed--story-abstract");
-			String text = emtAbstract.select("span").text();
-			String href = emtTitle.attr("href");
-			if (href != null && href.indexOf("fashion") != -1) {
-				href = href.substring(8, href.length());
-			}
-			String contentUrl = config.getSiteUrl() + href;
-			String title = emtTitle.text();
-
-			// 数据保存对像
-			Data data = new Data();
-			URL url;
 			try {
-				url = new URL(contentUrl);
-				contentUrl = url.getPath();
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			}
-			data.setContentId(Tools.string2MD5(contentUrl));
-			if (isDataExists(data.getContentId())) {
-				continue;
-			}
-			String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
-			if (tempFilePath != null) {
-				File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
-				List<File> picList = new ArrayList<File>();
-				if (dest != null) {
-					picList.add(dest);
+				Elements emtImage = emt.select(".landing-feed--story-image").select("img");
+				String imgSrc = emtImage.attr("data-src");
+				Elements emtContent = emt.select(".landing-feed--story-content");
+				Elements emtTitle = emtContent.select(".landing-feed--story-title");
+				Elements emtAbstract = emtContent.select(".landing-feed--story-abstract");
+				String text = emtAbstract.select("span").text();
+				String href = emtTitle.attr("href");
+				if (href != null && href.indexOf("fashion") != -1) {
+					href = href.substring(8, href.length());
 				}
-				String html = Tools.getRequest(contentUrl);
-				Elements container = Tools.getBody(".standard-article", html);
+				String contentUrl = config.getSiteUrl() + href;
+				String title = emtTitle.text();
 
-				container.select(".embed--iframe-container").remove();
-				container.select(".standard-article--secondary-content").remove();
-				container.select(".zoomable-expand").remove();
-				container.select(".embedded-image--lead-image-share").remove();
-				container.select(".embedded-image--lead-copyright").remove();
-				container.select(".social-byline").remove();
-				Elements cimg = container.select("img");
-				for (Element cimgemt : cimg) {
-					String cimgSrc = cimgemt.attr("data-src");
-					if (!"".equals(cimgSrc)) {
-						String ctempFilePath = Tools.getLineFile(cimgSrc, tempFileDir);
-						File cdest = Tools.copyFileChannel(ctempFilePath, targetFileDir);
-						String mydest = getMySiteImgSrc(cdest);
-						cimgemt.attr("src", mydest);
-					}
+				// 数据保存对像
+				Data data = new Data();
+				URL url;
+				try {
+					url = new URL(contentUrl);
+					data.setContentId(Tools.string2MD5(url.getPath()));
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
 				}
-				String content = container.toString();
-				data.setTitle(title);// title
-				data.setContent(content);// 获取内容
-				data.setKeywords(text);
-				data.setPicList(picList);
-				whenOneData(data);
+				if (isDataExists(data.getContentId())) {
+					continue;
+				}
+				String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
+				if (tempFilePath != null) {
+					File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
+					List<File> picList = new ArrayList<File>();
+					if (dest != null) {
+						picList.add(dest);
+					}
+					String html = Tools.getRequest(contentUrl);
+					Elements container = Tools.getBody(".standard-article", html);
+
+					container.select(".embed--iframe-container").remove();
+					container.select(".standard-article--secondary-content").remove();
+					container.select(".zoomable-expand").remove();
+					container.select(".embedded-image--lead-image-share").remove();
+					container.select(".embedded-image--lead-copyright").remove();
+					container.select(".social-byline").remove();
+					Elements cimg = container.select("img");
+					for (Element cimgemt : cimg) {
+						String cimgSrc = cimgemt.attr("data-src");
+						if (!"".equals(cimgSrc)) {
+							String ctempFilePath = Tools.getLineFile(cimgSrc, tempFileDir);
+							File cdest = Tools.copyFileChannel(ctempFilePath, targetFileDir);
+							String mydest = getMySiteImgSrc(cdest);
+							if (mydest != null)
+								cimgemt.attr("src", mydest);
+						}
+					}
+					String content = container.toString();
+					data.setTitle(title);// title
+					data.setContent(content);// 获取内容
+					data.setKeywords(text);
+					data.setPicList(picList);
+					whenOneData(data);
+				}
+			} catch (Exception e) {
 			}
 		}
 	}

@@ -75,57 +75,61 @@ public class LotourGouneiyouCollector extends Collector {
 
 	public void dealwith(JSONArray array, String tempFileDir, String targetFileDir) throws JSONException {
 		for (int i = 0; i < array.length(); i++) {
-			JSONObject jsonObj = array.getJSONObject(i);
-			Data data = new Data();
-			String title = jsonObj.getString("Title");
-			String imgSrc = jsonObj.getString("PicUrl");
-			String address = jsonObj.getString("RegionName");
-			String href = jsonObj.getString("ArticleURL");
-			URL url;
 			try {
-				url = new URL(href);
-				href = url.getPath();
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			}
-			data.setContentId(Tools.string2MD5(href));
-			if (isDataExists(data.getContentId())) {
-				continue;
-			}
-			String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
-			File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
-			if (dest != null) {
-				List<File> picList = new ArrayList<File>();
-				picList.add(dest);
-				data.setPicList(picList);
-			}
-			String html = Tools.getRequest(href);
-			Elements ebody = Tools.getBody(".ia-text", html);
-			ebody.select("a").attr("href", "javascript:void(0)");
-			Elements cimg = ebody.select("img");
-			for (Element cimgemt : cimg) {
-				String cimgSrc = cimgemt.attr("data-original");
-				if ("".equals(cimgSrc)) {
-					cimgSrc = cimgemt.attr("realsrc");
+				JSONObject jsonObj = array.getJSONObject(i);
+				Data data = new Data();
+				String title = jsonObj.getString("Title");
+				String imgSrc = jsonObj.getString("PicUrl");
+				String address = jsonObj.getString("RegionName");
+				String href = jsonObj.getString("ArticleURL");
+				URL url;
+				try {
+					url = new URL(href);
+					data.setContentId(Tools.string2MD5(url.getPath()));
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
 				}
-				if (!"".equals(cimgSrc)) {
-					String ctempFilePath = Tools.getLineFile(cimgSrc, tempFileDir);
-					File cdest = Tools.copyFileChannel(ctempFilePath, targetFileDir);
-					String mydest = getMySiteImgSrc(cdest);
-					cimgemt.attr("src", mydest);
-					cimgemt.removeAttr("data-original");
-					cimgemt.removeAttr("realsrc");
-					cimgemt.removeAttr("class");
-					cimgemt.removeAttr("onload");
-				}
-			}
 
-			// 获取内容
-			String content = ebody.toString();
-			data.setTitle(title);
-			data.setContent(content);
-			data.setAddress(address);
-			whenOneData(data);
+				if (isDataExists(data.getContentId())) {
+					continue;
+				}
+				String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
+				File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
+				if (dest != null) {
+					List<File> picList = new ArrayList<File>();
+					picList.add(dest);
+					data.setPicList(picList);
+				}
+				String html = Tools.getRequest(href);
+				Elements ebody = Tools.getBody(".ia-text", html);
+				ebody.select("a").attr("href", "javascript:void(0)");
+				Elements cimg = ebody.select("img");
+				for (Element cimgemt : cimg) {
+					String cimgSrc = cimgemt.attr("data-original");
+					if ("".equals(cimgSrc)) {
+						cimgSrc = cimgemt.attr("realsrc");
+					}
+					if (!"".equals(cimgSrc)) {
+						String ctempFilePath = Tools.getLineFile(cimgSrc, tempFileDir);
+						File cdest = Tools.copyFileChannel(ctempFilePath, targetFileDir);
+						String mydest = getMySiteImgSrc(cdest);
+						if (mydest != null)
+							cimgemt.attr("src", mydest);
+						cimgemt.removeAttr("data-original");
+						cimgemt.removeAttr("realsrc");
+						cimgemt.removeAttr("class");
+						cimgemt.removeAttr("onload");
+					}
+				}
+
+				// 获取内容
+				String content = ebody.toString();
+				data.setTitle(title);
+				data.setContent(content);
+				data.setAddress(address);
+				whenOneData(data);
+			} catch (Exception e) {
+			}
 		}
 	}
 }

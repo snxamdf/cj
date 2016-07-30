@@ -107,64 +107,67 @@ public class CategoryStreetStyleCollector extends Collector {
 		Elements catArticles = catmainBody.select(".fluidArticleContent");
 		// 遍历
 		for (Element el : catArticles) {
-			// 数据保存对像
-			Data data = new Data();
-			// 获取title
-			Elements atitle = el.select("a");
-			String href = atitle.attr("href");
-
-			URL url;
 			try {
-				url = new URL(href);
-				href = url.getPath();
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			}
-			// 数据id 生成的md5值 唯一性
-			data.setContentId(Tools.string2MD5(href));
-			if (isDataExists(data.getContentId())) {
-				continue;
-			}
-			// 获得img
-			String imgSrc = el.select("img").attr("src");
-			// 通过工具类 将图片下载到临时目录
-			String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
-			// 通过工具类 将图片保存到正式目录
-			File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
-			if (dest != null) {
-				// 将文件对像保存到picList
-				List<File> picList = new ArrayList<File>();
-				picList.add(dest);
-				data.setPicList(picList);
-			}
-			String html = Tools.getRequest(href);
-			Elements wrapper = Tools.getBody("#wrapper", html);
-			wrapper.select(".breadcrumb").remove();
-			wrapper.select("iframe").remove();
-			String title = wrapper.select(".streetStyleMeta").select("h1").text();
-			String keywords = wrapper.select(".streetStyleMeta").select(".author").text();
-			data.setKeywords(keywords);
-			Elements contents = wrapper.select(".streetstyleContent");
-			contents.select(".streetNavigation").remove();
-			contents.select(".streetstyleInfo").select(".moreStreet").remove();
-			contents.select(".streetstyleInfo").select("otherViews").remove();
-			contents.select(".streetstyleInfo").select("streetStyleAds").select(".right").remove();
-			Elements cimg = contents.select("img");
-			for (Element cimgemt : cimg) {
-				String cimgSrc = cimgemt.attr("src");
-				if (!"".equals(cimgSrc)) {
-					String ctempFilePath = Tools.getLineFile(cimgSrc, tempFileDir);
-					File cdest = Tools.copyFileChannel(ctempFilePath, targetFileDir);
-					String mydest = getMySiteImgSrc(cdest);
-					cimgemt.attr("src", mydest);
+				// 数据保存对像
+				Data data = new Data();
+				// 获取title
+				Elements atitle = el.select("a");
+				String href = atitle.attr("href");
+
+				URL url;
+				try {
+					url = new URL(href);
+					// 数据id 生成的md5值 唯一性
+					data.setContentId(Tools.string2MD5(url.getPath()));
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
 				}
+				if (isDataExists(data.getContentId())) {
+					continue;
+				}
+				// 获得img
+				String imgSrc = el.select("img").attr("src");
+				// 通过工具类 将图片下载到临时目录
+				String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
+				// 通过工具类 将图片保存到正式目录
+				File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
+				if (dest != null) {
+					// 将文件对像保存到picList
+					List<File> picList = new ArrayList<File>();
+					picList.add(dest);
+					data.setPicList(picList);
+				}
+				String html = Tools.getRequest(href);
+				Elements wrapper = Tools.getBody("#wrapper", html);
+				wrapper.select(".breadcrumb").remove();
+				wrapper.select("iframe").remove();
+				String title = wrapper.select(".streetStyleMeta").select("h1").text();
+				String keywords = wrapper.select(".streetStyleMeta").select(".author").text();
+				data.setKeywords(keywords);
+				Elements contents = wrapper.select(".streetstyleContent");
+				contents.select(".streetNavigation").remove();
+				contents.select(".streetstyleInfo").select(".moreStreet").remove();
+				contents.select(".streetstyleInfo").select("otherViews").remove();
+				contents.select(".streetstyleInfo").select("streetStyleAds").select(".right").remove();
+				Elements cimg = contents.select("img");
+				for (Element cimgemt : cimg) {
+					String cimgSrc = cimgemt.attr("src");
+					if (!"".equals(cimgSrc)) {
+						String ctempFilePath = Tools.getLineFile(cimgSrc, tempFileDir);
+						File cdest = Tools.copyFileChannel(ctempFilePath, targetFileDir);
+						String mydest = getMySiteImgSrc(cdest);
+						if (mydest != null)
+							cimgemt.attr("src", mydest);
+					}
+				}
+				// 获取内容
+				String content = wrapper.toString();
+				data.setTitle(title);// title
+				data.setContent(content);// 获取内容
+				// 最终调用 whenOneData
+				whenOneData(data);
+			} catch (Exception e) {
 			}
-			// 获取内容
-			String content = wrapper.toString();
-			data.setTitle(title);// title
-			data.setContent(content);// 获取内容
-			// 最终调用 whenOneData
-			whenOneData(data);
 		}
 	}
 }

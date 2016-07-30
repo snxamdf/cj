@@ -94,74 +94,78 @@ public class T36krNews extends Collector {
 
 	public void dealwith(JSONArray array, String tempFileDir, String targetFileDir) throws JSONException {
 		for (int i = 0; i < array.length(); i++) {
-			Data data = new Data();
-			JSONObject json = array.getJSONObject(i);
-			String title = json.getString("title");
-			String imgSrc = json.getString("cover");
-			String extraction_tags = json.getString("extraction_tags");
-			com.alibaba.fastjson.JSONArray tagArr = JSON.parseArray(extraction_tags);
-			StringBuffer keywords = new StringBuffer();
-			for (int j = 0; tagArr != null && j < tagArr.size(); j++) {
-				if (j > 0) {
-					keywords.append(",");
-				}
-				keywords.append(tagArr.getJSONArray(j).getString(0));
-			}
-			String href = "http://36kr.com/p/" + json.getString("id") + ".html";
-			URL url;
 			try {
-				url = new URL(href);
-				href = url.getPath();
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			}
-			data.setContentId(Tools.string2MD5(href));
-			if (isDataExists(data.getContentId())) {
-				continue;
-			}
-			String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
-			File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
-			if (dest != null) {
-				List<File> picList = new ArrayList<File>();
-				picList.add(dest);
-				data.setPicList(picList);
-			}
-			String html = Tools.getRequest1(href);
-			Elements ebody = Tools.getBody("script", html);
-			html = null;
-			for (Element element : ebody.eq(5)) {
-				String[] dataa = element.data().toString().split("var");
-				for (String variable : dataa) {
-					variable = variable.trim();
-					if (variable.contains("=") || variable.contains("props")) {
-						html = variable.substring(6, variable.length());
+				Data data = new Data();
+				JSONObject json = array.getJSONObject(i);
+				String title = json.getString("title");
+				String imgSrc = json.getString("cover");
+				String extraction_tags = json.getString("extraction_tags");
+				com.alibaba.fastjson.JSONArray tagArr = JSON.parseArray(extraction_tags);
+				StringBuffer keywords = new StringBuffer();
+				for (int j = 0; tagArr != null && j < tagArr.size(); j++) {
+					if (j > 0) {
+						keywords.append(",");
 					}
+					keywords.append(tagArr.getJSONArray(j).getString(0));
 				}
-			}
-			if (html != null) {
-				JSONObject jsonObj = new JSONObject(html);
-				jsonObj = jsonObj.getJSONObject("detailArticle|post");
-				String content = jsonObj.getString("content");
-				org.jsoup.nodes.Document doc = Jsoup.parse(content);
-				ebody = doc.select("body");
-				ebody.select("a").attr("href", "javascript:void(0)");
-				Elements cimg = ebody.select("img");
-				for (Element cimgemt : cimg) {
-					String cimgSrc = cimgemt.attr("src");
-					if (!"".equals(cimgSrc)) {
-						String ctempFilePath = Tools.getLineFile(cimgSrc, tempFileDir);
-						File cdest = Tools.copyFileChannel(ctempFilePath, targetFileDir);
-						String mydest = getMySiteImgSrc(cdest);
-						cimgemt.attr("src", mydest);
-					}
+				String href = "http://36kr.com/p/" + json.getString("id") + ".html";
+				URL url;
+				try {
+					url = new URL(href);
+					data.setContentId(Tools.string2MD5(url.getPath()));
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
 				}
 
-				// 获取内容
-				content = ebody.html();
-				data.setTitle(title);
-				data.setContent(content);
-				data.setKeywords(keywords.toString());
-				whenOneData(data);
+				if (isDataExists(data.getContentId())) {
+					continue;
+				}
+				String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
+				File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
+				if (dest != null) {
+					List<File> picList = new ArrayList<File>();
+					picList.add(dest);
+					data.setPicList(picList);
+				}
+				String html = Tools.getRequest1(href);
+				Elements ebody = Tools.getBody("script", html);
+				html = null;
+				for (Element element : ebody.eq(5)) {
+					String[] dataa = element.data().toString().split("var");
+					for (String variable : dataa) {
+						variable = variable.trim();
+						if (variable.contains("=") || variable.contains("props")) {
+							html = variable.substring(6, variable.length());
+						}
+					}
+				}
+				if (html != null) {
+					JSONObject jsonObj = new JSONObject(html);
+					jsonObj = jsonObj.getJSONObject("detailArticle|post");
+					String content = jsonObj.getString("content");
+					org.jsoup.nodes.Document doc = Jsoup.parse(content);
+					ebody = doc.select("body");
+					ebody.select("a").attr("href", "javascript:void(0)");
+					Elements cimg = ebody.select("img");
+					for (Element cimgemt : cimg) {
+						String cimgSrc = cimgemt.attr("src");
+						if (!"".equals(cimgSrc)) {
+							String ctempFilePath = Tools.getLineFile(cimgSrc, tempFileDir);
+							File cdest = Tools.copyFileChannel(ctempFilePath, targetFileDir);
+							String mydest = getMySiteImgSrc(cdest);
+							if (mydest != null)
+								cimgemt.attr("src", mydest);
+						}
+					}
+
+					// 获取内容
+					content = ebody.html();
+					data.setTitle(title);
+					data.setContent(content);
+					data.setKeywords(keywords.toString());
+					whenOneData(data);
+				}
+			} catch (Exception e) {
 			}
 		}
 	}

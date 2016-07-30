@@ -80,38 +80,40 @@ public class YokaShouShenCollector extends Collector {
 
 	public void dealwith(Elements body, String tempFileDir, String targetFileDir, Config config) {
 		for (Element emt : body) {
-			Elements emtTitle = emt.select("dd").select("h3").select("a");
-			String title = emtTitle.text();
-			String href = emtTitle.attr("href");
-			Elements emtImg = emt.select("dt").select("a").select("img");
-			String imgSrc = emtImg.attr("src");
-			Data data = new Data();
-			URL url;
 			try {
-				url = new URL(href);
-				href = url.getPath();
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			}
-			data.setContentId(Tools.string2MD5(href));
-
-			if (isDataExists(data.getContentId())) {
-				continue;
-			}
-			String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
-			List<File> picList = new ArrayList<File>();
-			if (!"".equals(tempFilePath)) {
-				File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
-				if (dest != null) {
-					picList.add(dest);
+				Elements emtTitle = emt.select("dd").select("h3").select("a");
+				String title = emtTitle.text();
+				String href = emtTitle.attr("href");
+				Elements emtImg = emt.select("dt").select("a").select("img");
+				String imgSrc = emtImg.attr("src");
+				Data data = new Data();
+				URL url;
+				try {
+					url = new URL(href);
+					data.setContentId(Tools.string2MD5(url.getPath()));
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
 				}
+
+				if (isDataExists(data.getContentId())) {
+					continue;
+				}
+				String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
+				List<File> picList = new ArrayList<File>();
+				if (!"".equals(tempFilePath)) {
+					File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
+					if (dest != null) {
+						picList.add(dest);
+					}
+				}
+				String html = Tools.getRequest(href, "GB2312");
+				String content = this.ebody(html, 0, "", null, tempFileDir, targetFileDir, config);
+				data.setTitle(title);// title
+				data.setContent(content);// 获取内容
+				data.setPicList(picList);
+				whenOneData(data);
+			} catch (Exception e) {
 			}
-			String html = Tools.getRequest(href, "GB2312");
-			String content = this.ebody(html, 0, "", null, tempFileDir, targetFileDir, config);
-			data.setTitle(title);// title
-			data.setContent(content);// 获取内容
-			data.setPicList(picList);
-			whenOneData(data);
 		}
 	}
 
@@ -174,7 +176,8 @@ public class YokaShouShenCollector extends Collector {
 				String ctempFilePath = Tools.getLineFile(cimgSrc, tempFileDir);
 				File cdest = Tools.copyFileChannel(ctempFilePath, targetFileDir);
 				String mydest = getMySiteImgSrc(cdest);
-				cimgemt.attr("src", mydest);
+				if (mydest != null)
+					cimgemt.attr("src", mydest);
 			}
 		}
 		ebody.select("a").attr("href", "javascript:void(0)");

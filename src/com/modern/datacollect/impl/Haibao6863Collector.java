@@ -74,52 +74,55 @@ public class Haibao6863Collector extends Collector {
 
 	public void dealwith(Elements body, String tempFileDir, String targetFileDir, Config config) {
 		for (Element emt : body) {
-			String title = emt.select("div.hb_fl").text();
-			String href = emt.select("div.hb_fl").select("a").attr("href");
-			String imgSrc = emt.select("a").eq(0).select("img").attr("data-lazy-src");
-			Data data = new Data();
-			URL url = null;
 			try {
-				url = new URL(href);
-				href = url.getPath();
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			}
-			data.setContentId(Tools.string2MD5(href));
-			if (isDataExists(data.getContentId())) {
-				continue;
-			}
-			String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
-			File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
-			if (dest != null) {
-				List<File> picList = new ArrayList<File>();
-				picList.add(dest);
-				data.setPicList(picList);
-			}
-			String html = Tools.getRequest1(href);
-			Elements ebody = Tools.getBody("div[class=\"wr content\"]", html);
+				String title = emt.select("div.hb_fl").text();
+				String href = emt.select("div.hb_fl").select("a").attr("href");
+				String imgSrc = emt.select("a").eq(0).select("img").attr("data-lazy-src");
+				Data data = new Data();
+				URL url = null;
+				try {
+					url = new URL(href);
+					data.setContentId(Tools.string2MD5(url.getPath()));
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+				}
 
-			Elements ebody1 = ebody.select("div[class=\"hb_fl contentleft\"]");
-			String body1 = ebody1.select(".desc_content").toString();
-			Elements btcenter = Tools.getBody("#btcenter", html);
-			btcenter.select("a").attr("href", "javascript:void(0)");
-			Elements ebody2 = ebody1.select("#jsArticleDesc");
-			this.downImg(ebody2, tempFileDir, targetFileDir);
-			String content = btcenter.toString() + body1 + ebody2.toString();
-			Elements pages = ebody.select(".pages");
-			String result = null;
-			if (pages.size() > 0) {
-				pages.select(".next").remove();
-				String pageTemp = "http://" + url.getHost().toString() + href.split("\\.")[0] + "_{page}.htm";
-				String num = pages.select("a").last().text();
-				result = this.contentPage(Integer.valueOf(num), pageTemp, tempFileDir, targetFileDir);
+				if (isDataExists(data.getContentId())) {
+					continue;
+				}
+				String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
+				File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
+				if (dest != null) {
+					List<File> picList = new ArrayList<File>();
+					picList.add(dest);
+					data.setPicList(picList);
+				}
+				String html = Tools.getRequest1(href);
+				Elements ebody = Tools.getBody("div[class=\"wr content\"]", html);
+
+				Elements ebody1 = ebody.select("div[class=\"hb_fl contentleft\"]");
+				String body1 = ebody1.select(".desc_content").toString();
+				Elements btcenter = Tools.getBody("#btcenter", html);
+				btcenter.select("a").attr("href", "javascript:void(0)");
+				Elements ebody2 = ebody1.select("#jsArticleDesc");
+				this.downImg(ebody2, tempFileDir, targetFileDir);
+				String content = btcenter.toString() + body1 + ebody2.toString();
+				Elements pages = ebody.select(".pages");
+				String result = null;
+				if (pages.size() > 0) {
+					pages.select(".next").remove();
+					String pageTemp = "http://" + url.getHost().toString() + href.split("\\.")[0] + "_{page}.htm";
+					String num = pages.select("a").last().text();
+					result = this.contentPage(Integer.valueOf(num), pageTemp, tempFileDir, targetFileDir);
+				}
+				if (result != null) {
+					content += result;
+				}
+				data.setTitle(title);
+				data.setContent(content);
+				whenOneData(data);
+			} catch (Exception e) {
 			}
-			if (result != null) {
-				content += result;
-			}
-			data.setTitle(title);
-			data.setContent(content);
-			whenOneData(data);
 		}
 	}
 
@@ -147,7 +150,8 @@ public class Haibao6863Collector extends Collector {
 				String ctempFilePath = Tools.getLineFile(cimgSrc, tempFileDir);
 				File cdest = Tools.copyFileChannel(ctempFilePath, targetFileDir);
 				String mydest = getMySiteImgSrc(cdest);
-				cimgemt.attr("src", mydest);
+				if (mydest != null)
+					cimgemt.attr("src", mydest);
 			}
 		}
 	}

@@ -88,120 +88,128 @@ public class GqDigitalCollector extends Collector {
 
 	public void dealwith(Elements body, String tempFileDir, String targetFileDir) {
 		for (Element elm : body) {
-			Data data = new Data();
-			String title = elm.select("a").eq(1).text();
-			String imgSrc = elm.select("img").attr("src");
-			String href = elm.select("a").eq(1).attr("href");
-
-			URL url;
 			try {
-				url = new URL(href);
-				href = url.getPath();
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			}
-			data.setContentId(Tools.string2MD5(href));
-			if (isDataExists(data.getContentId())) {
-				continue;
-			}
-			String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
-			File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
-			if (dest != null) {
-				List<File> picList = new ArrayList<File>();
-				picList.add(dest);
-				data.setPicList(picList);
-			}
-			String html = Tools.getRequest(href);
-			Elements ebody = null;
-			if (href.indexOf("pic_") != -1) {
-				ebody = Tools.getBody("#left", html);
-			} else if (href.indexOf("news_") != -1) {
-				ebody = Tools.getBody(".content", html);
-			}
-			if (ebody == null) {
-				return;
-			}
-			ebody.select("a").attr("href", "javascript:void(0)");
-			Elements cimg = ebody.select("img");
-			for (Element cimgemt : cimg) {
-				String cimgSrc = cimgemt.attr("src");
-				if (!"".equals(cimgSrc)) {
-					String ctempFilePath = Tools.getLineFile(cimgSrc, tempFileDir);
-					File cdest = Tools.copyFileChannel(ctempFilePath, targetFileDir);
-					String mydest = getMySiteImgSrc(cdest);
-					cimgemt.attr("src", mydest);
-					cimgemt.removeAttr("data-original");
-					cimgemt.removeAttr("realsrc");
-					cimgemt.removeAttr("class");
-					cimgemt.removeAttr("onload");
-					cimgemt.removeAttr("onclick");
-				}
-			}
+				Data data = new Data();
+				String title = elm.select("a").eq(1).text();
+				String imgSrc = elm.select("img").attr("src");
+				String href = elm.select("a").eq(1).attr("href");
 
-			// 获取内容
-			String content = ebody.toString();
-			data.setTitle(title);
-			data.setContent(content);
-			whenOneData(data);
+				URL url;
+				try {
+					url = new URL(href);
+					data.setContentId(Tools.string2MD5(url.getPath()));
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+				}
+
+				if (isDataExists(data.getContentId())) {
+					continue;
+				}
+				String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
+				File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
+				if (dest != null) {
+					List<File> picList = new ArrayList<File>();
+					picList.add(dest);
+					data.setPicList(picList);
+				}
+				String html = Tools.getRequest(href);
+				Elements ebody = null;
+				if (href.indexOf("pic_") != -1) {
+					ebody = Tools.getBody("#left", html);
+				} else if (href.indexOf("news_") != -1) {
+					ebody = Tools.getBody(".content", html);
+				}
+				if (ebody == null) {
+					return;
+				}
+				ebody.select("a").attr("href", "javascript:void(0)");
+				Elements cimg = ebody.select("img");
+				for (Element cimgemt : cimg) {
+					String cimgSrc = cimgemt.attr("src");
+					if (!"".equals(cimgSrc)) {
+						String ctempFilePath = Tools.getLineFile(cimgSrc, tempFileDir);
+						File cdest = Tools.copyFileChannel(ctempFilePath, targetFileDir);
+						String mydest = getMySiteImgSrc(cdest);
+						if (mydest != null)
+							cimgemt.attr("src", mydest);
+						cimgemt.removeAttr("data-original");
+						cimgemt.removeAttr("realsrc");
+						cimgemt.removeAttr("class");
+						cimgemt.removeAttr("onload");
+						cimgemt.removeAttr("onclick");
+					}
+				}
+
+				// 获取内容
+				String content = ebody.toString();
+				data.setTitle(title);
+				data.setContent(content);
+				whenOneData(data);
+			} catch (Exception e) {
+			}
 		}
 	}
 
 	public void dealwith(JSONArray array, String tempFileDir, String targetFileDir) throws JSONException {
 		for (int i = 0; i < array.length(); i++) {
-			JSONObject jsonObj = array.getJSONObject(i);
-			Data data = new Data();
-			String title = jsonObj.getString("title");
-			String imgSrc = jsonObj.getString("pic");
-			String keywords = jsonObj.getString("channelname");
-			String href = jsonObj.getString("news_link");
-			String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
-			File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
-			if (dest != null) {
-				List<File> picList = new ArrayList<File>();
-				picList.add(dest);
-				data.setPicList(picList);
-			}
-			String html = Tools.getRequest(href);
-			Elements ebody = null;
-			if (href.indexOf("pic_") != -1) {
-				ebody = Tools.getBody("#left", html);
-			} else if (href.indexOf("news_") != -1) {
-				ebody = Tools.getBody(".content", html);
-			}
-			if (ebody == null) {
-				return;
-			}
-			ebody.select("a").attr("href", "javascript:void(0)");
-			Elements cimg = ebody.select("img");
-			for (Element cimgemt : cimg) {
-				String cimgSrc = cimgemt.attr("src");
-				if (!"".equals(cimgSrc)) {
-					String ctempFilePath = Tools.getLineFile(cimgSrc, tempFileDir);
-					File cdest = Tools.copyFileChannel(ctempFilePath, targetFileDir);
-					String mydest = getMySiteImgSrc(cdest);
-					cimgemt.attr("src", mydest);
-					cimgemt.removeAttr("data-original");
-					cimgemt.removeAttr("realsrc");
-					cimgemt.removeAttr("class");
-					cimgemt.removeAttr("onload");
-					cimgemt.removeAttr("onclick");
-				}
-			}
-
-			// 获取内容
-			String content = ebody.toString();
-			URL url;
 			try {
-				url = new URL(href);
-				href = url.getPath();
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
+				JSONObject jsonObj = array.getJSONObject(i);
+				Data data = new Data();
+				String title = jsonObj.getString("title");
+				String imgSrc = jsonObj.getString("pic");
+				String keywords = jsonObj.getString("channelname");
+				String href = jsonObj.getString("news_link");
+				String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
+				File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
+				if (dest != null) {
+					List<File> picList = new ArrayList<File>();
+					picList.add(dest);
+					data.setPicList(picList);
+				}
+				String html = Tools.getRequest(href);
+				Elements ebody = null;
+				if (href.indexOf("pic_") != -1) {
+					ebody = Tools.getBody("#left", html);
+				} else if (href.indexOf("news_") != -1) {
+					ebody = Tools.getBody(".content", html);
+				}
+				if (ebody == null) {
+					return;
+				}
+				ebody.select("a").attr("href", "javascript:void(0)");
+				Elements cimg = ebody.select("img");
+				for (Element cimgemt : cimg) {
+					String cimgSrc = cimgemt.attr("src");
+					if (!"".equals(cimgSrc)) {
+						String ctempFilePath = Tools.getLineFile(cimgSrc, tempFileDir);
+						File cdest = Tools.copyFileChannel(ctempFilePath, targetFileDir);
+						String mydest = getMySiteImgSrc(cdest);
+						if (mydest != null)
+							cimgemt.attr("src", mydest);
+						cimgemt.removeAttr("data-original");
+						cimgemt.removeAttr("realsrc");
+						cimgemt.removeAttr("class");
+						cimgemt.removeAttr("onload");
+						cimgemt.removeAttr("onclick");
+					}
+				}
+
+				// 获取内容
+				String content = ebody.toString();
+				URL url;
+				try {
+					url = new URL(href);
+					data.setContentId(Tools.string2MD5(url.getPath()));
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+				}
+				data.setTitle(title);
+				data.setContent(content);
+
+				data.setKeywords(keywords);
+				whenOneData(data);
+			} catch (Exception e) {
 			}
-			data.setTitle(title);
-			data.setContent(content);
-			data.setContentId(Tools.string2MD5(href));
-			data.setKeywords(keywords);
-			whenOneData(data);
 		}
 	}
 }
