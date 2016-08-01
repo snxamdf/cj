@@ -28,8 +28,7 @@
 	汽车   http://www.yokamen.cn/auto/ ok
 -------------------------------------------- 
 
-	http://fashion.cosmopolitan.com.cn/howto/ ok 还有其它的URL
-	
+	http://fashion.cosmopolitan.com.cn/ ok
 	时髦办、美人计、大胆爱、巨好玩、乐活家
 -------------------------------------------- 
 
