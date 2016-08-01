@@ -1,6 +1,6 @@
 —————————————————————— 
 
-	http://pinterest.com/
+	http://pinterest.com/ 数据来源找不到
 —————————————————————— 
 
 	时尚： http://www.harpersbazaar.com/fashion/ ok
@@ -11,7 +11,7 @@
 	男士，街拍  http://www.fashionbeans.com/category/mens-street-style/ ok
 -------------------------------------------- 
 
-	https://chicisimo.com/     女士，街拍
+	女士，街拍 : https://chicisimo.com/     url有加密
 -------------------------------------------- 
 
   	女士， 时尚	http://www.fashiongonerogue.com/fashion-editorial/ ok
@@ -40,7 +40,7 @@
 	美容：http://www.nylon.com/beauty ok
 -------------------------------------------- 
 
-	http://lookbook.nu/
+	http://lookbook.nu/ ok
 -------------------------------------------- 
 
 	男士： 	http://www.gq.com.cn/fashion/#pid=3 ok
@@ -70,7 +70,7 @@
 	北 上 广 深 成
 -------------------------------------------- 
 
-	活动：http://www.huodongxing.com/eventlist
+	活动：http://www.huodongxing.com/eventlist ok
 	北 上 广 深 成
 -------------------------------------------- 
 
