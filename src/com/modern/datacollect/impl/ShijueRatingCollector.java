@@ -120,7 +120,6 @@ public class ShijueRatingCollector extends Collector {
 					if (edata.length() > 0) {
 						keywords = edata.getString("tags");
 						String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(edata.getLong("createdTime")));
-						content.append("<div>上传时间：" + time + "</div>");
 						JSONArray earray = edata.getJSONArray("setSets");
 						for (int j = 0; j < earray.length(); j++) {
 							JSONObject ejsonData = earray.getJSONObject(j);
@@ -140,6 +139,7 @@ public class ShijueRatingCollector extends Collector {
 							} catch (Exception e) {
 							}
 						}
+						content.append("<div>上传时间：" + time + "</div>");
 					}
 					data.setTitle(title);
 					data.setContent(content.toString());

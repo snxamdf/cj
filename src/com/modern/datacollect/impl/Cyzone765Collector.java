@@ -97,6 +97,8 @@ public class Cyzone765Collector extends Collector {
 					data.setPicList(picList);
 				}
 				String html = Tools.getRequest(href, "UTF-8");
+				Elements articlehd = Tools.getBody(".article-hd", html);
+				articlehd = articlehd.select(".author-time");
 				Elements ebody = Tools.getBody(".article-content", html);
 				Elements tags = Tools.getBody(".article-tags", html);
 				ebody.select("a").attr("href", "javascript:void(0)");
@@ -114,7 +116,7 @@ public class Cyzone765Collector extends Collector {
 				}
 
 				// 获取内容
-				String content = tags.toString() + ebody.toString();
+				String content = tags.toString() + ebody.toString() + articlehd.toString();
 				data.setTitle(title);
 				data.setContent(content);
 				whenOneData(data);

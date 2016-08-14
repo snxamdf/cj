@@ -13,7 +13,7 @@ import com.modern.datacollect.api.Collector;
 import com.modern.datacollect.api.Config;
 import com.modern.datacollect.api.Data;
 
-public class PocoResListCollector extends Collector {
+public class PocoCookbook_diyCollector extends Collector {
 
 	@Override
 	public void begin() {
@@ -26,9 +26,9 @@ public class PocoResListCollector extends Collector {
 		if (config == null) {// 开发时用到的，自己配置
 			config = new Config();
 			// 配置网站url 这个url是一个主要的，如果在抓取的时候变动需要自己拼接
-			config.setSiteUrl("http://food.poco.cn/resList.php#location_id1=");
+			config.setSiteUrl("http://cook.poco.cn/cookbook_diy.php");
 			// 更新配置每次抓取一页数据,可用用于配置，当前抓取第几页，第几条数据。
-			config.setSiteConfig("{'page':1,'dataUrl':'http://food.poco.cn/module/get_res_topic_list.js.php?p={page}&food_series=0'}");
+			config.setSiteConfig("{'page':1,'dataUrl':'http://cook.poco.cn/cookbook_diy.htx&p={page}&good=0&o=&show_type=img&b_id=0#main_list'}");
 			// 文件的保存正式目录
 			targetFileDir = "D:\\targetFileDir\\";
 			// 文件的保存临时目录
@@ -51,11 +51,12 @@ public class PocoResListCollector extends Collector {
 		for (;;) {
 			try {
 				url = dataUrl.replace("{page}", page.toString());
-				config.setSiteConfig("{'page':" + (page) + ",'dataUrl':'http://food.poco.cn/module/get_res_topic_list.js.php?p={page}&food_series=0'}");
+				config.setSiteConfig("{'page':" + (page) + ",'dataUrl':'http://cook.poco.cn/cookbook_diy.htx&p={page}&good=0&o=&show_type=img&b_id=0#main_list'}");
 				updateSiteConfig(config.getSiteConfig());
 				html = Tools.getRequest(url);
-				Elements body = Tools.getBody(".w768", html);
-				Elements pages = Tools.getBody(".show_page", html);
+				Elements body = Tools.getBody("div[class=\"ul768_pic165 clear mt10\"]", html);
+				body = body.select("li");
+				Elements pages = Tools.getBody(".page", html);
 				this.dealwith(body, tempFileDir, targetFileDir);
 				if (!pages.toString().contains("下一页")) {
 					stop();
@@ -72,17 +73,10 @@ public class PocoResListCollector extends Collector {
 	public void dealwith(Elements body, String tempFileDir, String targetFileDir) {
 		for (Element elm : body) {
 			try {
-				String title = elm.select(".text_box").select(".rbox1").text();
-				String href = elm.select(".text_box").select(".rbox1").select("a").attr("href");
-				String imgSrc = elm.select(".img_box").select("img").attr("src");
-				StringBuffer keywords = new StringBuffer();
-				Elements elmKey = elm.select(".rbox3").select("a");
-				for (int i = 0; elmKey != null && i < elmKey.size(); i++) {
-					if (i > 0) {
-						keywords.append(",");
-					}
-					keywords.append(elmKey.get(i).text());
-				}
+				String title = elm.select(".show_author").select("a").text();
+				String href = elm.select(".show_author").select("a").attr("href");
+				href = "http://cook.poco.cn/" + href;
+				String imgSrc = elm.select(".imgbox").select("img").attr("src");
 				Data data = new Data();
 				data.setContentId(Tools.string2MD5(Tools.url(href).getPath()));
 				if (isDataExists(data.getContentId())) {
@@ -96,17 +90,13 @@ public class PocoResListCollector extends Collector {
 					data.setPicList(picList);
 				}
 				String html = Tools.getRequest(href);
-				Elements ebody = Tools.getBody(".content_text_con", html);
-				Elements time = Tools.getBody("div[class=\"tc mt5 zt_listItem_info pb10\"]", html);
-				time.select("a").attr("href", "javascript:void(0)");
-				time = time.select("span").eq(0);
+				Elements ebody = Tools.getBody("#plus_content", html);
 
 				this.downImg(ebody, tempFileDir, targetFileDir);
 
-				String content = ebody.toString() + time.toString();
+				String content = ebody.toString();
 				data.setTitle(title);
 				data.setContent(content);
-				data.setKeywords(keywords.toString());
 				whenOneData(data);
 			} catch (Exception e) {
 			}

@@ -135,7 +135,7 @@
 -------------------------------------------- 
 
 	美食
-	http://food.poco.cn/resList.php#location_id1=
-	http://food.poco.cn/commend_list.php
-	http://cook.poco.cn/cookbook_diy.php
+	http://food.poco.cn/resList.php#location_id1= ok PocoResListCollector.java
+	http://food.poco.cn/commend_list.php 页面内容是flash加载获取不到 PocoCommendDetailCollector.java
+	http://cook.poco.cn/cookbook_diy.php ok  PocoCookbook_diyCollector.java
 -------------------------------------------- 
