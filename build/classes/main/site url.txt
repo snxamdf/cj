@@ -92,11 +92,11 @@
 
 	北 上 广 深 成
 	活动：http://www.hdb.com/find/
-		http://www.hdb.com/find/beijing-p1/ ok HdbBeijingCollector.java
-		http://www.hdb.com/find/chengdu-sjbx-p1/ ok HdbChengduCollector.java
-		http://www.hdb.com/find/guangzhou-sjbx-p1/ ok HdbGuangzhouCollector.java
-		http://www.hdb.com/find/shanghai-p1/ ok HdbShanghaiCollector.java
-		http://www.hdb.com/find/shenzhen-p1/ ok HdbShenzhenCollector.java
+	北	http://www.hdb.com/find/beijing-p1/ ok HdbBeijingCollector.java
+	成	http://www.hdb.com/find/chengdu-sjbx-p1/ ok HdbChengduCollector.java
+	广	http://www.hdb.com/find/guangzhou-sjbx-p1/ ok HdbGuangzhouCollector.java
+	上	http://www.hdb.com/find/shanghai-p1/ ok HdbShanghaiCollector.java
+	深	http://www.hdb.com/find/shenzhen-p1/ ok HdbShenzhenCollector.java
 -------------------------------------------- 
 
 	北 上 广 深 成
@@ -124,8 +124,6 @@
 
 	科技频道 
 	http://36kr.com/news ok T36krNews.java
-	
-	数据URL:http://36kr.com/api/info-flow/main_site/posts?column_id=&b_id=0&per_page=20
 -------------------------------------------- 
 
 	科技频道 
