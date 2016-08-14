@@ -101,7 +101,7 @@ public class CosmBeautyCosmeticCollector extends Collector {
 				this.downImg(body2, tempFileDir, targetFileDir);
 				this.downImg(body3, tempFileDir, targetFileDir);
 
-				String content = body1.toString() + body2.toString() + body3.toString();
+				String content =body2.toString() + body3.toString()+ body1.toString() ;
 				data.setTitle(title);
 				data.setContent(content);
 				whenOneData(data);

@@ -93,7 +93,7 @@ public abstract class Collector {
 	 * 每抓取一条数据的时候，采集程序主动调用这个方法入库
 	 * */
 	public void whenOneData(Data data) {
-		System.out.println(data.toString());
+		System.out.println(data.getContent());
 	}
 
 	/**
