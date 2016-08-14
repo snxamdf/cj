@@ -1,97 +1,143 @@
+说明：
+	网站链接名称 ：url : 采集完成 ：所在java文件
 —————————————————————— 
 
-	http://pinterest.com/ 数据来源找不到
+	时尚： http://www.harpersbazaar.com/fashion/ ok  HarpersbazaarFashionCollector.java
+	美容： http://www.harpersbazaar.com/beauty/ ok HarpersbazaarBeautyCollector.java
 —————————————————————— 
 
-	时尚： http://www.harpersbazaar.com/fashion/ ok
-	美容： http://www.harpersbazaar.com/beauty/ ok
-—————————————————————— 
-
-	男士，时尚  http://www.fashionbeans.com/category/mens-fashion/?seeall=true ok
-	男士，街拍  http://www.fashionbeans.com/category/mens-street-style/ ok
+	男士，时尚  http://www.fashionbeans.com/category/mens-fashion/?seeall=true ok CategoryFashionCollector.java
+	男士，街拍  http://www.fashionbeans.com/category/mens-street-style/ ok CategoryStreetStyleCollector.java
 -------------------------------------------- 
 
-	女士，街拍 : https://chicisimo.com/     url有加密
+  	女士， 时尚	http://www.fashiongonerogue.com/fashion-editorial/ ok FashioEitorialCollector.java
+				http://www.fashiongonerogue.com/fashion-news/ ok FashioNewsCollector.java
+				http://www.fashiongonerogue.com/beauty-news/ ok FashioBeautyNewsCollector.java
 -------------------------------------------- 
 
-  	女士， 时尚	http://www.fashiongonerogue.com/fashion-editorial/ ok
-			http://www.fashiongonerogue.com/fashion-news/ ok
-			http://www.fashiongonerogue.com/beauty-news/ ok
+	美容－护肤：http://www.yoka.com/beauty/face/ ok YokaFaceCollector.java
+	彩妆		http://www.yoka.com/beauty/class/ ok YokaClassCollector.java
+	瘦身：	http://www.yoka.com/shoushen/ ok YokaShouShenCollector.java
+	旅行		http://www.yoka.com/dna/203/370/index.html ok YokaDna370Collector.java
 -------------------------------------------- 
 
-	美容－护肤：http://www.yoka.com/beauty/face/ ok
-	彩妆		http://www.yoka.com/beauty/class/ ok
-	瘦身：	http://www.yoka.com/shoushen/ ok
-	旅行		http://www.yoka.com/dna/203/370/index.html ok
+	汽车   http://www.yokamen.cn/auto/ ok YokaMenAutoCollector.java
 -------------------------------------------- 
-
-	汽车   http://www.yokamen.cn/auto/ ok
--------------------------------------------- 
-
-	http://fashion.cosmopolitan.com.cn/ ok
 	时髦办、美人计、大胆爱、巨好玩、乐活家
+	http://fashion.cosmopolitan.com.cn/ ok 
+	
+	时髦办
+		http://fashion.cosmopolitan.com.cn/howto/ ok CosmFashionHowtoCollector.java
+		http://fashion.cosmopolitan.com.cn/now/ ok CosmFashionNowCollector.java
+		http://fashion.cosmopolitan.com.cn/catwalk/ ok CosmFashionCatwalkCollector.java
+		http://fashion.cosmopolitan.com.cn/streetstyle/ ok CosmFashionStreetstyleCollector.java
+		http://fashion.cosmopolitan.com.cn/goddess/ ok CosmFashionGoddessCollector.java
+		http://fashion.cosmopolitan.com.cn/cookies/ ok CosmFashionCookiesCollector.java
+		
+	美人计
+		http://beauty.cosmopolitan.com.cn/skincare/ ok CosmBeautySkincareCollector.java
+		http://beauty.cosmopolitan.com.cn/testing/ ok CosmBeautyTestingCollector.java
+		http://beauty.cosmopolitan.com.cn/makeup/ ok CosmBeautyMakeupCollector.java
+		http://beauty.cosmopolitan.com.cn/cosmetic/ ok CosmBeautyCosmeticCollector.java
+		
+	大胆爱
+		http://relations.cosmopolitan.com.cn/horoscope/ ok CosmRelationsHoroscopeCollector.java
+		http://relations.cosmopolitan.com.cn/attitude/ ok CosmRelationsAttitudeCollector.java
+		http://relations.cosmopolitan.com.cn/love/ ok CosmRelationsLoveCollector.java
+		
+	巨好玩
+		http://fun.cosmopolitan.com.cn/lol/ ok CosmFunLolCollector.java
+		http://fun.cosmopolitan.com.cn/cute/ ok CosmFunCuteCollector.java
+		
+	乐活家
+		http://lohas.cosmopolitan.com.cn/play/ ok CosmLohasPlayCollector.java
+		http://lohas.cosmopolitan.com.cn/bigger/ ok CosmLohasBiggerCollector.java
+		http://lohas.cosmopolitan.com.cn/delicious/ ok CosmLohasDeliciousCollector.java
+-------------------------------------------- 
+	
+	文章
+	http://www.vice.cn/vice/viceArticle/index/category/read/Article_page/ ok ViceArticleCollector.java
 -------------------------------------------- 
 
-	http://www.vice.cn/vice/viceArticle/index/category/read/Article_page/ ok
+	女士：http://www.nylon.com/fashion ok NylonFashionCollector.java
+	美容：http://www.nylon.com/beauty ok NylonBeautyCollector.java
+--------------------------------------------
+ 
+	lookbook
+	http://lookbook.nu/ ok LookbookCollector.java
 -------------------------------------------- 
 
-	女士：http://www.nylon.com/fashion ok
-	美容：http://www.nylon.com/beauty ok
+	男士： 	http://www.gq.com.cn/fashion/#pid=3 ok GqFashionCollector.java
+	汽车： 	http://www.gq.com.cn/auto/ ok GqAutoPid2Collector.java
+	数码：	http://www.gq.com.cn/digital/ ok GqDigitalCollector.java
+	美容－男士:	http://www.gq.com.cn/tag/39705#pid=2 ok GqTag39705Collector.java
 -------------------------------------------- 
 
-	http://lookbook.nu/ ok
+	生活：http://www.garancedore.com/fr/category/stories/ ok GarancedoreStoriesCollector.java
 -------------------------------------------- 
 
-	男士： 	http://www.gq.com.cn/fashion/#pid=3 ok
-	汽车： 	http://www.gq.com.cn/auto/ ok
-	数码：	http://www.gq.com.cn/digital/ ok
-	美容－男士:	http://www.gq.com.cn/tag/39705#pid=2 ok
+	时装：http://fashion.haibao.com/rightnow/310/ ok Haibao310Collector.java
+	运动：http://life.haibao.com/health/ ok HaibaoHealthCollector.java
+	新娘：http://wedding.haibao.com/rightnow/211/ ok Haibao211Collector.java
+	生活：http://life.haibao.com/rightnow/520/ ok Haibao520Collector.java
+	珠宝：http://jewelrywatch.haibao.com/rightnow/6863/ ok Haibao6863Collector.java
+	美容：http://beauty.haibao.com/rightnow/24/ ok Haibao24Collector.java
 -------------------------------------------- 
 
-	生活：http://www.garancedore.com/fr/category/stories/ ok
+	街拍女：http://fashionindie.com/fashion ok FashionindieFashionCollector.java
+	美容：http://fashionindie.com/beauty ok FashionindieBeautyCollector.java
+	拍摄：http://fashionindie.com/living ok FashionindieTravelJournalsCollector.java
+	旅行：http://fashionindie.com/travel-journals ok FashionindieLivingCollector.java
 -------------------------------------------- 
 
-	时装：http://fashion.haibao.com/rightnow/310/ ok
-	运动：http://life.haibao.com/health/ ok
-	新娘：http://wedding.haibao.com/rightnow/211/ ok
-	生活：http://life.haibao.com/rightnow/520/ ok
-	珠宝：http://jewelrywatch.haibao.com/rightnow/6863/ ok
-	美容：http://beauty.haibao.com/rightnow/24/ ok
--------------------------------------------- 
-
-	街拍女：http://fashionindie.com/fashion ok
-	美容：http://fashionindie.com/beauty ok
-	拍摄：http://fashionindie.com/living ok
-	旅行：http://fashionindie.com/travel-journals ok
--------------------------------------------- 
-
-	活动：http://www.hdb.com/find/ ok 
 	北 上 广 深 成
+	活动：http://www.hdb.com/find/
+		http://www.hdb.com/find/beijing-p1/ ok HdbBeijingCollector.java
+		http://www.hdb.com/find/chengdu-sjbx-p1/ ok HdbChengduCollector.java
+		http://www.hdb.com/find/guangzhou-sjbx-p1/ ok HdbGuangzhouCollector.java
+		http://www.hdb.com/find/shanghai-p1/ ok HdbShanghaiCollector.java
+		http://www.hdb.com/find/shenzhen-p1/ ok HdbShenzhenCollector.java
 -------------------------------------------- 
 
-	活动：http://www.huodongxing.com/eventlist ok
 	北 上 广 深 成
+	活动：http://www.huodongxing.com/eventlist
+		http://www.huodongxing.com/eventlist?orderby=r&city=北京&page=1 ok HuodongxingBJCollector.java
+		http://www.huodongxing.com/eventlist?orderby=r&city=成都&page=1 ok HuodongxingCDCollector.java
+		http://www.huodongxing.com/eventlist?orderby=r&city=广州&page=1 ok HuodongxingGZCollector.java
+		http://www.huodongxing.com/eventlist?orderby=r&city=上海&page=1 ok HuodongxingSHCollector.java
+		http://www.huodongxing.com/eventlist?orderby=r&city=深圳&page=1 ok HuodongxingSZCollector.java
 -------------------------------------------- 
 
 	活动：
-	https://beijing.douban.com/events/future-all ok 
-	https://shanghai.douban.com/events/future-all ok
-	https://shenzhen.douban.com/events/future-all ok
-	https://guangzhou.douban.com/events/future-all ok
-	https://www.douban.com/location/chengdu/events/week-others ok
+	https://beijing.douban.com/events/future-all ok DoubanBeijingWeekallCollector.java
+	https://shanghai.douban.com/events/future-all ok DoubanShanghaiWeekallCollector.java
+	https://shenzhen.douban.com/events/future-all ok DoubanShenzhenWeekallCollector.java
+	https://guangzhou.douban.com/events/future-all ok DoubanGuangzhouWeekallCollector.java
+	https://www.douban.com/location/chengdu/events/week-others ok DoubanChengduWeekallCollector.java
 	采集：1标题，2时间，3位置，4活动详细。5图片，6来源网址 
 -------------------------------------------- 
 
 	旅行频道
-	国内:	http://www.lotour.com/guoneiyou/ ok
-	国外:	http://www.lotour.com/chujingyou/ ok
+	国内:	http://www.lotour.com/guoneiyou/ ok LotourGouneiyouCollector.java
+	国外:	http://www.lotour.com/chujingyou/ ok LotourChujingyouCollector.java
 -------------------------------------------- 
 
 	科技频道 
-	http://36kr.com/news ok
+	http://36kr.com/news ok T36krNews.java
+	
 	数据URL:http://36kr.com/api/info-flow/main_site/posts?column_id=&b_id=0&per_page=20
 -------------------------------------------- 
 
 	科技频道 
-	http://www.cyzone.cn/category/765/ ok
+	http://www.cyzone.cn/category/765/ ok Cyzone765Collector.java
+-------------------------------------------- 
+	
+	设计频道
+	http://www.shijue.me/community/rating ok ShijueRatingCollector.java
+-------------------------------------------- 
+
+	美食
+	http://food.poco.cn/resList.php#location_id1=
+	http://food.poco.cn/commend_list.php
+	http://cook.poco.cn/cookbook_diy.php
 -------------------------------------------- 
