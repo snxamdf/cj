@@ -106,7 +106,7 @@ public class Haibao310Collector extends Collector {
 				btcenter.select("a").attr("href", "javascript:void(0)");
 				Elements ebody2 = ebody1.select("#jsArticleDesc");
 				this.downImg(ebody2, tempFileDir, targetFileDir);
-				String content = btcenter.toString() + body1 + ebody2.toString();
+				String content = body1 + ebody2.toString() + btcenter.toString();
 				Elements pages = ebody.select(".pages");
 				String result = null;
 				if (pages.size() > 0) {

@@ -1,12 +1,12 @@
 package main;
 
 import com.modern.datacollect.api.Collector;
-import com.modern.datacollect.impl.CosmFashionNowCollector;
+import com.modern.datacollect.impl.FashionindieFashionCollector;
 
 public class CollectorMain {
 
 	public static void main(String[] args) {
-		Collector collFashion = new CosmFashionNowCollector();
+		Collector collFashion = new FashionindieFashionCollector();
 		collFashion.begin();
 	}
 
