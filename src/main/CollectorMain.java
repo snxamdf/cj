@@ -1,12 +1,12 @@
 package main;
 
 import com.modern.datacollect.api.Collector;
-import com.modern.datacollect.impl.PocoCookbook_diyCollector;
+import com.modern.datacollect.impl.BehanceSearchCollector;
 
 public class CollectorMain {
 
 	public static void main(String[] args) {
-		Collector collFashion = new PocoCookbook_diyCollector();
+		Collector collFashion = new BehanceSearchCollector();
 		collFashion.begin();
 	}
 

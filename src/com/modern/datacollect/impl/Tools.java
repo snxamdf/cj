@@ -12,6 +12,8 @@ import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.httpclient.ConnectTimeoutException;
 import org.apache.commons.httpclient.HttpClient;
@@ -20,10 +22,13 @@ import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.config.CookieSpecs;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
@@ -34,6 +39,8 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.impl.cookie.BestMatchSpecFactory;
 import org.apache.http.impl.cookie.BrowserCompatSpecFactory;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -73,6 +80,39 @@ public class Tools {
 	public static String getRequest(String url, String charset) {
 		RecursiveCount rc = new RecursiveCount();
 		return getRequest(url, rc.i, charset);
+	}
+
+	public static void postRequest(String url) {
+		CloseableHttpClient client = HttpClients.createDefault();
+		HttpPost httpPost = new HttpPost(url);
+
+		try {
+			httpPost.addHeader(new BasicHeader("Cookie", "s_vi=[CS]v1|2BDA322F0548AAD6-400001034000314E[CE]; fg=QVZ53AXQAMAAAAAAAAAAAAELAA%3D%3D%3D%3D%3D%3D; ftrset=400; relay=97cbcb21-862f-47b3-9b62-dd1446c1c311"));
+			httpPost.addHeader("Host", "adobeid-na1.services.adobe.com");
+			httpPost.addHeader("Origin", "https://www.behance.net");
+			httpPost.addHeader("Referer", "https://www.behance.net/search?ts=1471409100&ordinal=0&per_page=24&field=102&content=projects&sort=appreciations&time=week");
+			httpPost.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.106 Safari/537.36");
+			httpPost.addHeader("X-IMS-ClientId", "BehanceWebSusi1");
+			httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
+
+			List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+			nvps.add(new BasicNameValuePair("redirect_uri", "https://www.behance.net/search?ts=1471409100&ordinal=0&per_page=24&field=102&content=projects&sort=appreciations&time=week"));
+			nvps.add(new BasicNameValuePair("client_id", "BehanceWebSusi1"));
+			nvps.add(new BasicNameValuePair("locale", "zh_CN"));
+			nvps.add(new BasicNameValuePair("scope", "AdobeID,openid,gnav,sao.cce_private,creative_cloud,creative_sdk,be.pro2.external_client,additional_info.roles"));
+			httpPost.setEntity(new UrlEncodedFormEntity(nvps));
+			HttpResponse httpResponse = client.execute(httpPost);
+			HttpEntity entity = httpResponse.getEntity();
+			int code = httpResponse.getStatusLine().getStatusCode();
+			if (code == 200) {
+				if (entity != null) {
+					String html = EntityUtils.toString(entity);
+					System.out.println(html);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	private static String getRequest1(String url, int i, String charset) {
