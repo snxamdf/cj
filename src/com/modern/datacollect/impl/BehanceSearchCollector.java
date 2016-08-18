@@ -1,24 +1,16 @@
 package com.modern.datacollect.impl;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
-import org.apache.commons.httpclient.HttpClient;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicHeader;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,7 +22,8 @@ import com.modern.datacollect.api.Config;
 import com.modern.datacollect.api.Data;
 
 public class BehanceSearchCollector extends Collector {
-	// 页面内容是flash加载获取不到
+	// https://mir-s3-cdn-cf.behance.net/projects/202/1c4f6432431831.Y3JvcCwyNzA4LDIxMTcsMjMsNTYy.jpg
+	// https://mir-s3-cdn-cf.behance.net/projects/404/1c4f6432431831.Y3JvcCwyNzA4LDIxMTcsMjMsNTYy.jpg
 	@Override
 	public void begin() {
 		// 默认注入的配置
@@ -44,7 +37,7 @@ public class BehanceSearchCollector extends Collector {
 			// 配置网站url 这个url是一个主要的，如果在抓取的时候变动需要自己拼接
 			config.setSiteUrl("https://www.behance.net/search?field=102&content=projects&sort=appreciations&time=week");
 			// 更新配置每次抓取一页数据,可用用于配置，当前抓取第几页，第几条数据。
-			config.setSiteConfig("{'page':0,'dataUrl':'https://www.behance.net/search?ts=1471409100&ordinal={page}&per_page=24&field=102&content=projects&sort=appreciations&time=week'}");
+			config.setSiteConfig("{'page':0,'dataUrl':'https://www.behance.net/search?ts={time}&ordinal={page}&per_page=24&field=102&content=projects&sort=appreciations&time=week'}");
 			// 文件的保存正式目录
 			targetFileDir = "D:\\targetFileDir\\";
 			// 文件的保存临时目录
@@ -64,25 +57,28 @@ public class BehanceSearchCollector extends Collector {
 			e1.printStackTrace();
 		}
 		String html = null;
-		// Tools.postRequest("https://adobeid-na1.services.adobe.com/ims/check/v4/token");
 		for (;;) {
 			try {
-				url = dataUrl.replace("{page}", page.toString());
+				url = dataUrl.replace("{time}", new Date().getTime() + "").replace("{page}", page.toString());
 				config.setSiteConfig("{'page':" + page + ",'dataUrl':'https://www.behance.net/search?ts={time}&ordinal={page}&per_page=24&field=102&content=projects&sort=appreciations&time=week'}");
 				updateSiteConfig(config.getSiteConfig());
 				html = getRequest(url);
-				Elements body = Tools.getBody("#content", html);
-				body = body.select(".js-item");
-				this.dealwith(body, tempFileDir, targetFileDir);
-				if (body.size() == 0) {
+				if (html != null) {
+					Elements body = Tools.getBody("#content", html);
+					body = body.select(".js-item");
+					this.dealwith(body, tempFileDir, targetFileDir);
+					if (body.size() == 0) {
+						stop();
+						break;
+					}
+				} else {
 					stop();
 					break;
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			if (html != null)
-				page = page + 24;
+			page = page + 24;
 
 		}
 	}
@@ -110,7 +106,6 @@ public class BehanceSearchCollector extends Collector {
 
 			HttpResponse httpResponse = client.execute(httpPost);
 			HttpEntity entity = httpResponse.getEntity();
-
 			int code = httpResponse.getStatusLine().getStatusCode();
 			if (code == 200) {
 				if (entity != null) {
@@ -141,22 +136,19 @@ public class BehanceSearchCollector extends Collector {
 				if (isDataExists(data.getContentId())) {
 					continue;
 				}
-				String tempFilePath = Tools.getLineFile("http://mir-s3-cdn-cf.behance.net/projects/404/dc9cca41117795.Y3JvcCwxMDAyLDc4NCwwLDA.png", tempFileDir);
+				String tempFilePath = Tools.getLineFile1(imgSrc, tempFileDir);
 				File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
 				if (dest != null) {
 					List<File> picList = new ArrayList<File>();
 					picList.add(dest);
 					data.setPicList(picList);
 				}
-				String html = Tools.getRequest(href);
-				Elements ebody = Tools.getBody(".content_text_con", html);
-				Elements time = Tools.getBody("div[class=\"tc mt5 zt_listItem_info pb10\"]", html);
-				time.select("a").attr("href", "javascript:void(0)");
-				time = time.select("span").eq(0);
-
+				String html = getRequest(href);
+				Elements ebody = Tools.getBody("#project-modules", html);
+				ebody.select("#project-spacer").remove();
 				this.downImg(ebody, tempFileDir, targetFileDir);
 
-				String content = ebody.toString() + time.toString();
+				String content = ebody.toString();
 				data.setTitle(title);
 				data.setContent(content);
 				whenOneData(data);
@@ -165,43 +157,27 @@ public class BehanceSearchCollector extends Collector {
 		}
 	}
 
-	// 获得线上文件
-	public String getLineFile(String url, String localDir) {
-		SSLClient httpClient = null;
-		HttpGet httpGet = null;
-		String result = null;
-		try {
-			httpClient = new SSLClient();
-			httpGet = new HttpGet(url);
-
-			HttpResponse response = httpClient.execute(httpGet);
-
-			String fn = Tools.getFileName(url);
-			File storeFile = new File(localDir, fn);
-			System.out.println(response.getEntity().getContent());
-			// FileOutputStream output = new FileOutputStream(storeFile);
-			// response.getEntity().b
-			// output.write(httpGet.getResponseBody());
-			// output.close();
-			return storeFile.getPath();
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-		return result;
-	}
-
 	private void downImg(Elements ebody, String tempFileDir, String targetFileDir) {
 		ebody.select("a").attr("href", "javascript:void(0)");
 		Elements cimg = ebody.select("img");
 		for (Element cimgemt : cimg) {
-			String cimgSrc = cimgemt.attr("data-src");
-			if (!"".equals(cimgSrc)) {
-				String ctempFilePath = Tools.getLineFile(cimgSrc, tempFileDir);
+			String cimgSrc = cimgemt.attr("src");
+			if ("".equals(cimgSrc)) {
+				cimgSrc = cimgemt.attr("srcset");
+				String[] iss = cimgSrc.split(",");
+				if (iss.length > 1) {
+					cimgSrc = iss[1].trim().split(" ")[0];
+				} else {
+					cimgSrc = iss[0];
+				}
+			}
+			if (!"".equals(cimgSrc) && cimgSrc.indexOf("http") != -1) {
+				String ctempFilePath = Tools.getLineFile1(cimgSrc, tempFileDir);
 				File cdest = Tools.copyFileChannel(ctempFilePath, targetFileDir);
 				String mydest = getMySiteImgSrc(cdest);
 				if (mydest != null) {
 					cimgemt.attr("src", mydest);
-					cimgemt.removeAttr("data-src");
+					cimgemt.removeAttr("media");
 				}
 
 			}

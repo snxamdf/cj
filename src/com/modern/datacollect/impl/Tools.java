@@ -5,12 +5,14 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +29,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.protocol.HttpClientContext;
@@ -231,6 +234,44 @@ public class Tools {
 		}
 		RecursiveCount rc = new RecursiveCount();
 		return getLineFile(url, localDir, rc.i);
+	}
+
+	// 获得线上文件
+	public static String getLineFile1(String url, String localDir) {
+		if ("".equals(url)) {
+			return "";
+		}
+		RecursiveCount rc = new RecursiveCount();
+		return getLineFile1(url, localDir, rc.i);
+	}
+
+	// 获得线上文件
+	private static String getLineFile1(String url, String localDir, int i) {
+		if (i >= 5) {
+			return null;
+		}
+		sleep();
+		CloseableHttpResponse response = null;
+		try {
+			response = HttpsGET.doHttpsGet(url);
+
+			String fn = Tools.getFileName(url);
+			File storeFile = new File(localDir, fn);
+			InputStream in = response.getEntity().getContent();
+			Files.copy(in, storeFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+			in.close();
+			return storeFile.getPath();
+		} catch (IOException e) {
+			return getLineFile1(url, localDir, ++i);
+		} finally {
+			if (response != null) {
+				try {
+					response.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 	// 获得线上文件
