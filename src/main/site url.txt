@@ -139,4 +139,3 @@
 	http://cook.poco.cn/cookbook_diy.php ok  PocoCookbook_diyCollector.java
 -------------------------------------------- 
 	https://www.behance.net/search?field=102&content=projects&sort=appreciations&time=week ok BehanceSearchCollector.java
-	https://www.behance.net/search?ts=1471409100&ordinal=12&per_page=12&field=102&content=projects&sort=appreciations&time=week&location_id=
