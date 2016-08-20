@@ -102,6 +102,7 @@ public class HarpersbazaarBeautyCollector extends Collector {
 					}
 					String html = Tools.getRequest(contentUrl);
 					Elements container = Tools.getBody(".standard-article", html);
+					container.select(".content-header").remove();
 					container.select(".embed--iframe-container").remove();
 					container.select(".standard-article--secondary-content").remove();
 					container.select(".zoomable-expand").remove();

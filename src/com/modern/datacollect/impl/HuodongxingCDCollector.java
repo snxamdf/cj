@@ -92,6 +92,12 @@ public class HuodongxingCDCollector extends Collector {
 				Elements ebody = Tools.getBody("#container-lg", html);
 				String time = ebody.select(".jumbotron").select(".media-body").select(".icon-time").get(0).parent().text();
 				String address = ebody.select(".address").text();
+				if (ebody.select(".address").select("a").size() > 0) {
+					String baiduAddress = ebody.select(".address").select("a").attr("href");
+					baiduAddress = baiduAddress.substring(baiduAddress.lastIndexOf("/") + 1, baiduAddress.length());
+					data.setLongitude(baiduAddress);
+					data.setIsBaidu(true);
+				}
 				Elements objArrays = ebody.select(".tags").select("a");
 				StringBuffer keywords = new StringBuffer();
 				for (int i = 0; i < objArrays.size(); i++) {

@@ -37,7 +37,7 @@ public class BehanceSearchCollector extends Collector {
 			// 配置网站url 这个url是一个主要的，如果在抓取的时候变动需要自己拼接
 			config.setSiteUrl("https://www.behance.net/search?field=102&content=projects&sort=appreciations&time=week");
 			// 更新配置每次抓取一页数据,可用用于配置，当前抓取第几页，第几条数据。
-			config.setSiteConfig("{'page':0,'dataUrl':'https://www.behance.net/search?ts={time}&ordinal={page}&per_page=24&field=102&content=projects&sort=appreciations&time=week'}");
+			config.setSiteConfig("{'page':0,'dataUrl':'https://www.behance.net/search?ts={time}&ordinal={page}&per_page=24&field={field}&content=projects&sort=appreciations&time=week'}");
 			// 文件的保存正式目录
 			targetFileDir = "D:\\targetFileDir\\";
 			// 文件的保存临时目录
@@ -57,29 +57,32 @@ public class BehanceSearchCollector extends Collector {
 			e1.printStackTrace();
 		}
 		String html = null;
-		for (;;) {
-			try {
-				url = dataUrl.replace("{time}", new Date().getTime() + "").replace("{page}", page.toString());
-				config.setSiteConfig("{'page':" + page + ",'dataUrl':'https://www.behance.net/search?ts={time}&ordinal={page}&per_page=24&field=102&content=projects&sort=appreciations&time=week'}");
-				updateSiteConfig(config.getSiteConfig());
-				html = getRequest(url);
-				if (html != null) {
-					Elements body = Tools.getBody("#content", html);
-					body = body.select(".js-item");
-					this.dealwith(body, tempFileDir, targetFileDir);
-					if (body.size() == 0) {
+		String[] fields = { "51", "63", "109", "44", "49", "4", "48", "73", "37", "132", "102" };
+		for (String field : fields) {
+			for (;;) {
+				try {
+					url = dataUrl.replace("{time}", new Date().getTime() + "").replace("{page}", page.toString()).replace("{field}", field);
+					config.setSiteConfig("{'page':" + page + ",'dataUrl':'https://www.behance.net/search?ts={time}&ordinal={page}&per_page=24&field={field}&content=projects&sort=appreciations&time=week'}");
+					updateSiteConfig(config.getSiteConfig());
+					html = getRequest(url);
+					if (html != null) {
+						Elements body = Tools.getBody("#content", html);
+						body = body.select(".js-item");
+						this.dealwith(body, tempFileDir, targetFileDir);
+						if (body.size() == 0) {
+							stop();
+							break;
+						}
+					} else {
 						stop();
 						break;
 					}
-				} else {
-					stop();
-					break;
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			page = page + 24;
+				page = page + 24;
 
+			}
 		}
 	}
 

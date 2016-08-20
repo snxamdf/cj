@@ -143,6 +143,7 @@ public class CategoryStreetStyleCollector extends Collector {
 				wrapper.select("iframe").remove();
 				String title = wrapper.select(".streetStyleMeta").select("h1").text();
 				String keywords = wrapper.select(".streetStyleMeta").select(".author").text();
+				wrapper.select(".streetStyleMeta").remove();
 				data.setKeywords(keywords);
 				Elements contents = wrapper.select(".streetstyleContent");
 				contents.select(".streetNavigation").remove();

@@ -100,8 +100,11 @@ public class HarpersbazaarFashionCollector extends Collector {
 						picList.add(dest);
 					}
 					String html = Tools.getRequest(contentUrl);
-					Elements container = Tools.getBody(".standard-article", html);
-
+					Elements container = Tools.getBody(".gallery-main-view", html);
+					if(container.toString().equals("")){
+						 container = Tools.getBody(".standard-article", html);
+					}
+					container.select(".content-header").remove();
 					container.select(".embed--iframe-container").remove();
 					container.select(".standard-article--secondary-content").remove();
 					container.select(".zoomable-expand").remove();

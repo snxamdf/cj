@@ -91,6 +91,15 @@ public class HdbBeijingCollector extends Collector {
 				String html = Tools.getRequest1(href);
 				Elements ebody = Tools.getBody(".detail_time_attr_det_con", html);
 				String time = ebody.select(".detail_Time_t").text();
+				if (ebody.select(".detail_Attr").select("a").size() > 0) {
+					String lldedu = ebody.select(".detail_Attr").select("a").attr("href");
+					String[] dedus = lldedu.split("&");
+					String de = dedus[0].split("=")[1];
+					String du = dedus[1].split("=")[1];
+					data.setLongitude(de);
+					data.setLatitude(du);
+					data.setIsBaidu(false);
+				}
 				String address = ebody.select(".detail_Attr_K").text();
 				Elements econtent = ebody.select("#dt_content");
 
