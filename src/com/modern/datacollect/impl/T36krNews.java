@@ -60,7 +60,6 @@ public class T36krNews extends Collector {
 				url = dataUrl.replace("{page}", b_id);
 				config.setSiteConfig("{'page':" + (b_id) + ",'dataUrl':'http://36kr.com/api/info-flow/main_site/posts?column_id=&b_id={page}&per_page=20'}");
 				updateSiteConfig(config.getSiteConfig());
-				// Tools.getRequest("http://10.10.38.143:89/cookie/flashcookie.html");
 				html = Tools.getRequest1(url);
 				JSONObject json = new JSONObject(html);
 				json = json.getJSONObject("data");

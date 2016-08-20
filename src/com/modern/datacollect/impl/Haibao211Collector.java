@@ -51,19 +51,22 @@ public class Haibao211Collector extends Collector {
 		String html = null;
 
 		for (;;) {
-			url = config.getSiteUrl() + dataUrl.replace("{page}", page.toString());
-			config.setSiteConfig("{'page':" + (page) + ",'dataUrl':'{page}.htm'}");
-			updateSiteConfig(config.getSiteConfig());
-			html = Tools.getRequest1(url, "UTF-8");
-			Elements body = Tools.getBody("div[class=\"hb_fl contentleft\"]", html);
-			Elements pages = Tools.getBody(".pages", html);
-			body = body.select(".todya_new_list").select("li");
-			pages.select(".next").remove();
-			String num = pages.select("a").last().text();
-			this.dealwith(body, tempFileDir, targetFileDir, config);
-			if (page >= Integer.parseInt(num)) {
-				stop();
-				break;
+			try {
+				url = config.getSiteUrl() + dataUrl.replace("{page}", page.toString());
+				config.setSiteConfig("{'page':" + (page) + ",'dataUrl':'{page}.htm'}");
+				updateSiteConfig(config.getSiteConfig());
+				html = Tools.getRequest1(url, "UTF-8");
+				Elements body = Tools.getBody("div[class=\"hb_fl contentleft\"]", html);
+				Elements pages = Tools.getBody(".pages", html);
+				body = body.select(".todya_new_list").select("li");
+				pages.select(".next").remove();
+				String num = pages.select("a").last().text();
+				this.dealwith(body, tempFileDir, targetFileDir, config);
+				if (page >= Integer.parseInt(num)) {
+					stop();
+					break;
+				}
+			} catch (Exception e) {
 			}
 			page++;
 		}
