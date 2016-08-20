@@ -94,9 +94,28 @@ public class HuodongxingGZCollector extends Collector {
 				String address = ebody.select(".address").text();
 				if (ebody.select(".address").select("a").size() > 0) {
 					String baiduAddress = ebody.select(".address").select("a").attr("href");
-					baiduAddress = baiduAddress.substring(baiduAddress.lastIndexOf("/") + 1, baiduAddress.length());
-					data.setLongitude(baiduAddress);
-					data.setIsBaidu(true);
+					String baidu = Tools.getRequest1(baiduAddress);
+					Elements scripts = Tools.getBody("script ", baidu);
+					System.out.println(scripts);
+					for (Element elmt : scripts) {
+						System.out.println(elmt.toString());
+						System.out.println();
+						if (elmt.toString().indexOf("function initializeMap") != -1) {
+							String[] pppp = elmt.toString().split("position");
+							if (pppp.length > 0) {
+								pppp = pppp[1].split("\"");
+								if (pppp.length > 0) {
+									pppp = pppp[1].split(",");
+									if (pppp.length > 0) {
+										data.setLongitude(pppp[0].trim());
+										data.setLatitude(pppp[1].trim());
+										data.setIsBaidu(true);
+										break;
+									}
+								}
+							}
+						}
+					}
 				}
 				Elements objArrays = ebody.select(".tags").select("a");
 				StringBuffer keywords = new StringBuffer();
