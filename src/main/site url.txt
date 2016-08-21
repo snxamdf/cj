@@ -138,4 +138,38 @@
 	http://food.poco.cn/resList.php#location_id1= ok PocoResListCollector.java
 	http://cook.poco.cn/cookbook_diy.php ok  PocoCookbook_diyCollector.java
 -------------------------------------------- 
-	https://www.behance.net/search?field=102&content=projects&sort=appreciations&time=week ok BehanceSearchCollector.java
+	设计下的，交互设计
+	https://www.behance.net/search?field=51&content=projects&sort=appreciations&time=week ok BehanceSearch51Collector.java
+	
+	设计下的 动态图像
+	https://www.behance.net/search?field=63&content=projects&sort=appreciations&time=week ok BehanceSearch63Collector.java
+	
+	设计下的 品牌推广
+	https://www.behance.net/search?field=109&content=projects&sort=appreciations&time=week ok BehanceSearch109Collector.java
+	
+	设计下的 图形设计
+	https://www.behance.net/search?field=44&content=projects&sort=appreciations&time=week ok BehanceSearch44Collector.java
+	
+	设计下的 工业设计
+	https://www.behance.net/search?field=49&content=projects&sort=appreciations&time=week ok BehanceSearch49Collector.java
+	
+	设计下的 建筑设计   
+	https://www.behance.net/search?field=4&content=projects&sort=appreciations&time=week ok BehanceSearch4Collector.java
+	
+	设计下的 插图
+	https://www.behance.net/search?field=48&content=projects&sort=appreciations&time=week ok BehanceSearch48Collector.java
+	
+	摄影大栏目 和  设计下的 摄影
+	https://www.behance.net/search?field=73&content=projects&sort=appreciations&time=week ok BehanceSearch73Collector.java
+	
+	大栏目 有态度 和 设计下的 时尚设计
+	https://www.behance.net/search?field=37&content=projects&sort=appreciations&time=week ok BehanceSearch37Collector.java
+	
+	设计下的 用户界面/用户体验
+	https://www.behance.net/search?field=132&content=projects&sort=appreciations&time=week ok BehanceSearch132Collector.java
+	
+	设计下的 网页设计
+	https://www.behance.net/search?field=102&content=projects&sort=appreciations&time=week ok BehanceSearch102Collector.java
+	
+	设计下的 艺术指导
+	https://www.behance.net/search?field=5&content=projects&sort=appreciations&time=week ok BehanceSearch5Collector.java

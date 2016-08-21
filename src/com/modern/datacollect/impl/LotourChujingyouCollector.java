@@ -102,6 +102,8 @@ public class LotourChujingyouCollector extends Collector {
 				}
 				String html = Tools.getRequest(href);
 				Elements ebody = Tools.getBody(".ia-text", html);
+				Elements author = Tools.getBody("div[class=\"clearfix\"]", html).select(".w-name").select("a");
+
 				ebody.select("a").attr("href", "javascript:void(0)");
 				Elements cimg = ebody.select("img");
 				for (Element cimgemt : cimg) {
@@ -124,6 +126,9 @@ public class LotourChujingyouCollector extends Collector {
 
 				// 获取内容
 				String content = ebody.toString();
+				if (author.size() > 0) {
+					content += "<div>乐途用户 : " + author.text() + "</div>";
+				}
 				data.setTitle(title);
 				data.setContent(content);
 				data.setAddress(address);

@@ -70,7 +70,7 @@ public class YokaDna370Collector extends Collector {
 	public void dealwith(Elements body, String tempFileDir, String targetFileDir, Config config) {
 		for (Element emt : body) {
 			try {
-				String imgSrc = emt.select("dt").select("img").attr("src");
+				String imgSrc = emt.select("dt").select("img").attr("_src");
 				if (!"".equals(imgSrc)) {
 					// 数据保存对像
 					Data data = new Data();

@@ -106,6 +106,7 @@ public class HdbShanghaiCollector extends Collector {
 				this.downImg(econtent, tempFileDir, targetFileDir);
 
 				String content = econtent.toString();
+				content += "<br/><div>报名连接：<a href=\"" + href + "\">" + href + "</a></div>";
 				data.setTitle(title);
 				data.setContent(content);
 				data.setAddress(address);

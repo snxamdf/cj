@@ -130,6 +130,7 @@ public class DoubanShenzhenWeekallCollector extends Collector {
 
 				// 获取内容
 				String content = ebody.toString();
+				content += "<br/><div>报名连接：<a href=\"" + href + "\">" + href + "</a></div>";
 				data.setTitle(title);
 				data.setContent(content);
 				data.setKeywords(keywords.toString());

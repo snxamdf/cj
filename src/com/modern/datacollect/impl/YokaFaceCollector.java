@@ -30,7 +30,7 @@ public class YokaFaceCollector extends Collector {
 			// 配置网站url 这个url是一个主要的，如果在抓取的时候变动需要自己拼接
 			config.setSiteUrl("http://www.yoka.com/beauty/face/");
 			// 更新配置每次抓取一页数据,可用用于配置，当前抓取第几页，第几条数据。
-			config.setSiteConfig("{'page':1,'dataUrl':'/list_{page}.shtml'}");
+			config.setSiteConfig("{'page':100,'dataUrl':'/list_{page}.shtml'}");
 			// 文件的保存正式目录
 			targetFileDir = "D:\\targetFileDir\\";
 			// 文件的保存临时目录
