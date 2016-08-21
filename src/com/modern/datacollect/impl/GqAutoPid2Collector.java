@@ -33,7 +33,7 @@ public class GqAutoPid2Collector extends Collector {
 			// 配置网站url 这个url是一个主要的，如果在抓取的时候变动需要自己拼接
 			config.setSiteUrl("http://www.gq.com.cn/auto/");
 			// 更新配置每次抓取一页数据,可用用于配置，当前抓取第几页，第几条数据。
-			config.setSiteConfig("{'page':0,'dataUrl':'http://www.gq.com.cn/front_ajax_channel_v1/readchannelmore/39/?pg={page}'}");
+			config.setSiteConfig("{'page':1,'dataUrl':'http://www.gq.com.cn/front_ajax_channel_v1/readchannelmore/39/?pg={page}'}");
 			// 文件的保存正式目录
 			targetFileDir = "D:\\targetFileDir\\";
 			// 文件的保存临时目录
