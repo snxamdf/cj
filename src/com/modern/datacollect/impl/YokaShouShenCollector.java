@@ -30,7 +30,7 @@ public class YokaShouShenCollector extends Collector {
 			// 配置网站url 这个url是一个主要的，如果在抓取的时候变动需要自己拼接
 			config.setSiteUrl("http://www.yoka.com/shoushen/");
 			// 更新配置每次抓取一页数据,可用用于配置，当前抓取第几页，第几条数据。
-			config.setSiteConfig("{'page':1,'dataUrl':'/list_{page}.shtml'}");
+			config.setSiteConfig("{'page':400,'dataUrl':'/list_{page}.shtml'}");
 			// 文件的保存正式目录
 			targetFileDir = "D:\\targetFileDir\\";
 			// 文件的保存临时目录
@@ -86,6 +86,9 @@ public class YokaShouShenCollector extends Collector {
 				String href = emtTitle.attr("href");
 				Elements emtImg = emt.select("dt").select("a").select("img");
 				String imgSrc = emtImg.attr("src");
+				if ("".equals(imgSrc)) {
+					System.out.println();
+				}
 				Data data = new Data();
 				URL url;
 				try {
@@ -108,6 +111,14 @@ public class YokaShouShenCollector extends Collector {
 				}
 				String html = Tools.getRequest(href, "GB2312");
 				String content = this.ebody(html, 0, "", null, tempFileDir, targetFileDir, config);
+				Elements source = Tools.getBody(".infoTime", html);
+				source.select("a").attr("href", "javascript:void(0)");
+				if (source.toString().equals("")) {
+					source = Tools.getBody(".time2", html);
+					source.select("#share").remove();
+				}
+				source.select(".textShare").remove();
+				content += source.toString();
 				data.setTitle(title);// title
 				data.setContent(content);// 获取内容
 				data.setPicList(picList);

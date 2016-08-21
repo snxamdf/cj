@@ -140,12 +140,14 @@ public class CategoryFashionCollector extends Collector {
 				String html = Tools.getRequest(href);
 				Elements wrapper = Tools.getBody("#wrapper", html);
 				wrapper.select(".sidebar").remove();
+				wrapper.select(".articles").remove();
 				wrapper.select("#singleOutline").select(".metaNewArticles").remove();
 				wrapper.select("#singleOutline").select(".social-container-small").remove();
 				wrapper.select("#singleOutline").select(".social-sharing-footer").remove();
 				wrapper.select("#singleOutline").select("#ob_holder").remove();
 				wrapper.select("#singleOutline").select(".OUTBRAIN").remove();
 				wrapper.select("#singleOutline").select(".articleComments").remove();
+				wrapper.select(".wrapper").remove();
 				Elements cimg = wrapper.select("img");
 				for (Element cimgemt : cimg) {
 					String cimgSrc = cimgemt.attr("src");

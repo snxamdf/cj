@@ -68,6 +68,10 @@ public class Cyzone765Collector extends Collector {
 				}
 			} catch (Exception e) {
 			}
+			if (page >= 90) {
+				stop();
+				break;
+			}
 			page++;
 		}
 	}

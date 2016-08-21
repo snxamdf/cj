@@ -71,6 +71,9 @@ public class YokaDna370Collector extends Collector {
 		for (Element emt : body) {
 			try {
 				String imgSrc = emt.select("dt").select("img").attr("_src");
+				if (imgSrc == null || "".equals(imgSrc) || "null".equals(imgSrc)) {
+					System.out.println();
+				}
 				if (!"".equals(imgSrc)) {
 					// 数据保存对像
 					Data data = new Data();
@@ -111,7 +114,7 @@ public class YokaDna370Collector extends Collector {
 								cimgemt.attr("src", mydest);
 						}
 					}
-					String content = ebody.toString();
+					String content = ebody.toString() + time;
 					data.setTitle(title);// title
 					data.setContent(content);// 获取内容
 					data.setPicList(picList);

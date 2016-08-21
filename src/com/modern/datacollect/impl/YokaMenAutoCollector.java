@@ -108,6 +108,14 @@ public class YokaMenAutoCollector extends Collector {
 				}
 				String html = Tools.getRequest(href, "GB2312");
 				String content = this.ebody(html, 0, "", null, tempFileDir, targetFileDir, config);
+				Elements source = Tools.getBody(".infoTime", html);
+				source.select("a").attr("href", "javascript:void(0)");
+				if (source.toString().equals("")) {
+					source = Tools.getBody(".time2", html);
+					source.select("#share").remove();
+				}
+				source.select(".textShare").remove();
+				content += source.toString();
 				data.setTitle(title);// title
 				data.setContent(content);// 获取内容
 				data.setPicList(picList);

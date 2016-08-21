@@ -142,6 +142,7 @@ public class CategoryStreetStyleCollector extends Collector {
 				wrapper.select(".breadcrumb").remove();
 				wrapper.select("iframe").remove();
 				String title = wrapper.select(".streetStyleMeta").select("h1").text();
+				wrapper.select(".articles").remove();
 				String keywords = wrapper.select(".streetStyleMeta").select(".author").text();
 				wrapper.select(".streetStyleMeta").remove();
 				data.setKeywords(keywords);
@@ -161,7 +162,6 @@ public class CategoryStreetStyleCollector extends Collector {
 							cimgemt.attr("src", mydest);
 					}
 				}
-				// 获取内容
 				String content = wrapper.toString();
 				data.setTitle(title);// title
 				data.setContent(content);// 获取内容

@@ -112,7 +112,7 @@ public class Haibao211Collector extends Collector {
 				String result = null;
 				if (pages.size() > 0) {
 					pages.select(".next").remove();
-					String pageTemp = "http://" + url.getHost().toString() + href.split("\\.")[0] + "_{page}.htm";
+					String pageTemp = href.split("\\.htm")[0] + "_{page}.htm";
 					String num = pages.select("a").last().text();
 					result = this.contentPage(Integer.valueOf(num), pageTemp, tempFileDir, targetFileDir);
 				}

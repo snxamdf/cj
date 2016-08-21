@@ -6,7 +6,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.criterion.NullExpression;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -111,10 +110,12 @@ public class GqTag39705Collector extends Collector {
 				}
 				String html = Tools.getRequest(href);
 				Elements ebody = null;
+				String miaoshu = "";
 				if (href.indexOf("pic_") != -1) {
 					ebody = Tools.getBody("#left", html);
 				} else if (href.indexOf("news_") != -1) {
 					ebody = Tools.getBody(".content", html);
+					miaoshu = Tools.getBody(".title", html).select(".p").toString();
 				}
 				if (ebody == null) {
 					return;
@@ -138,7 +139,7 @@ public class GqTag39705Collector extends Collector {
 				}
 
 				// 获取内容
-				String content = ebody.toString();
+				String content = miaoshu + ebody.toString();
 				data.setTitle(title);
 				data.setContent(content);
 				data.setKeywords(keywords.toString());
