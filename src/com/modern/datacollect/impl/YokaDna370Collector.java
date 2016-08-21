@@ -98,6 +98,7 @@ public class YokaDna370Collector extends Collector {
 					Elements ebody = Tools.getBody("#topic-context", html).select(".conts");
 					ebody.select("h1").remove();
 					ebody.select("a").attr("href", "javascript:void(0)");
+					String time = ebody.select(".time").toString();
 					Elements cimg = ebody.select("img");
 					for (Element cimgemt : cimg) {
 						String cimgSrc = cimgemt.attr("_src");
