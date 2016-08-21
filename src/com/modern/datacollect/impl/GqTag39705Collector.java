@@ -107,6 +107,8 @@ public class GqTag39705Collector extends Collector {
 					List<File> picList = new ArrayList<File>();
 					picList.add(dest);
 					data.setPicList(picList);
+				} else {
+					System.out.println();
 				}
 				String html = Tools.getRequest(href);
 				Elements ebody = null;
@@ -128,13 +130,19 @@ public class GqTag39705Collector extends Collector {
 						String ctempFilePath = Tools.getLineFile(cimgSrc, tempFileDir);
 						File cdest = Tools.copyFileChannel(ctempFilePath, targetFileDir);
 						String mydest = getMySiteImgSrc(cdest);
-						if (mydest != null)
+						if (mydest != null && !"".equals(mydest))
 							cimgemt.attr("src", mydest);
+						else {
+							System.out.println();
+						}
 						cimgemt.removeAttr("data-original");
 						cimgemt.removeAttr("realsrc");
 						cimgemt.removeAttr("class");
 						cimgemt.removeAttr("onload");
 						cimgemt.removeAttr("onclick");
+					} else {
+						cimgemt.remove();
+						System.out.println();
 					}
 				}
 
@@ -145,6 +153,7 @@ public class GqTag39705Collector extends Collector {
 				data.setKeywords(keywords.toString());
 				whenOneData(data);
 			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}

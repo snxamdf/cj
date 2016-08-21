@@ -144,6 +144,9 @@ public class GqDigitalCollector extends Collector {
 						cimgemt.removeAttr("class");
 						cimgemt.removeAttr("onload");
 						cimgemt.removeAttr("onclick");
+					}else {
+						cimgemt.remove();
+						System.out.println();
 					}
 				}
 
