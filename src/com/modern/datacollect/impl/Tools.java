@@ -464,6 +464,7 @@ public class Tools {
 		return null;
 	}
 
+	// 清除所有节点没用的属性元素
 	public static void clearsAttr(Elements elements) {
 		for (Element e : elements) {
 			Node node = (Node) e;
