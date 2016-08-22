@@ -143,7 +143,7 @@ public abstract class Collector {
 			writer.write("&nbsp;&nbsp;&nbsp;");
 			writer.write("\r\n");
 			if (i % 6 == 0) {
-				writer.write("<br/>");
+				writer.write("<br/><br/>");
 			}
 			writer.close();
 			i++;

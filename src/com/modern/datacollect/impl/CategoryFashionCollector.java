@@ -116,7 +116,6 @@ public class CategoryFashionCollector extends Collector {
 				// 获取title
 				Elements atitle = el.select("h2").select("a");
 				String href = atitle.attr("href");
-				href = "http://www.fashionbeans.com/2016/best-pieces-uniqlo-lemaire-ss16/";
 				URL url;
 				try {
 					url = new URL(href);
@@ -153,6 +152,8 @@ public class CategoryFashionCollector extends Collector {
 				wrapper.select("#singleOutline").select(".articleComments").remove();
 				wrapper.select(".wrapper").remove();
 				wrapper.select("a").attr("href", "javascript:void(0)");
+				wrapper.select(".articleBreadcrumb").before("<br/>");
+				wrapper.select(".sponsoredPost").remove();
 				Elements cimg = wrapper.select("img");
 				for (Element cimgemt : cimg) {
 					String cimgSrc = cimgemt.attr("src");
