@@ -173,3 +173,6 @@
 	
 	设计下的 艺术指导
 	https://www.behance.net/search?field=5&content=projects&sort=appreciations&time=week ok BehanceSearch5Collector.java
+	
+	BehanceSearchsCollector 设计的数据采集类
+	
