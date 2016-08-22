@@ -50,6 +50,7 @@ import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.Attributes;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
 
 import com.modern.datacollect.api.Data;
@@ -463,59 +464,28 @@ public class Tools {
 		return null;
 	}
 
-	public static void clearsAttr(Elements element) {
-		Elements elms = element.select("img");
-		for (Element e : elms) {
-			clearImgAttr(e);
-		}
-		elms = element.select("div");
-		for (Element e : elms) {
-			clearDivAttr(e);
-		}
-		elms = element.select("a");
-		for (Element e : elms) {
-			clearAAttr(e);
-		}
-		elms = element.select("p");
-		for (Element e : elms) {
-			clearPAttr(e);
+	public static void clearsAttr(Elements elements) {
+		for (Element e : elements) {
+			Node node = (Node) e;
+			clearNodeAttr(node.childNodes());
 		}
 	}
 
-	public static void clearPAttr(Element element) {
-		Attributes nodes = element.attributes();
-		for (Attribute node : nodes) {
-			element.removeAttr(node.getKey());
-		}
-	}
-
-	public static void clearAAttr(Element element) {
-		Attributes nodes = element.attributes();
-		for (Attribute node : nodes) {
-			if (!"href".equals(node.getKey())) {
-				element.removeAttr(node.getKey());
-			} else {
-				element.attr(node.getKey(), "javascript:void(0)");
+	public static void clearNodeAttr(List<Node> nodes) {
+		for (Node n : nodes) {
+			if (n.childNodes().size() > 0) {
+				clearNodeAttr(n.childNodes());
+			}
+			Attributes attrNodes = n.attributes();
+			for (Attribute node : attrNodes) {
+				if (!"href".equals(node.getKey()) && !"src".equals(node.getKey()) && !"title".equals(node.getKey()) && !"alt".equals(node.getKey()) && !"text".equals(node.getKey())) {
+					n.removeAttr(node.getKey());
+				} else if ("href".equals(node.getKey())) {
+					n.attr(node.getKey(), "javascript:void(0)");
+				}
 			}
 		}
 	}
-
-	public static void clearImgAttr(Element element) {
-		Attributes nodes = element.attributes();
-		for (Attribute node : nodes) {
-			if (!"src".equals(node.getKey()) && !"title".equals(node.getKey()) && !"alt".equals(node.getKey())) {
-				element.removeAttr(node.getKey());
-			}
-		}
-	}
-
-	public static void clearDivAttr(Element element) {
-		Attributes nodes = element.attributes();
-		for (Attribute node : nodes) {
-			element.removeAttr(node.getKey());
-		}
-	}
-
 }
 
 class RecursiveCount {
