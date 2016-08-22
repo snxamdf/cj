@@ -33,11 +33,12 @@ public class T36krNews extends Collector {
 			// 配置网站url 这个url是一个主要的，如果在抓取的时候变动需要自己拼接
 			config.setSiteUrl("http://36kr.com/news");
 			// 更新配置每次抓取一页数据,可用用于配置，当前抓取第几页，第几条数据。
-			config.setSiteConfig("{'page':0,'dataUrl':'http://36kr.com/api/info-flow/main_site/posts?column_id=&b_id={page}&per_page=20'}");
+			config.setSiteConfig("{'page':1000,'dataUrl':'http://36kr.com/api/info-flow/main_site/posts?column_id=&b_id={page}&per_page=20'}");
 			// 文件的保存正式目录
 			targetFileDir = "D:\\targetFileDir\\";
 			// 文件的保存临时目录
 			tempFileDir = "D:\\tempFileDir\\";
+			writeIndex("index.html", "</br><a href=\"" + config.getSiteUrl() + "\" target='_blank'>" + config.getSiteUrl() + "</a><br/><br/>");
 		}
 
 		Tools.mkDir(new File(targetFileDir));
@@ -129,13 +130,17 @@ public class T36krNews extends Collector {
 				String html = Tools.getRequest1(href);
 				Elements ebody = Tools.getBody("script", html);
 				html = null;
-				for (Element element : ebody.eq(5)) {
-					String[] dataa = element.data().toString().split("var");
-					for (String variable : dataa) {
-						variable = variable.trim();
-						if (variable.contains("=") || variable.contains("props")) {
-							html = variable.substring(6, variable.length());
+				for (Element element : ebody) {
+					if (element.toString().indexOf("var props") != -1) {
+						String[] dataa = element.data().toString().split("var");
+						for (String variable : dataa) {
+							variable = variable.trim();
+							if (variable.contains("=") || variable.contains("props")) {
+								html = variable.substring(6, variable.length());
+								break;
+							}
 						}
+						break;
 					}
 				}
 				if (html != null) {
@@ -165,6 +170,7 @@ public class T36krNews extends Collector {
 					whenOneData(data);
 				}
 			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}
