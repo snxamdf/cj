@@ -55,7 +55,7 @@ public class LotourChujingyouCollector extends Collector {
 		for (;;) {
 			try {
 				url = dataUrl.replace("{page}", page.toString());
-				config.setSiteConfig("{'page':" + (page) + ",'dataUrl':'http://api.lotour.net/brandhome/water/SelectDiscoverList?regionId=0&pageSize=50&pageIndex={page}&isbroad=0'}");
+				config.setSiteConfig("{'page':" + (page) + ",'dataUrl':'http://api.lotour.net/brandhome/water/SelectDiscoverList?regionId=0&pageSize=50&pageIndex={page}&isbroad=1'}");
 				updateSiteConfig(config.getSiteConfig());
 				html = Tools.getRequest(url);
 				JSONArray array = new JSONArray(html);
