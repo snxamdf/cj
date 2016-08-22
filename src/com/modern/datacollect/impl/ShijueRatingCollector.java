@@ -42,8 +42,6 @@ public class ShijueRatingCollector extends Collector {
 		Tools.mkDir(new File(targetFileDir));
 		Tools.mkDir(new File(tempFileDir));
 
-		Elements pageNumbers;// 存放page翻页节点
-		Elements catmainBody;// 存放要抓取的数据节点
 		String html;// 存放html
 		String url = null;// 存放准备抓取的url
 

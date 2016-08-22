@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.nodes.Element;
@@ -34,6 +35,7 @@ public class FashionindieLivingCollector extends Collector {
 			targetFileDir = "D:\\targetFileDir\\";
 			// 文件的保存临时目录
 			tempFileDir = "D:\\tempFileDir\\";
+			writeIndex("index.html", "</br><a href=\"" + config.getSiteUrl() + "\" target='_blank'>" + config.getSiteUrl() + "</a><br/><br/>");
 		}
 
 		Tools.mkDir(new File(targetFileDir));
@@ -115,13 +117,22 @@ public class FashionindieLivingCollector extends Collector {
 							cimgemt.attr("src", mydest);
 					}
 				}
+				Elements postsidebar = Tools.getBody(".post-sidebar", html);
+				String author = postsidebar.select("a[rel=\"user\"]").text();
+				Elements keys = postsidebar.select("ul[class=\"info group\"]").select("a");
+				String keywords = StringUtils.join(keys.toArray(), ",");
 
 				// 获取内容
 				String content = eimgBody.toString() + ebody.toString();
+				if (!"".equals(author)) {
+					content = "<div>作者 : " + author + "</div><br/>" + content;
+				}
 				data.setTitle(title);
 				data.setContent(content);
+				data.setKeywords(keywords);
 				whenOneData(data);
 			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}

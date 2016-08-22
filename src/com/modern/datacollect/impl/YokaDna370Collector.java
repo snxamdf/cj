@@ -6,6 +6,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.nodes.Element;
@@ -35,6 +36,7 @@ public class YokaDna370Collector extends Collector {
 			targetFileDir = "D:\\targetFileDir\\";
 			// 文件的保存临时目录
 			tempFileDir = "D:\\tempFileDir\\";
+			writeIndex("index.html", "</br><a href=\"" + config.getSiteUrl() + "\" target='_blank'>" + config.getSiteUrl() + "</a><br/><br/>");
 		}
 
 		Tools.mkDir(new File(targetFileDir));
@@ -52,9 +54,10 @@ public class YokaDna370Collector extends Collector {
 			try {
 				config.setSiteConfig("{'page':" + page + ",'currUrl':'" + url + "'}");
 				updateSiteConfig(config.getSiteConfig());
-				String html = Tools.getRequest(url);
+				String html = Tools.getRequest1(url);
 				Elements body = Tools.getBody("#pbox", html);
 				Elements pages = Tools.getBody("#m-pages", html);
+				body = body.select("dl");
 				this.dealwith(body.select("dl"), tempFileDir, targetFileDir, config);
 				url = this.nextUrl(page, pages);
 				if (url == null) {
@@ -97,7 +100,7 @@ public class YokaDna370Collector extends Collector {
 					if (dest != null) {
 						picList.add(dest);
 					}
-					String html = Tools.getRequest(href);
+					String html = Tools.getRequest1(href);
 					Elements ebody = Tools.getBody("#topic-context", html).select(".conts");
 					ebody.select("h1").remove();
 					ebody.select("a").attr("href", "javascript:void(0)");
@@ -114,6 +117,11 @@ public class YokaDna370Collector extends Collector {
 								cimgemt.attr("src", mydest);
 						}
 					}
+					Elements ctags = Tools.getBody(".ctags", html);
+					ctags.select("a").attr("href", "javascript:void(0)");
+					String keywords = StringUtils.join(ctags.select("a").toArray(), ",");
+					data.setKeywords(keywords);
+
 					String content = ebody.toString() + time;
 					data.setTitle(title);// title
 					data.setContent(content);// 获取内容
