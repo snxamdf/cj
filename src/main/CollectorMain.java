@@ -1,12 +1,13 @@
 package main;
 
 import com.modern.datacollect.api.Collector;
-import com.modern.datacollect.impl.GqTag39705Collector;
+import com.modern.datacollect.impl.CategoryFashionCollector;
 
 public class CollectorMain {
 
 	public static void main(String[] args) {
-		Collector collFashion = new GqTag39705Collector();
+		
+		Collector collFashion = new CategoryFashionCollector();
 		collFashion.begin();
 	}
 

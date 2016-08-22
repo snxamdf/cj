@@ -35,6 +35,7 @@ public class CategoryStreetStyleCollector extends Collector {
 			targetFileDir = "D:\\targetFileDir\\";
 			// 文件的保存临时目录
 			tempFileDir = "D:\\tempFileDir\\";
+			writeIndex("index.html", "</br><a href=\"" + config.getSiteUrl() + "\" target='_blank'>" + config.getSiteUrl() + "</a><br/><br/>");
 		}
 
 		// 目录不存在，创建目录
@@ -70,7 +71,7 @@ public class CategoryStreetStyleCollector extends Collector {
 				// 更新配置参数 end
 
 				// 通过工具类 获得当前要获取的url响应的html代码
-				html = Tools.getRequest(url);
+				html = Tools.getRequest1(url);
 				// 通过工具类 获得分页元素
 				pageNumbers = Tools.getBody(".pageNumbers", html);
 				// 总页数
@@ -106,8 +107,10 @@ public class CategoryStreetStyleCollector extends Collector {
 		// 获得所有数据列表
 		Elements catArticles = catmainBody.select(".fluidArticleContent");
 		// 遍历
-		for (Element el : catArticles) {
+		for (int i = 0; i < catArticles.size(); i++) {
+			Element el = catArticles.get(i);
 			try {
+				Tools.sleep();
 				// 数据保存对像
 				Data data = new Data();
 				// 获取title
@@ -137,20 +140,20 @@ public class CategoryStreetStyleCollector extends Collector {
 					picList.add(dest);
 					data.setPicList(picList);
 				}
-				String html = Tools.getRequest(href);
+				String html = Tools.getRequest1(href);
 				Elements wrapper = Tools.getBody("#wrapper", html);
-				wrapper.select(".breadcrumb").remove();
 				wrapper.select("iframe").remove();
-				String title = wrapper.select(".streetStyleMeta").select("h1").text();
-				wrapper.select(".articles").remove();
+				String title = wrapper.select(".streetStyleMeta").select("h1[class=\"articles\"]").text();
+				wrapper.select(".streetStyleMeta").select("h1[class=\"articles\"]").remove();
+				wrapper.select(".streetStyleMeta").append("<br/>");
 				String keywords = wrapper.select(".streetStyleMeta").select(".author").text();
-				wrapper.select(".streetStyleMeta").remove();
 				data.setKeywords(keywords);
 				Elements contents = wrapper.select(".streetstyleContent");
 				contents.select(".streetNavigation").remove();
 				contents.select(".streetstyleInfo").select(".moreStreet").remove();
 				contents.select(".streetstyleInfo").select("otherViews").remove();
 				contents.select(".streetstyleInfo").select("streetStyleAds").select(".right").remove();
+				wrapper.select("a").attr("href", "javascript:void(0)");
 				Elements cimg = contents.select("img");
 				for (Element cimgemt : cimg) {
 					String cimgSrc = cimgemt.attr("src");

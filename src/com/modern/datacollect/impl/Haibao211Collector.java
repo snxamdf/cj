@@ -35,6 +35,7 @@ public class Haibao211Collector extends Collector {
 			targetFileDir = "D:\\targetFileDir\\";
 			// 文件的保存临时目录
 			tempFileDir = "D:\\tempFileDir\\";
+			writeIndex("index.html", "</br><a href=\"" + config.getSiteUrl() + "\" target='_blank'>" + config.getSiteUrl() + "</a><br/><br/>");
 		}
 		Tools.mkDir(new File(targetFileDir));
 		Tools.mkDir(new File(tempFileDir));
@@ -73,9 +74,12 @@ public class Haibao211Collector extends Collector {
 	}
 
 	public void dealwith(Elements body, String tempFileDir, String targetFileDir, Config config) {
-		for (Element emt : body) {
+		// 遍历
+		for (int i = 0; i < body.size(); i++) {
+			Element emt = body.get(i);
 			try {
-				String title = emt.select("div.hb_fl").text();
+				Tools.sleep();
+				String title = emt.select(".tit_focus_item").text();
 				String href = emt.select("div.hb_fl").select("a").attr("href");
 				String imgSrc = emt.select("a").eq(0).select("img").attr("data-lazy-src");
 				Data data = new Data();

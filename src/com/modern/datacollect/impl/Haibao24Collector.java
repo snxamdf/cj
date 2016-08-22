@@ -75,7 +75,7 @@ public class Haibao24Collector extends Collector {
 	public void dealwith(Elements body, String tempFileDir, String targetFileDir, Config config) {
 		for (Element emt : body) {
 			try {
-				String title = emt.select("div.hb_fl").text();
+				String title = emt.select(".tit_focus_item").text();
 				String href = emt.select("div.hb_fl").select("a").attr("href");
 				String imgSrc = emt.select("a").eq(0).select("img").attr("data-lazy-src");
 				Data data = new Data();

@@ -1,6 +1,13 @@
 package com.modern.datacollect.api;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintStream;
+
+import com.modern.datacollect.impl.Tools;
 
 /**
  * 数据采集器基类，所有数据采集程序都继承这个类<br/>
@@ -93,7 +100,56 @@ public abstract class Collector {
 	 * 每抓取一条数据的时候，采集程序主动调用这个方法入库
 	 * */
 	public void whenOneData(Data data) {
-		System.out.println(data.getContent());
+		System.out.println(data.toString());
+		Tools.mkDir(new File("D:\\sitepage\\"));
+		String name = Tools.string2MD5(data.toString());
+		String path = "D:\\sitepage\\" + name + ".html";
+		File htmlFile = new File(path);
+		FileOutputStream fs = null;
+		PrintStream p = null;
+		try {
+			fs = new FileOutputStream(htmlFile);
+			p = new PrintStream(fs);
+			p.println("<h1>" + data.getTitle() + "</h1>");
+			p.println("<br/>");
+			p.println(data.getContent());
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			return;
+		} finally {
+			if (p != null) {
+				p.close();
+			}
+			if (fs != null) {
+				try {
+					fs.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		if (!"".equals(data.getTitle())) {
+			writeIndex("index.html", "<a href=\"" + name + ".html" + "\" target='_blank'>" + data.getTitle() + "</a>");
+		}
+	}
+
+	int i = 1;
+
+	public void writeIndex(String name, String content) {
+		try {
+			String path = "D:\\sitepage\\" + name;
+			FileWriter writer = new FileWriter(path, true);
+			writer.write(content);
+			writer.write("&nbsp;&nbsp;&nbsp;");
+			writer.write("\r\n");
+			if (i % 6 == 0) {
+				writer.write("<br/>");
+			}
+			writer.close();
+			i++;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**

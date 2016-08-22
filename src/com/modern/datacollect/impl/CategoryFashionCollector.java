@@ -35,6 +35,7 @@ public class CategoryFashionCollector extends Collector {
 			targetFileDir = "D:\\targetFileDir\\";
 			// 文件的保存临时目录
 			tempFileDir = "D:\\tempFileDir\\";
+			writeIndex("index.html", "</br><a href=\"" + config.getSiteUrl() + "\" target='_blank'>" + config.getSiteUrl() + "</a><br/><br/>");
 		}
 
 		// 目录不存在，创建目录
@@ -70,7 +71,7 @@ public class CategoryFashionCollector extends Collector {
 				// 更新配置参数 end
 
 				// 通过工具类 获得当前要获取的url响应的html代码
-				html = Tools.getRequest(url);
+				html = Tools.getRequest1(url);
 				// 通过工具类 获得分页元素
 				pageNumbers = Tools.getBody(".pageNumbers", html);
 				// 总页数
@@ -106,8 +107,10 @@ public class CategoryFashionCollector extends Collector {
 		// 获得所有数据列表
 		Elements catArticles = catmainBody.select(".catArticles");
 		// 遍历
-		for (Element el : catArticles) {
+		for (int i = 0; i < catArticles.size(); i++) {
+			Element el = catArticles.get(i);
 			try {
+				Tools.sleep();
 				// 数据保存对像
 				Data data = new Data();
 				// 获取title
@@ -138,7 +141,7 @@ public class CategoryFashionCollector extends Collector {
 					data.setPicList(picList);
 				}
 				String title = atitle.text();
-				String html = Tools.getRequest(href);
+				String html = Tools.getRequest1(href);
 				Elements wrapper = Tools.getBody("#wrapper", html);
 				wrapper.select(".sidebar").remove();
 				wrapper.select("h1[class=\"articles articlesNew\"]").remove();
@@ -149,6 +152,7 @@ public class CategoryFashionCollector extends Collector {
 				wrapper.select("#singleOutline").select(".OUTBRAIN").remove();
 				wrapper.select("#singleOutline").select(".articleComments").remove();
 				wrapper.select(".wrapper").remove();
+				wrapper.select("a").attr("href", "javascript:void(0)");
 				Elements cimg = wrapper.select("img");
 				for (Element cimgemt : cimg) {
 					String cimgSrc = cimgemt.attr("src");

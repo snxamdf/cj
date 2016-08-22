@@ -11,8 +11,8 @@
 -------------------------------------------- 
 
   	女士， 时尚	http://www.fashiongonerogue.com/fashion-editorial/ ok FashioEitorialCollector.java
-				http://www.fashiongonerogue.com/fashion-news/ ok FashioNewsCollector.java
-				http://www.fashiongonerogue.com/beauty-news/ ok FashioBeautyNewsCollector.java
+			http://www.fashiongonerogue.com/fashion-news/ ok FashioNewsCollector.java
+			http://www.fashiongonerogue.com/beauty-news/ ok FashioBeautyNewsCollector.java
 -------------------------------------------- 
 
 	美容－护肤：http://www.yoka.com/beauty/face/ ok YokaFaceCollector.java
