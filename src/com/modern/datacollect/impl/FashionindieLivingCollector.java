@@ -122,6 +122,8 @@ public class FashionindieLivingCollector extends Collector {
 				Elements keys = postsidebar.select("ul[class=\"info group\"]").select("a");
 				String keywords = StringUtils.join(keys.toArray(), ",");
 
+				Tools.clearsAttr(ebody);
+				Tools.clearsAttr(eimgBody);
 				// 获取内容
 				String content = eimgBody.toString() + ebody.toString();
 				if (!"".equals(author)) {

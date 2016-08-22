@@ -116,13 +116,10 @@ public class LotourGouneiyouCollector extends Collector {
 						String mydest = getMySiteImgSrc(cdest);
 						if (mydest != null)
 							cimgemt.attr("src", mydest);
-						cimgemt.removeAttr("data-original");
-						cimgemt.removeAttr("realsrc");
-						cimgemt.removeAttr("class");
-						cimgemt.removeAttr("onload");
 					}
 				}
 
+				Tools.clearsAttr(ebody);
 				// 获取内容
 				String content = ebody.toString();
 				if (author.size() > 0) {

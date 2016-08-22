@@ -105,10 +105,14 @@ public class YokaDna370Collector extends Collector {
 					ebody.select("h1").remove();
 					ebody.select("a").attr("href", "javascript:void(0)");
 					String time = ebody.select(".time").toString();
+					ebody.select(".time").remove();
 					Elements cimg = ebody.select("img");
 					for (Element cimgemt : cimg) {
 						String cimgSrc = cimgemt.attr("_src");
 						cimgemt.removeAttr("_src");
+						if ("".equals(cimgSrc)) {
+							cimgSrc = cimgemt.attr("src");
+						}
 						if (!"".equals(cimgSrc)) {
 							String ctempFilePath = Tools.getLineFile(cimgSrc, tempFileDir);
 							File cdest = Tools.copyFileChannel(ctempFilePath, targetFileDir);
@@ -121,7 +125,10 @@ public class YokaDna370Collector extends Collector {
 					ctags.select("a").attr("href", "javascript:void(0)");
 					String keywords = StringUtils.join(ctags.select("a").toArray(), ",");
 					data.setKeywords(keywords);
-
+					ebody.select(".textProductNew").select("dl").select("dd").select("p").remove();
+					ebody.select(".textProductNew").select("dl").select("dd").select(".buy").remove();
+					ebody.select(".ctags").remove();
+					Tools.clearsAttr(ebody);
 					String content = ebody.toString() + time;
 					data.setTitle(title);// title
 					data.setContent(content);// 获取内容
