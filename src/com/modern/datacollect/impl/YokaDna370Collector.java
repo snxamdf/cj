@@ -100,7 +100,7 @@ public class YokaDna370Collector extends Collector {
 					if (dest != null) {
 						picList.add(dest);
 					}
-					String html = Tools.getRequest1(href);
+					String html = Tools.getRequest(href);
 					Elements ebody = Tools.getBody("#topic-context", html).select(".conts");
 					ebody.select("h1").remove();
 					ebody.select("a").attr("href", "javascript:void(0)");
@@ -123,6 +123,7 @@ public class YokaDna370Collector extends Collector {
 					}
 					Elements ctags = Tools.getBody(".ctags", html);
 					ctags.select("a").attr("href", "javascript:void(0)");
+					Tools.clearsAttr(ctags);
 					String keywords = StringUtils.join(ctags.select("a").toArray(), ",");
 					data.setKeywords(keywords);
 					ebody.select(".textProductNew").select("dl").select("dd").select("p").remove();
@@ -136,6 +137,7 @@ public class YokaDna370Collector extends Collector {
 					whenOneData(data);
 				}
 			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}

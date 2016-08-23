@@ -94,6 +94,7 @@ public class PocoCookbook_diyCollector extends Collector {
 
 				this.downImg(ebody, tempFileDir, targetFileDir);
 
+				Tools.clearsAttr(ebody);
 				String content = ebody.toString();
 				data.setTitle(title);
 				data.setContent(content);

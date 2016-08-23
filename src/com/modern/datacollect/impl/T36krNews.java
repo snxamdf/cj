@@ -161,7 +161,7 @@ public class T36krNews extends Collector {
 								cimgemt.attr("src", mydest);
 						}
 					}
-
+					Tools.clearsAttr(ebody);
 					// 获取内容
 					content = ebody.html();
 					JSONObject user = json.getJSONObject("user");

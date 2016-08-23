@@ -1,11 +1,9 @@
 package com.modern.datacollect.api;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintStream;
+import java.io.OutputStreamWriter;
 
 import com.modern.datacollect.impl.Tools;
 
@@ -100,34 +98,32 @@ public abstract class Collector {
 	 * 每抓取一条数据的时候，采集程序主动调用这个方法入库
 	 * */
 	public void whenOneData(Data data) {
-		System.out.println(data.toString());
-		Tools.mkDir(new File("D:\\sitepage\\"));
 		String name = Tools.string2MD5(data.toString());
-		String path = "D:\\sitepage\\" + name + ".html";
-		File htmlFile = new File(path);
-		FileOutputStream fs = null;
-		PrintStream p = null;
+		OutputStreamWriter osw = null;
+		File file;
 		try {
-			fs = new FileOutputStream(htmlFile);
-			p = new PrintStream(fs);
-			p.println("<h1>" + data.getTitle() + "</h1>");
-			p.println("<br/>");
-			p.println(data.getContent());
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			return;
-		} finally {
-			if (p != null) {
-				p.close();
+			Tools.mkDir(new File("D:\\sitepage\\"));
+			String path = "D:\\sitepage\\" + name + ".html";
+			file = new File(path);
+			if (!file.exists()) {
+				file.createNewFile();
 			}
-			if (fs != null) {
-				try {
-					fs.close();
-				} catch (IOException e) {
-					e.printStackTrace();
+			osw = new OutputStreamWriter((new FileOutputStream(file)), "GB2312");
+			osw.write(("<h1>" + data.getTitle() + "</h1>"));
+			osw.write(data.getContent());
+			osw.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (osw != null) {
+					osw.close();
 				}
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
+
 		if (!"".equals(data.getTitle())) {
 			writeIndex("index.html", "<a href=\"" + name + ".html" + "\" target='_blank'>" + data.getTitle() + "</a>");
 		}
@@ -136,19 +132,33 @@ public abstract class Collector {
 	int i = 1;
 
 	public void writeIndex(String name, String content) {
+		String path = "D:\\sitepage\\" + name;
+		OutputStreamWriter osw = null;
+		File file;
 		try {
-			String path = "D:\\sitepage\\" + name;
-			FileWriter writer = new FileWriter(path, true);
-			writer.write(content);
-			writer.write("&nbsp;&nbsp;&nbsp;");
-			writer.write("\r\n");
-			if (i % 6 == 0) {
-				writer.write("<br/><br/>");
+			file = new File(path);
+			if (!file.exists()) {
+				file.createNewFile();
 			}
-			writer.close();
+			osw = new OutputStreamWriter((new FileOutputStream(file, true)), "GB2312");
+			osw.write(content);
+			osw.write("&nbsp;&nbsp;&nbsp;");
+			osw.write("\r\n");
+			if (i % 6 == 0) {
+				osw.write("<br/><br/>");
+			}
+			osw.flush();
 			i++;
 		} catch (IOException e) {
 			e.printStackTrace();
+		} finally {
+			try {
+				if (osw != null) {
+					osw.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

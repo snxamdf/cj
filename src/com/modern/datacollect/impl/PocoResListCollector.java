@@ -103,6 +103,7 @@ public class PocoResListCollector extends Collector {
 
 				this.downImg(ebody, tempFileDir, targetFileDir);
 
+				Tools.clearsAttr(ebody);
 				String content = ebody.toString() + time.toString();
 				data.setTitle(title);
 				data.setContent(content);

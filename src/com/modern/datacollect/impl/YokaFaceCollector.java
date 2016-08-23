@@ -35,6 +35,7 @@ public class YokaFaceCollector extends Collector {
 			targetFileDir = "D:\\targetFileDir\\";
 			// 文件的保存临时目录
 			tempFileDir = "D:\\tempFileDir\\";
+			writeIndex("index.html", "</br><a href=\"" + config.getSiteUrl() + "\" target='_blank'>" + config.getSiteUrl() + "</a><br/><br/>");
 		}
 
 		Tools.mkDir(new File(targetFileDir));
@@ -111,14 +112,9 @@ public class YokaFaceCollector extends Collector {
 				}
 				String html = Tools.getRequest(href, "GB2312");
 				String content = this.ebody(html, 0, "", null, tempFileDir, targetFileDir, config);
-				Elements source = Tools.getBody(".infoTime", html);
-				source.select("a").attr("href", "javascript:void(0)");
-				if (source.toString().equals("")) {
-					source = Tools.getBody(".time2", html);
-					source.select("#share").remove();
+				if ("".equals(content)) {
+					continue;
 				}
-				source.select(".textShare").remove();
-				content += source.toString();
 				data.setTitle(title);// title
 				data.setContent(content);// 获取内容
 				data.setPicList(picList);
@@ -191,7 +187,7 @@ public class YokaFaceCollector extends Collector {
 					cimgemt.attr("src", mydest);
 			}
 		}
-		ebody.select("a").attr("href", "javascript:void(0)");
+		Tools.clearsAttr(ebody);
 		result += ebody.toString();
 		if (urls != null) {
 			for (; idx < urls.length;) {

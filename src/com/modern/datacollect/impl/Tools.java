@@ -472,6 +472,7 @@ public class Tools {
 		}
 	}
 
+	// 清除无用的属性只保留常用的
 	public static void clearNodeAttr(List<Node> nodes) {
 		for (Node n : nodes) {
 			if (n.childNodes().size() > 0) {
@@ -485,6 +486,11 @@ public class Tools {
 				} else if ("href".equals(node.getKey())) {
 					n.attr(key, "javascript:void(0)");
 				}
+			}
+			// 设置懒加载属性
+			if ("img".equals(n.nodeName())) {
+				n.attr("lazy-src", n.attr("src"));
+				n.attr("src", "http://modengvip.com/res/rec/images/moimg.jpg");
 			}
 		}
 	}

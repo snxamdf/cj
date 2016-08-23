@@ -1,21 +1,14 @@
 package com.modern.datacollect.impl;
 
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import com.modern.datacollect.api.Collector;
 import com.modern.datacollect.api.Config;
-import com.modern.datacollect.api.Data;
 
-public class Haibao211Collector extends Collector {
+public class Haibao211Collector extends HaibaosCollector {
 
 	@Override
 	public void begin() {
@@ -70,94 +63,6 @@ public class Haibao211Collector extends Collector {
 			} catch (Exception e) {
 			}
 			page++;
-		}
-	}
-
-	public void dealwith(Elements body, String tempFileDir, String targetFileDir, Config config) {
-		// 遍历
-		for (int i = 0; i < body.size(); i++) {
-			Element emt = body.get(i);
-			try {
-				Tools.sleep();
-				String title = emt.select(".tit_focus_item").text();
-				String href = emt.select("div.hb_fl").select("a").attr("href");
-				String imgSrc = emt.select("a").eq(0).select("img").attr("data-lazy-src");
-				Data data = new Data();
-				URL url = null;
-				try {
-					url = new URL(href);
-					data.setContentId(Tools.string2MD5(url.getPath()));
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
-				}
-
-				if (isDataExists(data.getContentId())) {
-					continue;
-				}
-				String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
-				File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
-				if (dest != null) {
-					List<File> picList = new ArrayList<File>();
-					picList.add(dest);
-					data.setPicList(picList);
-				}
-
-				String html = Tools.getRequest1(href);
-				Elements ebody = Tools.getBody("div[class=\"wr content\"]", html);
-
-				Elements ebody1 = ebody.select("div[class=\"hb_fl contentleft\"]");
-				String body1 = ebody1.select(".desc_content").toString();
-				Elements btcenter = Tools.getBody("#btcenter", html);
-				btcenter.select("a").attr("href", "javascript:void(0)");
-				Elements ebody2 = ebody1.select("#jsArticleDesc");
-				this.downImg(ebody2, tempFileDir, targetFileDir);
-				String content = body1 + ebody2.toString() + btcenter.toString();
-				Elements pages = ebody.select(".pages");
-				String result = null;
-				if (pages.size() > 0) {
-					pages.select(".next").remove();
-					String pageTemp = href.split("\\.htm")[0] + "_{page}.htm";
-					String num = pages.select("a").last().text();
-					result = this.contentPage(Integer.valueOf(num), pageTemp, tempFileDir, targetFileDir);
-				}
-				if (result != null) {
-					content += result;
-				}
-				data.setTitle(title);
-				data.setContent(content);
-				whenOneData(data);
-			} catch (Exception e) {
-			}
-		}
-	}
-
-	private String contentPage(Integer num, String pageTemp, String tempFileDir, String targetFileDir) {
-		StringBuffer result = new StringBuffer();
-		for (int i = 2; i < num; i++) {
-			String url = pageTemp.replace("{page}", i + "");
-			String html = Tools.getRequest1(url);
-			Elements ebody = Tools.getBody("div[class=\"wr content\"]", html);
-			String body1 = ebody.select(".desc_content").toString();
-			result.append(body1);
-			Elements body2 = ebody.select("#jsArticleDesc");
-			this.downImg(body2, tempFileDir, targetFileDir);
-			result.append(body2.toString());
-		}
-		return result.toString();
-	}
-
-	private void downImg(Elements ebody, String tempFileDir, String targetFileDir) {
-		ebody.select("a").attr("href", "javascript:void(0)");
-		Elements cimg = ebody.select("img");
-		for (Element cimgemt : cimg) {
-			String cimgSrc = cimgemt.attr("src");
-			if (!"".equals(cimgSrc)) {
-				String ctempFilePath = Tools.getLineFile(cimgSrc, tempFileDir);
-				File cdest = Tools.copyFileChannel(ctempFilePath, targetFileDir);
-				String mydest = getMySiteImgSrc(cdest);
-				if (mydest != null)
-					cimgemt.attr("src", mydest);
-			}
 		}
 	}
 }

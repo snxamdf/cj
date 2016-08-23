@@ -95,7 +95,7 @@ public class LookbookCollector extends Collector {
 				ebody.select("#look_nav").remove();
 
 				this.downImg(ebody, tempFileDir, targetFileDir);
-
+				Tools.clearsAttr(ebody);
 				String content = ebody.html();
 				data.setTitle(title);
 				data.setContent(content);

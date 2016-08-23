@@ -130,6 +130,7 @@ public class NylonBeautyCollector extends Collector {
 							cimgemt.attr("src", mydest);
 					}
 				}
+				Tools.clearsAttr(ebody);
 				// 获取内容
 				String content = ebody.toString();
 				data.setTitle(title);

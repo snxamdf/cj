@@ -120,6 +120,7 @@ public class HarpersbazaarBeautyCollector extends Collector {
 								cimgemt.attr("src", mydest);
 						}
 					}
+					Tools.clearsAttr(container);
 					String content = container.toString();
 					data.setTitle(title);// title
 					data.setContent(content);// 获取内容
