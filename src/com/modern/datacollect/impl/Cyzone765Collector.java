@@ -118,7 +118,9 @@ public class Cyzone765Collector extends Collector {
 							cimgemt.attr("src", mydest);
 					}
 				}
-
+				Tools.clearsAttr(tags);
+				Tools.clearsAttr(ebody);
+				Tools.clearsAttr(articlehd);
 				// 获取内容
 				String content = tags.toString() + ebody.toString() + articlehd.toString();
 				data.setTitle(title);

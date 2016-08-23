@@ -39,6 +39,10 @@ public class FashionMain {
 					n.attr(node.getKey(), "javascript:void(0)");
 				}
 			}
+			if ("img".equals(n.nodeName())) {
+				n.attr("lazy-src", n.attr("src"));
+				n.attr("src", "http://modengvip.com/res/rec/images/moimg.jpg");
+			}
 		}
 	}
 }

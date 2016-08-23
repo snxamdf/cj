@@ -107,10 +107,8 @@ public class GqTag39705Collector extends Collector {
 					List<File> picList = new ArrayList<File>();
 					picList.add(dest);
 					data.setPicList(picList);
-				} else {
-					System.out.println();
 				}
-				String html = Tools.getRequest(href);
+				String html = Tools.getRequest1(href);
 				Elements ebody = null;
 				String miaoshu = "";
 				if (href.indexOf("pic_") != -1) {
@@ -132,9 +130,6 @@ public class GqTag39705Collector extends Collector {
 						String mydest = getMySiteImgSrc(cdest);
 						if (mydest != null && !"".equals(mydest))
 							cimgemt.attr("src", mydest);
-						else {
-							System.out.println();
-						}
 						cimgemt.removeAttr("data-original");
 						cimgemt.removeAttr("realsrc");
 						cimgemt.removeAttr("class");
@@ -142,10 +137,10 @@ public class GqTag39705Collector extends Collector {
 						cimgemt.removeAttr("onclick");
 					} else {
 						cimgemt.remove();
-						System.out.println();
 					}
 				}
 
+				Tools.clearsAttr(ebody);
 				// 获取内容
 				String content = miaoshu + ebody.toString();
 				data.setTitle(title);

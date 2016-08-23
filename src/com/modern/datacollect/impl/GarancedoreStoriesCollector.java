@@ -134,7 +134,7 @@ public class GarancedoreStoriesCollector extends Collector {
 							cimgemt.removeAttr("class");
 						}
 					}
-
+					Tools.clearsAttr(ebody);
 					// 获取内容
 					String content = ebody.toString();
 					data.setTitle(title);

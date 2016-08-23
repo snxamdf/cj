@@ -207,6 +207,7 @@ public class GqDigitalCollector extends Collector {
 					}
 				}
 
+				Tools.clearsAttr(ebody);
 				// 获取内容
 				String content = miaoshu + ebody.toString();
 				URL url;

@@ -165,6 +165,7 @@ public class CategoryFashionCollector extends Collector {
 							cimgemt.attr("src", mydest);
 					}
 				}
+				Tools.clearsAttr(wrapper);
 				// 获取内容
 				String content = wrapper.toString();
 				data.setTitle(title);// title

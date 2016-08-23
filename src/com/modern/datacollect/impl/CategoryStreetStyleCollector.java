@@ -165,6 +165,7 @@ public class CategoryStreetStyleCollector extends Collector {
 							cimgemt.attr("src", mydest);
 					}
 				}
+				Tools.clearsAttr(wrapper);
 				String content = wrapper.toString();
 				data.setTitle(title);// title
 				data.setContent(content);// 获取内容

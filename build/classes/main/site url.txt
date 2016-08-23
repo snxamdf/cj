@@ -86,8 +86,8 @@
 
 	街拍女：http://fashionindie.com/fashion ok FashionindieFashionCollector.java
 	美容：http://fashionindie.com/beauty ok FashionindieBeautyCollector.java
-	拍摄：http://fashionindie.com/living ok FashionindieTravelJournalsCollector.java
-	旅行：http://fashionindie.com/travel-journals ok FashionindieLivingCollector.java
+	拍摄：http://fashionindie.com/living ok FashionindieLivingCollector.java
+	旅行：http://fashionindie.com/travel-journals ok FashionindieTravelJournalsCollector.java
 -------------------------------------------- 
 
 	北 上 广 深 成

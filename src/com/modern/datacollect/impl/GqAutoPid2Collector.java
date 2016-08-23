@@ -206,7 +206,7 @@ public class GqAutoPid2Collector extends Collector {
 						cimgemt.removeAttr("onclick");
 					}
 				}
-
+				Tools.clearsAttr(ebody);
 				// 获取内容
 				String content = miaoshu + ebody.toString();
 				URL url;

@@ -479,10 +479,11 @@ public class Tools {
 			}
 			Attributes attrNodes = n.attributes();
 			for (Attribute node : attrNodes) {
-				if (!"href".equals(node.getKey()) && !"src".equals(node.getKey()) && !"title".equals(node.getKey()) && !"alt".equals(node.getKey()) && !"text".equals(node.getKey())) {
-					n.removeAttr(node.getKey());
+				String key = node.getKey().trim();
+				if (!"href".equals(key) && !"src".equals(key) && !"title".equals(key) && !"alt".equals(key) && !"text".equals(key)) {
+					n.removeAttr(key);
 				} else if ("href".equals(node.getKey())) {
-					n.attr(node.getKey(), "javascript:void(0)");
+					n.attr(key, "javascript:void(0)");
 				}
 			}
 		}

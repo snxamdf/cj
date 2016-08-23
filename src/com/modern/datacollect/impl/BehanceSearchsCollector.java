@@ -107,7 +107,8 @@ public abstract class BehanceSearchsCollector extends Collector {
 				abouts.before("<br/>");
 
 				this.downImg(ebody, tempFileDir, targetFileDir);
-
+				Tools.clearsAttr(ebody);
+				Tools.clearsAttr(abouts);
 				String content = listNames + ebody.toString() + abouts.toString();
 				data.setTitle(title);
 				data.setContent(content);
