@@ -36,6 +36,7 @@ public class LotourChujingyouCollector extends Collector {
 			targetFileDir = "D:\\targetFileDir\\";
 			// 文件的保存临时目录
 			tempFileDir = "D:\\tempFileDir\\";
+			writeIndex("index.html", "</br><a href=\"" + config.getSiteUrl() + "\" target='_blank'>" + config.getSiteUrl() + "</a> -- -- -- -- -- -- -- -- --<br/><br/>");
 		}
 
 		Tools.mkDir(new File(targetFileDir));
