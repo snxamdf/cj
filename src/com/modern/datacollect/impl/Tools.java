@@ -489,7 +489,7 @@ public class Tools {
 			}
 			// 设置懒加载属性
 			if ("img".equals(n.nodeName())) {
-				n.attr("lazy-src", n.attr("src"));
+				n.attr("data-src", n.attr("src"));
 				n.attr("src", "http://modengvip.com/res/rec/images/moimg.jpg");
 			}
 		}
