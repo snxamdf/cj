@@ -1,4 +1,4 @@
-说明：
+﻿说明：
 	网站链接名称 ：url : 采集完成 ：所在java文件
 —————————————————————— 
 
@@ -175,4 +175,25 @@
 	https://www.behance.net/search?field=5&content=projects&sort=appreciations&time=week ok BehanceSearch5Collector.java
 	
 	BehanceSearchsCollector 设计的数据采集类
-	
+-----------------------------------------------------------------------------------------------\
+	美食
+	https://foodgawker.com/
+	生活家居
+	https://craftgawker.com/
+	https://dwellinggawker.com/
+	女孩时尚的
+	https://stylegawker.com/
+	婚礼的
+	https://weddinggawker.com/
+
+	室内设计
+	http://www.remodelista.com/inspiration/
+
+	旅行
+	http://www.trover.com/l/iSDw-hikes-around-the-world
+	http://www.trover.com/l/gixH-extreme-adventures
+	http://www.trover.com/l/h7pz-tallest-mountains-of-the-world
+	http://www.trover.com/l/TAbD-camping-spots
+	http://www.trover.com/l/gj5L-snow-troving
+	http://www.trover.com/l/giwc-surf-spots
+	http://www.trover.com/l/ioae-kids-fun-around-the-world
