@@ -70,6 +70,10 @@ public class GqTag39705Collector extends Collector {
 				stop();
 				break;
 			}
+			if (page >= 20) {
+				stop();
+				break;
+			}
 			page++;
 		}
 	}

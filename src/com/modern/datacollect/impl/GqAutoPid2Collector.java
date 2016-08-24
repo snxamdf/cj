@@ -83,6 +83,10 @@ public class GqAutoPid2Collector extends Collector {
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
+			if (page >= 20) {
+				stop();
+				break;
+			}
 			page++;
 		}
 	}
@@ -144,7 +148,7 @@ public class GqAutoPid2Collector extends Collector {
 						cimgemt.removeAttr("class");
 						cimgemt.removeAttr("onload");
 						cimgemt.removeAttr("onclick");
-					}else {
+					} else {
 						cimgemt.remove();
 						System.out.println();
 					}

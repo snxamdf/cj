@@ -53,7 +53,6 @@ public class GqFashionCollector extends Collector {
 			e1.printStackTrace();
 		}
 		String html = null;
-
 		for (;;) {
 			try {
 				if (page == 0) {
@@ -83,6 +82,10 @@ public class GqFashionCollector extends Collector {
 				}
 			} catch (JSONException e) {
 				e.printStackTrace();
+			}
+			if (page >= 20) {
+				stop();
+				break;
 			}
 			page++;
 		}
@@ -144,7 +147,7 @@ public class GqFashionCollector extends Collector {
 						cimgemt.removeAttr("class");
 						cimgemt.removeAttr("onload");
 						cimgemt.removeAttr("onclick");
-					}else {
+					} else {
 						cimgemt.remove();
 						System.out.println();
 					}

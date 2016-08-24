@@ -83,6 +83,10 @@ public class GqDigitalCollector extends Collector {
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
+			if (page >= 20) {
+				stop();
+				break;
+			}
 			page++;
 		}
 	}

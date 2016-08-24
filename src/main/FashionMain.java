@@ -23,6 +23,7 @@ public class FashionMain {
 		for (Element e : elements) {
 			Node node = (Node) e;
 			clearNodeAttr(node.childNodes());
+			e.select(".clsRemoveTag").remove();
 		}
 	}
 
@@ -32,6 +33,10 @@ public class FashionMain {
 				clearNodeAttr(n.childNodes());
 			}
 			Attributes attrNodes = n.attributes();
+			if (attrNodes.size() == 0 && n.childNodes().size() == 0) {
+				n.attr("class", "clsRemoveTag");
+				continue;
+			}
 			for (Attribute node : attrNodes) {
 				if (!"href".equals(node.getKey()) && !"src".equals(node.getKey()) && !"title".equals(node.getKey()) && !"alt".equals(node.getKey()) && !"text".equals(node.getKey())) {
 					n.removeAttr(node.getKey());

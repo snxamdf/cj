@@ -59,6 +59,19 @@ import com.modern.datacollect.api.Data;
 public class Tools {
 
 	// 获得内容
+	public static Elements getBody(String tag, File file) {
+		Document jsoup;
+		try {
+			jsoup = Jsoup.parse(file, "GBK");
+			Elements elements = jsoup.select(tag);
+			return elements;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	// 获得内容
 	public static Elements getBody(String tag, String html) {
 		Document jsoup = Jsoup.parse(html);
 		Elements elements = jsoup.select(tag);
