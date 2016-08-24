@@ -61,6 +61,14 @@ public abstract class BehanceSearchsCollector extends Collector {
 				String title = elm.select(".cover-name").select("a").text();
 				String href = elm.select(".cover-name").select("a").attr("href");
 				String imgSrc = elm.select(".cover-img").select("img").attr("srcset");
+				Elements keywordsElm = elm.select(".cover-fields").select("a");
+				StringBuffer keywords = new StringBuffer();
+				for (int i = 0; i < keywordsElm.size(); i++) {
+					if (i > 0) {
+						keywords.append(",");
+					}
+					keywords.append(keywordsElm.get(i).text());
+				}
 				String[] iss = imgSrc.split(",");
 				if (iss.length > 1) {
 					imgSrc = iss[1].trim().split(" ")[0];
@@ -112,6 +120,7 @@ public abstract class BehanceSearchsCollector extends Collector {
 				String content = listNames + ebody.toString() + abouts.toString();
 				data.setTitle(title);
 				data.setContent(content);
+				data.setKeywords(keywords.toString());
 				whenOneData(data);
 			} catch (Exception e) {
 			}
