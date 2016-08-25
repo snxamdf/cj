@@ -27,9 +27,9 @@ public class BehanceSearch51Collector extends BehanceSearchsCollector {
 			// 更新配置每次抓取一页数据,可用用于配置，当前抓取第几页，第几条数据。
 			config.setSiteConfig("{'page':0,'dataUrl':'https://www.behance.net/search?ts={time}&ordinal={page}&per_page=24&field=" + field + "&content=projects&sort=appreciations&time=week'}");
 			// 文件的保存正式目录
-			targetFileDir = "D:\\targetFileDir\\";
+			targetFileDir = "D:\\sitepage\\targetFileDir\\";
 			// 文件的保存临时目录
-			tempFileDir = "D:\\tempFileDir\\";
+			tempFileDir = "D:\\sitepage\\tempFileDir\\";
 			writeIndex("index.html", "</br><a href=\"" + config.getSiteUrl() + "\" target='_blank'>" + config.getSiteUrl() + "</a><br/><br/>");
 		}
 

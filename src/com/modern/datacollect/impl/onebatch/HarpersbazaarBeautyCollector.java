@@ -31,8 +31,8 @@ public class HarpersbazaarBeautyCollector extends Collector {
 			config = new Config();
 			config.setSiteUrl("http://www.harpersbazaar.com/beauty/");
 			config.setSiteConfig("{'page':1,'dataUrl':'http://www.harpersbazaar.com/landing-feed/','param':'?template=section&landingTemplate=standard&id=4&pageNumber={page}&feedTime={feedTime}'}");
-			targetFileDir = "D:\\targetFileDir\\";
-			tempFileDir = "D:\\tempFileDir\\";
+			targetFileDir = "D:\\sitepage\\targetFileDir\\";
+			tempFileDir = "D:\\sitepage\\tempFileDir\\";
 		}
 		Tools.mkDir(new File(targetFileDir));
 		Tools.mkDir(new File(tempFileDir));

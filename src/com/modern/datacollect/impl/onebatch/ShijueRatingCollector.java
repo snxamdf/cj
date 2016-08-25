@@ -34,9 +34,9 @@ public class ShijueRatingCollector extends Collector {
 			// 更新配置每次抓取一页数据,可用用于配置，当前抓取第几页，第几条数据。
 			config.setSiteConfig("{'page':1,'dataUrl':'http://www.shijue.me/community/search?type=json&page={page}&size=20&license=-1&orderby=rating'}");
 			// 文件的保存正式目录
-			targetFileDir = "D:\\targetFileDir\\";
+			targetFileDir = "D:\\sitepage\\targetFileDir\\";
 			// 文件的保存临时目录
-			tempFileDir = "D:\\tempFileDir\\";
+			tempFileDir = "D:\\sitepage\\tempFileDir\\";
 		}
 
 		// 目录不存在，创建目录

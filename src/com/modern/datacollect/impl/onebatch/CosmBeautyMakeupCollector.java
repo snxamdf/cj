@@ -26,9 +26,9 @@ public class CosmBeautyMakeupCollector extends CosmopolitansCollector {
 			// 更新配置每次抓取一页数据,可用用于配置，当前抓取第几页，第几条数据。
 			config.setSiteConfig("{'page':1,'dataUrl':'{page}.shtml'}");
 			// 文件的保存正式目录
-			targetFileDir = "D:\\targetFileDir\\";
+			targetFileDir = "D:\\sitepage\\targetFileDir\\";
 			// 文件的保存临时目录
-			tempFileDir = "D:\\tempFileDir\\";
+			tempFileDir = "D:\\sitepage\\tempFileDir\\";
 		}
 
 		Tools.mkDir(new File(targetFileDir));
