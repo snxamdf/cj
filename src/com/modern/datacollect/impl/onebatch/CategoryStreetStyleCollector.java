@@ -144,6 +144,7 @@ public class CategoryStreetStyleCollector extends Collector {
 				String html = Tools.getRequest1(href);
 				Elements wrapper = Tools.getBody("#wrapper", html);
 				wrapper.select("iframe").remove();
+				wrapper.select(".breadcrumb").remove();
 				String title = wrapper.select(".streetStyleMeta").select("h1[class=\"articles\"]").text();
 				wrapper.select(".streetStyleMeta").select("h1[class=\"articles\"]").remove();
 				wrapper.select(".streetStyleMeta").append("<br/>");
@@ -154,7 +155,7 @@ public class CategoryStreetStyleCollector extends Collector {
 				contents.select(".streetstyleInfo").select(".moreStreet").remove();
 				contents.select(".streetstyleInfo").select("otherViews").remove();
 				contents.select(".streetstyleInfo").select("streetStyleAds").select(".right").remove();
-				wrapper.select("a").attr("href", "javascript:void(0)");
+
 				Elements cimg = contents.select("img");
 				for (Element cimgemt : cimg) {
 					String cimgSrc = cimgemt.attr("src");
@@ -166,6 +167,7 @@ public class CategoryStreetStyleCollector extends Collector {
 							cimgemt.attr("src", mydest);
 					}
 				}
+				wrapper.select(".otherViews").remove();
 				Tools.clearsAttr(wrapper);
 				String content = wrapper.toString();
 				data.setTitle(title);// title
