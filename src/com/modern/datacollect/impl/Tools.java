@@ -482,6 +482,10 @@ public class Tools {
 		for (Element e : elements) {
 			Node node = (Node) e;
 			clearNodeAttr(node.childNodes());
+			e.select("input").remove();
+			e.select("svg").remove();
+			e.select("script").remove();
+			e.select("iframe").remove();
 		}
 	}
 

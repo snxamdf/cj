@@ -1,10 +1,12 @@
 ﻿说明：
 	网站链接名称 ：url : 采集完成 ：所在java文件
-—————————————————————— 
+	
+##one batch
+-------------------------------------------- 
 
 	时尚： http://www.harpersbazaar.com/fashion/ ok  HarpersbazaarFashionCollector.java
 	美容： http://www.harpersbazaar.com/beauty/ ok HarpersbazaarBeautyCollector.java
-—————————————————————— 
+-------------------------------------------- 
 
 	男士，时尚  http://www.fashionbeans.com/category/mens-fashion/?seeall=true ok CategoryFashionCollector.java
 	男士，街拍  http://www.fashionbeans.com/category/mens-street-style/ ok CategoryStreetStyleCollector.java
@@ -175,14 +177,20 @@
 	https://www.behance.net/search?field=5&content=projects&sort=appreciations&time=week ok BehanceSearch5Collector.java
 	
 	BehanceSearchsCollector 设计的数据采集类
------------------------------------------------------------------------------------------------\
+	
+---------------------------------------one batch--------------------------------------------------------
+##two batch
+
 	美食
 	https://foodgawker.com/
+	
 	生活家居
 	https://craftgawker.com/
 	https://dwellinggawker.com/
+	
 	女孩时尚的
 	https://stylegawker.com/
+	
 	婚礼的
 	https://weddinggawker.com/
 

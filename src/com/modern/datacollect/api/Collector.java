@@ -109,6 +109,9 @@ public abstract class Collector {
 				file.createNewFile();
 			}
 			osw = new OutputStreamWriter((new FileOutputStream(file)), "GB2312");
+			osw.write(("<script src='jquery.min.js'></script>"));
+			osw.write(("<script src='jquery.lazyload.min.js'></script>"));
+			osw.write(("<script src='gds.js'></script>"));
 			osw.write(("<h1>" + data.getTitle() + "</h1>"));
 			osw.write(data.getContent());
 			osw.flush();
