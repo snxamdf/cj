@@ -9,7 +9,7 @@ import org.json.JSONObject;
 import com.modern.datacollect.api.Config;
 import com.modern.datacollect.impl.Tools;
 
-public class TroveriSDwCollector extends TroversCollector {
+public class TrovergixHCollector extends TroversCollector {
 
 	@Override
 	public void begin() {
@@ -22,9 +22,9 @@ public class TroveriSDwCollector extends TroversCollector {
 		if (config == null) {// 开发时用到的，自己配置
 			config = new Config();
 			// 配置网站url 这个url是一个主要的，如果在抓取的时候变动需要自己拼接
-			config.setSiteUrl("http://www.trover.com/l/iSDw-hikes-around-the-world");
+			config.setSiteUrl("http://www.trover.com/l/gixH-extreme-adventures");
 			// 更新配置每次抓取一页数据,可用用于配置，当前抓取第几页，第几条数据。
-			config.setSiteConfig("{'page':0,'dataUrl':'http://www.trover.com/discoveries/wall?list=iSDw&ll=0.0,0.0&name=Seoul&anonymous=0&limit=24&offset={page}&callback=$'}");
+			config.setSiteConfig("{'page':0,'dataUrl':'http://www.trover.com/discoveries/wall?list=gixH&ll=0.0,0.0&name=Seoul&anonymous=0&limit=24&offset={page}&callback=$'}");
 			// 文件的保存正式目录
 			targetFileDir = "D:\\sitepage\\targetFileDir\\";
 			// 文件的保存临时目录
@@ -48,7 +48,7 @@ public class TroveriSDwCollector extends TroversCollector {
 		for (;;) {
 			try {
 				url = dataUrl.replace("{page}", page.toString());
-				config.setSiteConfig("{'page':" + page + ",'dataUrl':'dataUrl':'http://www.trover.com/discoveries/wall?list=iSDw&ll=0.0,0.0&name=Seoul&anonymous=0&limit=24&offset={page}&callback=$'}");
+				config.setSiteConfig("{'page':" + page + ",'dataUrl':'dataUrl':'http://www.trover.com/discoveries/wall?list=gixH&ll=0.0,0.0&name=Seoul&anonymous=0&limit=24&offset={page}&callback=$'}");
 				updateSiteConfig(config.getSiteConfig());
 				html = Tools.getRequest1(url);
 				if (html != null) {

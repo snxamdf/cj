@@ -52,7 +52,7 @@ public class HarpersbazaarFashionCollector extends Collector {
 				url = dataUrl + param.replace("{page}", page.toString()).replace("{feedTime}", new Date().getTime() + "");
 				config.setSiteConfig("{'page':" + page + ",'dataUrl':'http://www.harpersbazaar.com/landing-feed/','param':'?template=section&landingTemplate=standard&id=3&pageNumber={page}&feedTime={feedTime}'}");
 				updateSiteConfig(config.getSiteConfig());
-				html = Tools.getRequest(url);
+				html = Tools.getRequest1(url);
 				Elements body = Tools.getBody(".landing-feed--story", html);
 				if (body.size() == 0) {
 					stop();
@@ -75,11 +75,10 @@ public class HarpersbazaarFashionCollector extends Collector {
 				Elements emtAbstract = emtContent.select(".landing-feed--story-abstract");
 				String text = emtAbstract.select("span").text();
 				String href = emtTitle.attr("href");
-				if (href != null && href.indexOf("fashion") != -1) {
-					href = href.substring(8, href.length());
+				if (href != null && href.indexOf("beauty") != -1) {
+					href = href.substring(7, href.length());
 				}
 				String contentUrl = config.getSiteUrl() + href;
-				String title = emtTitle.text();
 
 				// 数据保存对像
 				Data data = new Data();
@@ -94,24 +93,29 @@ public class HarpersbazaarFashionCollector extends Collector {
 					continue;
 				}
 				String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
+
+				String title = emtTitle.text();
 				if (tempFilePath != null) {
 					File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
 					List<File> picList = new ArrayList<File>();
 					if (dest != null) {
 						picList.add(dest);
 					}
-					String html = Tools.getRequest(contentUrl);
-					Elements container = Tools.getBody(".gallery-main-view", html);
-					if(container.toString().equals("")){
-						 container = Tools.getBody(".standard-article", html);
+					String html = Tools.getRequest1(contentUrl);
+					Elements container = Tools.getBody("div[class=\"standard-article-body--text\"]", html);
+					if (container.size() == 0) {
+						container = Tools.getBody(".listicle--section-inner", html);
 					}
 					container.select(".content-header").remove();
 					container.select(".embed--iframe-container").remove();
 					container.select(".standard-article--secondary-content").remove();
 					container.select(".zoomable-expand").remove();
+					container.select(".image-share").remove();
 					container.select(".embedded-image--lead-image-share").remove();
 					container.select(".embedded-image--lead-copyright").remove();
 					container.select(".social-byline").remove();
+					container.select(".related--galleries-container").remove();
+					container.select(".listicle--bottom-container").remove();
 					Elements cimg = container.select("img");
 					for (Element cimgemt : cimg) {
 						String cimgSrc = cimgemt.attr("data-src");
@@ -123,8 +127,12 @@ public class HarpersbazaarFashionCollector extends Collector {
 								cimgemt.attr("src", mydest);
 						}
 					}
+					Elements socialbylinepubinfo = Tools.getBody(".social-byline--pub-info", html);
+					socialbylinepubinfo.select(".byline--image").remove();
+					String user = socialbylinepubinfo.select(".byline--info").text();
+					String date = socialbylinepubinfo.select(".byline--date").text();
 					Tools.clearsAttr(container);
-					String content = container.toString();
+					String content = container.toString() + "<div>" + user + date + "</div>";
 					data.setTitle(title);// title
 					data.setContent(content);// 获取内容
 					data.setKeywords(text);
@@ -132,6 +140,7 @@ public class HarpersbazaarFashionCollector extends Collector {
 					whenOneData(data);
 				}
 			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}
