@@ -273,6 +273,13 @@ public class Tools {
 			response = HttpsGET.doHttpsGet(url);
 
 			String fn = Tools.getFileName(url);
+
+			String ext = null;
+			if (fn.indexOf(".") != -1) {
+				ext = fn.substring(fn.indexOf("."), fn.length());
+			}
+			fn = string2MD5(url) + ext;
+
 			File storeFile = new File(localDir, fn);
 			InputStream in = response.getEntity().getContent();
 			Files.copy(in, storeFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
@@ -305,6 +312,13 @@ public class Tools {
 			client.getHttpConnectionManager().getParams().setSoTimeout(30000);
 			client.executeMethod(get);
 			String fn = Tools.getFileName(url);
+
+			String ext = null;
+			if (fn.indexOf(".") != -1) {
+				ext = fn.substring(fn.indexOf("."), fn.length());
+			}
+			fn = string2MD5(url) + ext;
+
 			File storeFile = new File(localDir, fn);
 			FileOutputStream output = new FileOutputStream(storeFile);
 			output.write(get.getResponseBody());

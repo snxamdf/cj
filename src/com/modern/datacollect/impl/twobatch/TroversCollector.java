@@ -16,7 +16,6 @@ import com.modern.datacollect.impl.Tools;
 
 public abstract class TroversCollector extends Collector {
 	public void dealwith(JSONArray array, String tempFileDir, String targetFileDir) {
-		System.out.println(array.toString());
 		String photo2x = "http://media4.trover.com/T/{photo_id}/fixedw_large_2x.jpg";
 		String photo4x = "http://media4.trover.com/T/{photo_id}/fixedw_large_4x.jpg";
 		for (int i = 0; i < array.length(); i++) {
@@ -39,11 +38,20 @@ public abstract class TroversCollector extends Collector {
 
 				Elements head = Tools.getBody("head", html);
 				Elements scripts = head.select("script");
+				String[] llat = { "", "" };
 				for (int j = 0; j < scripts.size(); j++) {
-					//
-					Element elm = scripts.get(i);
+					Element elm = scripts.get(j);
 					if (elm.data().indexOf("location_from_ip") != -1) {
-
+						String[] locals = elm.data().split("function");
+						for (String str : locals) {
+							if (str.indexOf("location_from_ip") != -1) {
+								str = str.substring(str.indexOf("[") + 1, str.indexOf("]"));
+								llat[0] = str.split(",")[0].trim();
+								llat[1] = str.split(",")[1].trim();
+								break;
+							}
+						}
+						break;
 					}
 				}
 
@@ -54,13 +62,19 @@ public abstract class TroversCollector extends Collector {
 					picList.add(dest);
 					data.setPicList(picList);
 				}
-
+				Elements bcolwrap = Tools.getBody(".bcol-wrap", html);
+				bcolwrap = bcolwrap.select(".body");
+				Tools.clearsAttr(bcolwrap);
+				desc = bcolwrap.toString();
 				String photo4xHtml = "<img src=\"" + photo4x.replace("{photo_id}", photo_id) + "\"/>";
 				Elements imgElm = Tools.getBody("img", photo4xHtml);
 				this.downImg(imgElm, tempFileDir, targetFileDir);
 				Tools.clearsAttr(imgElm);
 				String content = "<div>" + imgElm.toString() + "</div><br/><div>" + desc + "</div>";
 				content += "<div>作者 : " + user_name + "</div>";
+				data.setLongitude(llat[0]);
+				data.setLatitude(llat[1]);
+				data.setIsBaidu(false);
 				data.setTitle(title);
 				data.setContent(content);
 				whenOneData(data);

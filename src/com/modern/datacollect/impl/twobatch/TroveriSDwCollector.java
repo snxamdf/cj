@@ -1,12 +1,14 @@
 package com.modern.datacollect.impl.twobatch;
 
 import java.io.File;
+import java.util.Date;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.modern.datacollect.api.Config;
+import com.modern.datacollect.api.Data;
 import com.modern.datacollect.impl.Tools;
 
 public class TroveriSDwCollector extends TroversCollector {
@@ -47,7 +49,7 @@ public class TroveriSDwCollector extends TroversCollector {
 		String html = null;
 		for (;;) {
 			try {
-				url = dataUrl.replace("{page}", page.toString());
+				url = dataUrl.replace("{page}", page.toString()) + "&_" + new Date().getTime();
 				config.setSiteConfig("{'page':" + page + ",'dataUrl':'dataUrl':'http://www.trover.com/discoveries/wall?list=iSDw&ll=0.0,0.0&name=Seoul&anonymous=0&limit=24&offset={page}&callback=$'}");
 				updateSiteConfig(config.getSiteConfig());
 				html = Tools.getRequest1(url);
@@ -61,7 +63,6 @@ public class TroveriSDwCollector extends TroversCollector {
 					} else {
 						object = new JSONObject(obj.toString());
 						if (object.length() > 0) {
-							// obj = object.get("results");
 							object = object.getJSONObject("results");
 							JSONArray array = object.getJSONArray("discoveries");
 							this.dealwith(array, tempFileDir, targetFileDir);

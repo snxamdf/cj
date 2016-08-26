@@ -183,25 +183,22 @@
 
 	美食
 	https://foodgawker.com/ ok GawkerFoodCollector.java
-	
 	生活家居
 	https://craftgawker.com/ ok GawkerCraftCollector.java
 	https://dwellinggawker.com/ ok GawkerDwellingCollector.java
-	
 	女孩时尚
 	https://stylegawker.com/ ok GawkerStyleCollector.java
-	
 	婚礼
 	https://weddinggawker.com/ ok GawkerWeddingCollector.java
-
+	
 	室内设计
 	http://www.remodelista.com/inspiration/
-
+	
 	旅行
 	http://www.trover.com/l/iSDw-hikes-around-the-world ok TroveriSDwCollector.java
-	http://www.trover.com/l/gixH-extreme-adventures TrovergixHCollector.java
-	http://www.trover.com/l/h7pz-tallest-mountains-of-the-world
-	http://www.trover.com/l/TAbD-camping-spots
-	http://www.trover.com/l/gj5L-snow-troving
-	http://www.trover.com/l/giwc-surf-spots
-	http://www.trover.com/l/ioae-kids-fun-around-the-world
+	http://www.trover.com/l/gixH-extreme-adventures ok TrovergixHCollector.java
+	http://www.trover.com/l/h7pz-tallest-mountains-of-the-world ok Troverh7pzCollector.java
+	http://www.trover.com/l/TAbD-camping-spots ok TroverhTAbDCollector.java
+	http://www.trover.com/l/gj5L-snow-troving ok Troverhgj5LCollector.java
+	http://www.trover.com/l/giwc-surf-spots ok TroverhgiwcCollector.java
+	http://www.trover.com/l/ioae-kids-fun-around-the-world ok TroverhioaeCollector.java
