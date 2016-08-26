@@ -481,7 +481,11 @@ public class Tools {
 	public static void clearsAttr(Elements elements) {
 		for (Element e : elements) {
 			Node node = (Node) e;
-			clearNodeAttr(node.childNodes());
+			if (node.childNodeSize() > 0) {
+				clearNodesAttr(node.childNodes());
+			} else {
+				clearNodeAttr(node);
+			}
 			e.select("input").remove();
 			e.select("svg").remove();
 			e.select("script").remove();
@@ -490,25 +494,29 @@ public class Tools {
 	}
 
 	// 清除无用的属性只保留常用的
-	public static void clearNodeAttr(List<Node> nodes) {
+	public static void clearNodesAttr(List<Node> nodes) {
 		for (Node n : nodes) {
-			if (n.childNodes().size() > 0) {
-				clearNodeAttr(n.childNodes());
+			if (n.childNodeSize() > 0) {
+				clearNodesAttr(n.childNodes());
 			}
-			Attributes attrNodes = n.attributes();
-			for (Attribute node : attrNodes) {
-				String key = node.getKey().trim();
-				if (!"href".equals(key) && !"src".equals(key) && !"title".equals(key) && !"alt".equals(key) && !"text".equals(key)) {
-					n.removeAttr(key);
-				} else if ("href".equals(node.getKey())) {
-					n.attr(key, "javascript:void(0)");
-				}
+			clearNodeAttr(n);
+		}
+	}
+
+	public static void clearNodeAttr(Node n) {
+		Attributes attrNodes = n.attributes();
+		for (Attribute node : attrNodes) {
+			String key = node.getKey().trim();
+			if (!"href".equals(key) && !"src".equals(key) && !"title".equals(key) && !"alt".equals(key) && !"text".equals(key)) {
+				n.removeAttr(key);
+			} else if ("href".equals(node.getKey())) {
+				n.attr(key, "javascript:void(0)");
 			}
-			// 设置懒加载属性
-			if ("img".equals(n.nodeName())) {
-				n.attr("data-src", n.attr("src"));
-				n.attr("src", "http://modengvip.com/res/rec/images/moimg.jpg");
-			}
+		}
+		// 设置懒加载属性
+		if ("img".equals(n.nodeName())) {
+			n.attr("data-src", n.attr("src"));
+			n.attr("src", "http://modengvip.com/res/rec/images/moimg.jpg");
 		}
 	}
 }

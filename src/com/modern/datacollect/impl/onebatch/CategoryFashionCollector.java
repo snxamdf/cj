@@ -105,16 +105,12 @@ public class CategoryFashionCollector extends Collector {
 	 *            正式文件目录
 	 */
 	public void dealwith(Elements catmainBody, String tempFileDir, String targetFileDir) {
-		// 获得所有数据列表
 		Elements catArticles = catmainBody.select(".catArticles");
-		// 遍历
 		for (int i = 0; i < catArticles.size(); i++) {
 			Element el = catArticles.get(i);
 			try {
 				Tools.sleep();
-				// 数据保存对像
 				Data data = new Data();
-				// 获取title
 				Elements atitle = el.select("h2").select("a");
 				String href = atitle.attr("href");
 				URL url;
@@ -124,25 +120,28 @@ public class CategoryFashionCollector extends Collector {
 				} catch (MalformedURLException e) {
 					e.printStackTrace();
 				}
-				// 数据id 生成的md5值 唯一性
 				if (isDataExists(data.getContentId())) {
 					continue;
 				}
-				// 获得img
 				String imgSrc = el.select("img").attr("src");
-				// 通过工具类 将图片下载到临时目录
 				String tempFilePath = Tools.getLineFile(imgSrc, tempFileDir);
-				// 通过工具类 将图片保存到正式目录
 				File dest = Tools.copyFileChannel(tempFilePath, targetFileDir);
 				if (dest != null) {
-					// 将文件对像保存到picList
 					List<File> picList = new ArrayList<File>();
 					picList.add(dest);
 					data.setPicList(picList);
 				}
 				String title = atitle.text();
 				String html = Tools.getRequest1(href);
-				Elements wrapper = Tools.getBody("#wrapper", html);
+				Elements articleImageLrg = Tools.getBody(".articleImageLrg", html);
+				Elements crimg = articleImageLrg.select("img");
+				Elements credit = articleImageLrg.select(".credit");
+				downImg(crimg, tempFileDir, targetFileDir);
+				Tools.clearsAttr(crimg);
+				String crauthor = crimg.toString() + "<br/>" + credit.toString() + "<br/>";
+
+				Elements metaNewArticles = Tools.getBody(".metaNewArticles", html);
+				Elements wrapper = Tools.getBody("div[class=\"articleBody articleBodyNew\"]", html);
 				wrapper.select(".sidebar").remove();
 				wrapper.select("h1[class=\"articles articlesNew\"]").remove();
 				wrapper.select("#singleOutline").select(".metaNewArticles").remove();
@@ -152,28 +151,39 @@ public class CategoryFashionCollector extends Collector {
 				wrapper.select("#singleOutline").select(".OUTBRAIN").remove();
 				wrapper.select("#singleOutline").select(".articleComments").remove();
 				wrapper.select(".wrapper").remove();
+				wrapper.select(".blacktop").remove();
+				wrapper.select(".fbtvNavigation").remove();
+				wrapper.select("#ob_holder").remove();
 				wrapper.select("a").attr("href", "javascript:void(0)");
 				wrapper.select(".articleBreadcrumb").before("<br/>");
 				wrapper.select(".sponsoredPost").remove();
-				Elements cimg = wrapper.select("img");
-				for (Element cimgemt : cimg) {
-					String cimgSrc = cimgemt.attr("src");
-					if (!"".equals(cimgSrc)) {
-						String ctempFilePath = Tools.getLineFile(cimgSrc, tempFileDir);
-						File cdest = Tools.copyFileChannel(ctempFilePath, targetFileDir);
-						String mydest = getMySiteImgSrc(cdest);
-						if (mydest != null)
-							cimgemt.attr("src", mydest);
-					}
-				}
+				downImg(wrapper, tempFileDir, targetFileDir);
+				Tools.clearsAttr(metaNewArticles);
 				Tools.clearsAttr(wrapper);
 				// 获取内容
-				String content = wrapper.toString();
+				String content = crauthor + wrapper.toString() + metaNewArticles.toString();
 				data.setTitle(title);// title
 				data.setContent(content);// 获取内容
 				// 最终调用 whenOneData
 				whenOneData(data);
 			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void downImg(Elements elmt, String tempFileDir, String targetFileDir) {
+		Elements cimg = elmt.select("img");
+		for (Element cimgemt : cimg) {
+			String cimgSrc = cimgemt.attr("src");
+			if (!"".equals(cimgSrc)) {
+				String ctempFilePath = Tools.getLineFile(cimgSrc, tempFileDir);
+				File cdest = Tools.copyFileChannel(ctempFilePath, targetFileDir);
+				String mydest = getMySiteImgSrc(cdest);
+				if (mydest != null || "".equals(mydest))
+					cimgemt.attr("src", mydest);
+				else
+					cimgemt.remove();
 			}
 		}
 	}
