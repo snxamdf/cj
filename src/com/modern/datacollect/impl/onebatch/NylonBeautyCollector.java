@@ -115,15 +115,18 @@ public class NylonBeautyCollector extends Collector {
 				}
 				String html = Tools.getRequest(href);
 				Elements ebody = Tools.getBody("#article-content-body", html);
-				ebody.select("a").attr("href", "javascript:void(0)");
+				ebody.select(".pinit").remove();
+				ebody.select(".gallery-label").remove();
 				Elements cimg = ebody.select("img");
 				for (Element cimgemt : cimg) {
 					String cimgSrc = cimgemt.attr("src");
 					if ("".equals(cimgSrc)) {
 						cimgSrc = cimgemt.attr("data-src");
 					}
-					if (!"".equals(cimgSrc)) {
+					if (cimgSrc.indexOf("http") == -1) {
 						cimgSrc = "http:" + cimgSrc;
+					}
+					if (!"".equals(cimgSrc)) {
 						String ctempFilePath = Tools.getLineFile(cimgSrc, tempFileDir);
 						File cdest = Tools.copyFileChannel(ctempFilePath, targetFileDir);
 						String mydest = getMySiteImgSrc(cdest);
@@ -139,6 +142,7 @@ public class NylonBeautyCollector extends Collector {
 				data.setKeywords(keywords.toString());
 				whenOneData(data);
 			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}

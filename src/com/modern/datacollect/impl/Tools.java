@@ -502,6 +502,7 @@ public class Tools {
 			}
 			e.select("input").remove();
 			e.select("svg").remove();
+			e.select("style").remove();
 			e.select("script").remove();
 			e.select("iframe").remove();
 		}
