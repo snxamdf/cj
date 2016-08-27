@@ -118,7 +118,7 @@ public abstract class BehanceSearchsCollector extends Collector {
 				this.downImg(ebody, tempFileDir, targetFileDir);
 				Tools.clearsAttr(ebody);
 				Tools.clearsAttr(abouts);
-				String content = listNames + ebody.toString() + abouts.toString();
+				String content = listNames + ebody.toString() + abouts.toString() + "<br/><div>原文链接 : <a href=\"" + href + "\">" + href + "</a></div>";
 				data.setTitle(title);
 				data.setContent(content);
 				data.setKeywords(keywords.toString());
