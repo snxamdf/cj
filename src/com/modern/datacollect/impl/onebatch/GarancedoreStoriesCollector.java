@@ -61,6 +61,10 @@ public class GarancedoreStoriesCollector extends Collector {
 				config.setSiteConfig("{'page':" + (page) + ",'dataUrl':'page/{page}'}");
 				updateSiteConfig(config.getSiteConfig());
 				html = Tools.getRequest(url);
+				if (html == null) {
+					stop();
+					break;
+				}
 				Elements body = Tools.getBody("div[class=\"row\"]", html);
 				Elements pager = body.select(".pager");
 				pager.select("li[class=\"next active\"]").remove();
@@ -77,6 +81,7 @@ public class GarancedoreStoriesCollector extends Collector {
 					break;
 				}
 			} catch (Exception e) {
+				e.printStackTrace();
 			}
 			page++;
 		}

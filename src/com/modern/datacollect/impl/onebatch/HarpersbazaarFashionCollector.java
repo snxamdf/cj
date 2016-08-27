@@ -101,7 +101,6 @@ public class HarpersbazaarFashionCollector extends Collector {
 					if (dest != null) {
 						picList.add(dest);
 					}
-					contentUrl = "http://www.harpersbazaar.com/beauty/diet-fitness/news/g7725/celebrity-salad-recipes/";
 					String html = Tools.getRequest1(contentUrl);
 					Elements container = Tools.getBody("div[class=\"standard-article-body--text\"]", html);
 					if (container.size() == 0) {

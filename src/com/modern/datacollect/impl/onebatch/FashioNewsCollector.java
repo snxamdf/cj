@@ -54,6 +54,10 @@ public class FashioNewsCollector extends FashiosCollector {
 				config.setSiteConfig("{'page':" + page + "}");
 				updateSiteConfig(config.getSiteConfig());
 				html = Tools.getRequest1(url);
+				if (html == null) {
+					stop();
+					break;
+				}
 				Elements content = Tools.getBody(".content", html);
 				Elements article = content.select("article");
 				this.dealwith(article, tempFileDir, targetFileDir, config);

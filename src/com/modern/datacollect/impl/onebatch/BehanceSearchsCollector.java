@@ -124,23 +124,31 @@ public abstract class BehanceSearchsCollector extends Collector {
 				data.setKeywords(keywords.toString());
 				whenOneData(data);
 			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}
 
 	private void downImg(Elements ebody, String tempFileDir, String targetFileDir) {
-		ebody.select("a").attr("href", "javascript:void(0)");
 		Elements cimg = ebody.select("img");
 		for (Element cimgemt : cimg) {
-			String cimgSrc = cimgemt.attr("src");
+			String cimgSrc = "";
+			cimgSrc = cimgemt.attr("data-src");
 			if ("".equals(cimgSrc)) {
-				cimgSrc = cimgemt.attr("srcset");
-				String[] iss = cimgSrc.split(",");
-				if (iss.length > 1) {
-					cimgSrc = iss[1].trim().split(" ")[0];
-				} else {
-					cimgSrc = iss[0];
+				cimgSrc = cimgemt.attr("src");
+				if ("".equals(cimgSrc)) {
+					cimgSrc = cimgemt.attr("srcset");
+					String[] iss = cimgSrc.split(",");
+					if (iss.length > 1) {
+						cimgSrc = iss[1].trim().split(" ")[0];
+					} else {
+						cimgSrc = iss[0];
+					}
 				}
+			}
+			if ("".equals(cimgSrc) || cimgSrc.indexOf("blank") != -1) {
+				cimgemt.remove();
+				continue;
 			}
 			if (!"".equals(cimgSrc) && cimgSrc.indexOf("http") != -1) {
 				String ctempFilePath = Tools.getLineFile1(cimgSrc, tempFileDir);
@@ -148,9 +156,7 @@ public abstract class BehanceSearchsCollector extends Collector {
 				String mydest = getMySiteImgSrc(cdest);
 				if (mydest != null) {
 					cimgemt.attr("src", mydest);
-					cimgemt.removeAttr("media");
 				}
-
 			}
 		}
 	}
