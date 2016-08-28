@@ -1,7 +1,7 @@
 package main;
 
 import com.modern.datacollect.api.Collector;
-import com.modern.datacollect.impl.onebatch.BehanceSearch102Collector;
+import com.modern.datacollect.impl.onebatch.GarancedoreStoriesCollector;
 
 public class CollectorMain {
 
@@ -30,7 +30,7 @@ public class CollectorMain {
 		// thread.start();
 		// }
 		try {
-			Collector collFashion = new BehanceSearch102Collector();
+			Collector collFashion = new GarancedoreStoriesCollector();
 			collFashion.begin();
 		} catch (Exception e) {
 			e.printStackTrace();

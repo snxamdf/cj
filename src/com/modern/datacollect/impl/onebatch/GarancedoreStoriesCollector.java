@@ -121,8 +121,23 @@ public class GarancedoreStoriesCollector extends Collector {
 					}
 					String html = Tools.getRequest(href);
 					Elements ebody = Tools.getBody(".main-post-content", html);
+					Elements footer = ebody.select(".post-footer");
+					Elements category = footer.select("div[class=\"item-taxonomy item-category\"]");
+					Tools.clearsAttr(category);
+					Elements post_tag = footer.select("div[class=\"item-taxonomy item-post_tag\"]").select("a");
+					StringBuffer keywords = new StringBuffer();
+					for (int i = 0; i < post_tag.size(); i++) {
+						if (i > 0) {
+							keywords.append(",");
+						}
+						keywords.append(post_tag.get(i).text());
+					}
+
 					ebody = ebody.select(".post-txt-loop");
-					ebody.select("a").attr("href", "javascript:void(0)");
+					Elements subinfos = ebody.select(".post-header").select(".post-subinfos");
+					Tools.clearsAttr(subinfos);
+					ebody = ebody.select(".post-content");
+
 					Elements cimg = ebody.select("img");
 					for (Element cimgemt : cimg) {
 						String cimgSrc = cimgemt.attr("src");
@@ -142,12 +157,15 @@ public class GarancedoreStoriesCollector extends Collector {
 					}
 					Tools.clearsAttr(ebody);
 					// 获取内容
-					String content = ebody.toString();
+					String content = ebody.toString() + subinfos.toString() + category.toString();
+
 					data.setTitle(title);
 					data.setContent(content);
+					data.setKeywords(keywords.toString());
 					whenOneData(data);
 				}
 			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}
