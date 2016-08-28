@@ -108,7 +108,7 @@ public abstract class Collector {
 			if (!file.exists()) {
 				file.createNewFile();
 			}
-			osw  = new OutputStreamWriter((new FileOutputStream(file)), "GB2312");
+			osw = new OutputStreamWriter((new FileOutputStream(file)), "GB2312");
 			osw.write(("<script src='/js/jquery.js'></script>"));
 			osw.write(("<script src='/js/jquery.lazyload.min.js'></script>"));
 			osw.write(("<script src='/js/gds.js'></script>"));

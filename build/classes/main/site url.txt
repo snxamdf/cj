@@ -191,9 +191,6 @@
 	婚礼
 	https://weddinggawker.com/ ok GawkerWeddingCollector.java
 	
-	室内设计
-	http://www.remodelista.com/inspiration/
-	
 	旅行
 	http://www.trover.com/l/iSDw-hikes-around-the-world ok TroveriSDwCollector.java
 	http://www.trover.com/l/gixH-extreme-adventures ok TrovergixHCollector.java
@@ -203,5 +200,53 @@
 	http://www.trover.com/l/giwc-surf-spots ok TroverhgiwcCollector.java
 	http://www.trover.com/l/ioae-kids-fun-around-the-world ok TroverhioaeCollector.java
 	
+	类似be的
+	http://www.fubiz.net/category/photography/travel/ ok Travel.java
+	http://www.fubiz.net/category/photography/lifestyle/ ok Lifestyle.java
+	http://www.fubiz.net/category/photography/nature/ ok Nature.java
+	http://www.fubiz.net/category/photography/food/ ok Food.java
+	http://www.fubiz.net/category/design/architecture/ ok Architecture.java
+	http://www.fubiz.net/category/design/fashion/ ok Fashion.java
+	http://www.fubiz.net/category/design/product/ ok Product.java
+	http://www.fubiz.net/category/design/sculpture/ ok Sculpture.java
+	http://www.fubiz.net/category/pop-culture/best-of/ ok BestOf.java
+	http://www.fubiz.net/category/pop-culture/cinema/ ok Cinema.java
+	http://www.fubiz.net/category/pop-culture/inspiration/ ok Inspiration.java
+	http://www.fubiz.net/category/pop-culture/music/ ok Music.java
+	http://www.fubiz.net/category/pop-culture/television/ ok Television.java
+	http://www.fubiz.net/category/technology/concept/ ok Concept.java
+	http://www.fubiz.net/category/technology/installation/ ok Installation.java
+	http://www.fubiz.net/category/technology/interactive/ ok Interactive.java
+	http://www.fubiz.net/category/technology/unexpected/ ok Unexpected.java
 	
-	https://dribbble.com/
+	div工艺
+	http://www.darbysmart.com/c/jewelry
+	http://www.darbysmart.com/c/home-and-garden
+	http://www.darbysmart.com/c/craft-supplies
+	http://www.darbysmart.com/c/wedding-and-party
+	http://www.darbysmart.com/c/beauty
+	http://www.darbysmart.com/c/kids
+	http://www.darbysmart.com/c/food-and-drink
+	
+	艺术创意
+	http://www.notcot.org/page/1336/
+	
+	生活居家与室内
+	http://www.homedit.com/page/1/
+	
+	图形创意设计
+	http://designspiration.net/popular/page/1/?marker=4335610832246
+	
+	街头艺术
+	https://www.behance.net
+	
+	艺术创意
+	http://www.baubauhaus.com/photography
+	http://www.baubauhaus.com/graphic-design
+	http://www.baubauhaus.com/illustration
+	http://www.baubauhaus.com/poster
+	http://www.baubauhaus.com/typography
+	http://www.baubauhaus.com/black-and-white
+	
+	网页设计
+	http://www.awwwards.com/awards-of-the-day/

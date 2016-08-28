@@ -1,7 +1,7 @@
 package main;
 
 import com.modern.datacollect.api.Collector;
-import com.modern.datacollect.impl.onebatch.GarancedoreStoriesCollector;
+import com.modern.datacollect.impl.twobatch.fubiz.Concept;
 
 public class CollectorMain {
 
@@ -30,7 +30,7 @@ public class CollectorMain {
 		// thread.start();
 		// }
 		try {
-			Collector collFashion = new GarancedoreStoriesCollector();
+			Collector collFashion = new Concept();
 			collFashion.begin();
 		} catch (Exception e) {
 			e.printStackTrace();
