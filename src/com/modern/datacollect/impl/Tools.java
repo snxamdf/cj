@@ -505,6 +505,8 @@ public class Tools {
 			e.select("style").remove();
 			e.select("script").remove();
 			e.select("iframe").remove();
+			e.select("button").remove();
+			e.select("audio").remove();
 		}
 	}
 
