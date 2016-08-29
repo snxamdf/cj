@@ -497,9 +497,9 @@ public class Tools {
 			Node node = (Node) e;
 			if (node.childNodeSize() > 0) {
 				clearNodesAttr(node.childNodes());
-			} else {
-				clearNodeAttr(node);
 			}
+			clearNodeAttr(node);
+
 			e.select("input").remove();
 			e.select("svg").remove();
 			e.select("style").remove();
@@ -508,6 +508,33 @@ public class Tools {
 			e.select("button").remove();
 			e.select("audio").remove();
 		}
+	}
+
+	// 清除所有节点
+	public static void clearsNodes(Elements elements) {
+		for (Element e : elements) {
+			Node node = (Node) e;
+			if (node.childNodeSize() > 0) {
+				clearNodes(node.childNodes());
+			} else {
+				clearNode(node);
+			}
+		}
+		elements.select(".removeNode").remove();
+	}
+
+	// 清除所有节点
+	public static void clearNodes(List<Node> nodes) {
+		for (Node n : nodes) {
+			if (n.childNodeSize() > 0) {
+				clearNodesAttr(n.childNodes());
+			}
+			clearNode(n);
+		}
+	}
+
+	public static void clearNode(Node n) {
+		n.attr("class", "removeNode");
 	}
 
 	// 清除无用的属性只保留常用的

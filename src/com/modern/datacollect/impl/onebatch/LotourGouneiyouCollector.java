@@ -126,11 +126,13 @@ public class LotourGouneiyouCollector extends Collector {
 				if (author.size() > 0) {
 					content += "<div>乐途用户 : " + author.text() + "</div>";
 				}
+				content += "<div>原文链接 : <a href=\"" + href + "\">" + href + "</a></div>";
 				data.setTitle(title);
 				data.setContent(content);
 				data.setAddress(address);
 				whenOneData(data);
 			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}

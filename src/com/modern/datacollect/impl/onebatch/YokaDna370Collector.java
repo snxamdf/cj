@@ -6,7 +6,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.nodes.Element;
@@ -56,6 +55,10 @@ public class YokaDna370Collector extends Collector {
 				config.setSiteConfig("{'page':" + page + ",'currUrl':'" + url + "'}");
 				updateSiteConfig(config.getSiteConfig());
 				String html = Tools.getRequest1(url);
+				if (html == null) {
+					stop();
+					break;
+				}
 				Elements body = Tools.getBody("#pbox", html);
 				Elements pages = Tools.getBody("#m-pages", html);
 				body = body.select("dl");
@@ -66,6 +69,7 @@ public class YokaDna370Collector extends Collector {
 					break;
 				}
 			} catch (Exception e) {
+				e.printStackTrace();
 			}
 			page++;
 		}
@@ -101,10 +105,14 @@ public class YokaDna370Collector extends Collector {
 					if (dest != null) {
 						picList.add(dest);
 					}
-					String html = Tools.getRequest(href);
+					String html = Tools.getRequest1(href);
+					if (html == null) {
+						continue;
+					}
 					Elements ebody = Tools.getBody("#topic-context", html).select(".conts");
 					ebody.select("h1").remove();
-					ebody.select("a").attr("href", "javascript:void(0)");
+					ebody.select(".textProductTit").remove();
+					ebody.select(".textProductNew").remove();
 					String time = ebody.select(".time").toString();
 					ebody.select(".time").remove();
 					Elements cimg = ebody.select("img");
@@ -125,13 +133,20 @@ public class YokaDna370Collector extends Collector {
 					Elements ctags = Tools.getBody(".ctags", html);
 					ctags.select("a").attr("href", "javascript:void(0)");
 					Tools.clearsAttr(ctags);
-					String keywords = StringUtils.join(ctags.select("a").toArray(), ",");
-					data.setKeywords(keywords);
+					ctags = ctags.select("a");
+					StringBuffer keywords = new StringBuffer();
+					for (int i = 0; i < ctags.size(); i++) {
+						if (i > 0) {
+							keywords.append(",");
+						}
+						keywords.append(ctags.get(i).text());
+					}
+					data.setKeywords(keywords.toString());
 					ebody.select(".textProductNew").select("dl").select("dd").select("p").remove();
 					ebody.select(".textProductNew").select("dl").select("dd").select(".buy").remove();
 					ebody.select(".ctags").remove();
 					Tools.clearsAttr(ebody);
-					String content = ebody.toString() + time;
+					String content = ebody.toString() + time + ctags.toString() + "<br/><div>原文链接 : <a href=\"" + href + "\">" + href + "</a></div>";
 					data.setTitle(title);// title
 					data.setContent(content);// 获取内容
 					data.setPicList(picList);

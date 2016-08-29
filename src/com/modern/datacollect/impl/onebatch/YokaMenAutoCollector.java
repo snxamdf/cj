@@ -30,7 +30,7 @@ public class YokaMenAutoCollector extends Collector {
 			// 配置网站url 这个url是一个主要的，如果在抓取的时候变动需要自己拼接
 			config.setSiteUrl("http://www.yokamen.cn/auto/");
 			// 更新配置每次抓取一页数据,可用用于配置，当前抓取第几页，第几条数据。
-			config.setSiteConfig("{'page':1,'dataUrl':'/list_{page}.shtml'}");
+			config.setSiteConfig("{'page':2,'dataUrl':'http://brandservice.yoka.com/v1/?_c=cmsbrandindex&_a=getCmsForZhu&_moduleId=25&_ln=gbk&channelId=88&k=11211life&p={page}'}");
 			// 文件的保存正式目录
 			targetFileDir = "D:\\sitepage\\targetFileDir\\";
 			// 文件的保存临时目录
@@ -56,37 +56,51 @@ public class YokaMenAutoCollector extends Collector {
 				if (page == 1) {
 					url = config.getSiteUrl();
 				} else {
-					url = config.getSiteUrl() + dataUrl.replace("{page}", page.toString());
+					url = dataUrl.replace("{page}", page.toString());
 				}
 				config.setSiteConfig("{'page':" + page + ",'dataUrl':'/list_{page}.shtml'}");
 				updateSiteConfig(config.getSiteConfig());
-				html = Tools.getRequest(url, "GB2312");
-				Elements body = Tools.getBody("#gotolist", html);
-				Elements pages = body.select(".pages");
-				pages.select(".next").remove();
-				String num = pages.select("a").last().text();
-
-				body = body.select(".listInfo");
-				this.dealwith(body, tempFileDir, targetFileDir, config);
-				if (page >= Integer.parseInt(num)) {
+				html = Tools.getRequest1(url, "GB2312");
+				if (html == null) {
 					stop();
 					break;
 				}
+				Elements body = null;
+				if (page == 1) {
+					body = Tools.getBody("div[class=\"listBox\"]", html);
+				} else {
+					JSONObject json = new JSONObject(html);
+					html = json.getString("context");
+					body = Tools.getBody("div[class=\"listBox\"]", html);
+				}
+				if (body.size() == 0) {
+					stop();
+					break;
+				}
+				this.dealwith(body, tempFileDir, targetFileDir, config);
 			} catch (Exception e) {
+				e.printStackTrace();
 			}
-
 			page++;
+			if (page > 80) {
+				stop();
+				break;
+			}
 		}
 	}
 
 	public void dealwith(Elements body, String tempFileDir, String targetFileDir, Config config) {
 		for (Element emt : body) {
 			try {
-				Elements emtTitle = emt.select("dd").select("h3").select("a");
-				String title = emtTitle.text();
-				String href = emtTitle.attr("href");
-				Elements emtImg = emt.select("dt").select("a").select("img");
-				String imgSrc = emtImg.attr("src");
+				Elements imgElm = emt.select(".img");
+				String href = imgElm.select("a").attr("href");
+				String imgSrc = imgElm.select("img").attr("src");
+				if (imgSrc.lastIndexOf("http") > 0) {
+					imgSrc = imgSrc.substring(imgSrc.lastIndexOf("http"), imgSrc.length());
+				}
+				Elements txt = emt.select(".txt");
+				String title = txt.select(".tit").text();
+				String tag = txt.select(".tag").text();
 				Data data = new Data();
 				URL url;
 				try {
@@ -107,72 +121,73 @@ public class YokaMenAutoCollector extends Collector {
 						picList.add(dest);
 					}
 				}
-				String html = Tools.getRequest(href, "GB2312");
-				String content = this.ebody(html, 0, "", null, tempFileDir, targetFileDir, config);
+				String html = Tools.getRequest1(href, "GB2312");
+				Elements main = Tools.getBody("div[class=\"g-main fleft\"]", html);
+				String content = "";
+				StringBuffer keywords = new StringBuffer();
+				if (main.size() > 0) {
+					Elements infoTime = main.select(".infoTime");
+					infoTime.select(".name").select("dt").remove();
+					Elements quote = main.select(".double_quotes");
+					Tools.clearsAttr(quote);
+					main = main.select(".textCon");
+					this.downImg(main, tempFileDir, targetFileDir);
+					Tools.clearsAttr(main);
+					content = infoTime.select(".name").text() + "<br/>" + quote.toString() + main.toString();
+					keywords.append(tag);
+				} else {
+					Elements keyword = Tools.getBody(".tags", html);
+					keyword = keyword.select(".tags-l").select("a");
+					for (int i = 0; i < keyword.size(); i++) {
+						if (i > 0) {
+							keywords.append(",");
+						}
+						keywords.append(keyword.get(i).text());
+					}
+					Tools.clearsAttr(keyword);
+					System.out.println();
+					Elements list = Tools.getBody("#list", html);
+					list = list.select("a");
+					Elements picCon = Tools.getBody("div[class=\"g-content clearfix articlePic\"]", html);
+					Tools.clearsNodes(picCon);
+					if (list.size() > 0) {
+						content = this.ebody(list, tempFileDir, targetFileDir);
+						content += picCon.toString();
+						if (keyword.size() > 0) {
+							content += "<br/>" + keyword.toString() + "<br/>";
+						}
+					}
+				}
 				if ("".equals(content)) {
 					continue;
 				}
+				content += "<br/><div>原文链接 : <a href=\"" + href + "\">" + href + "</a></div>";
 				data.setTitle(title);// title
 				data.setContent(content);// 获取内容
 				data.setPicList(picList);
+				data.setKeywords(keywords.toString());
 				whenOneData(data);
 			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}
 
-	public String ebody(String html, int idx, String result, String[] urls, String tempFileDir, String targetFileDir, Config config) {
-		int f = 1;
-		Elements ebody = Tools.getBody("#viewbody", html);
-		Elements pages = null;
-		if (ebody.size() == 0) {
-			ebody = Tools.getBody(".textCon", html);
-			f = 3;
-			if (ebody.size() == 0) {
-				ebody = Tools.getBody(".con", html);
-				f = 2;
-			}
+	public String ebody(Elements body, String tempFileDir, String targetFileDir) {
+		StringBuffer result = new StringBuffer();
+		for (int i = 1; i < body.size(); i++) {
+			String href = body.get(i).attr("href");
+			String html = Tools.getRequest1(href, "GB2312");
+			Elements img = Tools.getBody("#picCon", html);
+			img = img.select("img");
+			this.downImg(img, tempFileDir, targetFileDir);
+			Tools.clearsAttr(img);
+			result.append(img.toString());
 		}
-		if (ebody.size() < 1) {
-			return result;
-		}
-		if (urls == null) {
-			if (f == 1) {
-				pages = ebody.select("#_function_code_page").select("a");
-				if (pages.size() > 0) {
-					urls = new String[pages.size() - 1];
-					for (int i = 0; i < pages.size() - 1; i++) {
-						urls[i] = pages.get(i).attr("href");
-					}
-				}
-			} else if (f == 2) {
-				pages = ebody.select("p[align]").select("a");
-				if (pages.size() > 0) {
-					urls = new String[pages.size() - 1];
-					for (int i = 0; i < pages.size() - 1; i++) {
-						urls[i] = pages.get(i).attr("href");
-					}
-				}
-			} else if (f == 3) {
-				pages = Tools.getBody(".pages", html);
-				pages.select(".prev").remove();
-				pages.select(".next").remove();
-				pages = pages.select("a");
-				if (pages.size() > 0) {
-					urls = new String[pages.size()];
-					for (int i = 0; i < pages.size(); i++) {
-						urls[i] = pages.get(i).attr("href");
-					}
-				}
-			}
-		}
-		if (f == 1) {
-			ebody.select("#_function_code_page").remove();
-			ebody.select(".pb").remove();
-		} else if (f == 2) {
-			ebody.select("p[align]").remove();
-			ebody.select("p[red]").remove();
-		}
+		return result.toString();
+	}
+
+	private void downImg(Elements ebody, String tempFileDir, String targetFileDir) {
 		Elements cimg = ebody.select("img");
 		for (Element cimgemt : cimg) {
 			String cimgSrc = cimgemt.attr("src");
@@ -184,15 +199,5 @@ public class YokaMenAutoCollector extends Collector {
 					cimgemt.attr("src", mydest);
 			}
 		}
-		Tools.clearsAttr(ebody);
-		result += ebody.toString();
-		if (urls != null) {
-			for (; idx < urls.length;) {
-				String url = "http://www.yoka.com/" + urls[idx];
-				html = Tools.getRequest(url, "GB2312");
-				return this.ebody(html, ++idx, result, urls, tempFileDir, targetFileDir, config);
-			}
-		}
-		return result;
 	}
 }

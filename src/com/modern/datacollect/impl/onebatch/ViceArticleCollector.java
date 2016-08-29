@@ -56,6 +56,10 @@ public class ViceArticleCollector extends Collector {
 				config.setSiteConfig("{'page':" + (page) + "}");
 				updateSiteConfig(config.getSiteConfig());
 				html = Tools.getRequest(url, "UTF-8");
+				if (html == null) {
+					stop();
+					break;
+				}
 				Elements body = Tools.getBody(".story_list", html);
 				body = body.select("article");
 				this.dealwith(body, tempFileDir, targetFileDir);
@@ -101,8 +105,15 @@ public class ViceArticleCollector extends Collector {
 				String html = Tools.getRequest(href, "UTF-8");
 				Elements ebody = Tools.getBody(".article_content", html);
 				ebody.select("a").attr("href", "javascript:void(0)");
-				Elements keywords = Tools.getBody("#tags-box", html);
-				keywords.select("a").attr("href", "javascript:void(0)");
+				Elements keyword = Tools.getBody("#tags-box", html);
+				keyword = keyword.select("a");
+				StringBuffer keywords = new StringBuffer();
+				for (int i = 0; i < keyword.size(); i++) {
+					if (i > 0) {
+						keywords.append(",");
+					}
+					keywords.append(keyword.get(i).text());
+				}
 				Elements cimg = ebody.select("img");
 				for (Element cimgemt : cimg) {
 					String cimgSrc = cimgemt.attr("src");
@@ -114,14 +125,17 @@ public class ViceArticleCollector extends Collector {
 							cimgemt.attr("src", mydest);
 					}
 				}
+				Tools.clearsAttr(keyword);
 				Tools.clearsAttr(ebody);
 				// 获取内容
 				String content = ebody.toString();
+				content += keyword.toString() + "<br/><div>原文链接 : <a href=\"" + href + "\">" + href + "</a></div>";
 				data.setTitle(title);
 				data.setContent(content);
 				data.setKeywords(keywords.toString());
 				whenOneData(data);
 			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}

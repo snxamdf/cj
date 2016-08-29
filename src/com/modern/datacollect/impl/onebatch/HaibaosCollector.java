@@ -45,12 +45,21 @@ public abstract class HaibaosCollector extends Collector {
 
 				Elements ebody1 = ebody.select("div[class=\"hb_fl contentleft\"]");
 				Elements btcenter = Tools.getBody("#btcenter", html);
+				btcenter.select("div[class=\"p-dutu jsProperty jsClickRegion\"]").remove();
+				Elements keyword = btcenter.select(".uldiv").select("a");
+				StringBuffer keywords = new StringBuffer();
+				for (int i = 0; i < keyword.size(); i++) {
+					if (i > 0) {
+						keywords.append(",");
+					}
+					keywords.append(keyword.get(i).text());
+				}
 				Elements ebody2 = ebody1.select("#jsArticleDesc");
 				this.downImg(ebody2, tempFileDir, targetFileDir);
 				// Elements body1 = ebody1.select(".desc_content");
 				// Tools.clearsAttr(body1);
 				Tools.clearsAttr(ebody2);
-				Tools.clearsAttr(btcenter);
+				Tools.clearsAttr(btcenter.select(".uldiv"));
 				String content = ebody2.toString();
 
 				Elements pages = ebody.select(".pages");
@@ -67,6 +76,7 @@ public abstract class HaibaosCollector extends Collector {
 				content += btcenter.toString();
 				data.setTitle(title);
 				data.setContent(content);
+				data.setKeywords(keywords.toString());
 				whenOneData(data);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -92,7 +102,6 @@ public abstract class HaibaosCollector extends Collector {
 	}
 
 	private void downImg(Elements ebody, String tempFileDir, String targetFileDir) {
-		ebody.select("a").attr("href", "javascript:void(0)");
 		Elements cimg = ebody.select("img");
 		for (Element cimgemt : cimg) {
 			String cimgSrc = cimgemt.attr("src");

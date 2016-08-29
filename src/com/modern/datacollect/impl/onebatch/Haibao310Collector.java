@@ -61,6 +61,7 @@ public class Haibao310Collector extends HaibaosCollector {
 					break;
 				}
 			} catch (Exception e) {
+				e.printStackTrace();
 			}
 			page++;
 		}
