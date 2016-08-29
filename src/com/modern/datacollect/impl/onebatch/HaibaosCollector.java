@@ -75,9 +75,9 @@ public abstract class HaibaosCollector extends Collector {
 				if (result != null) {
 					content += result;
 				}
-				content += "<div>来源 : 海报时尚网</div>";
+				content += "<div>来源 : 海报时尚网&nbsp;" + author + "</div>";
 				content += "<br/><div>标签 : " + tags.toString() + "</div>";
-				content += "<br/><div>原谅链接 : <a href=\"" + href + "\">" + href + "</a>&nbsp;" + author + "</div>";
+				content += "<br/><div>原谅链接 : <a href=\"" + href + "\">" + href + "</a></div>";
 				data.setTitle(title);
 				data.setContent(content);
 				data.setKeywords(keywords.toString());

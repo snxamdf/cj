@@ -41,7 +41,7 @@ public class Jewelry extends DarbysmartCollectors {
 		for (;;) {
 			try {
 				url = config.getSiteUrl() + dataUrl.replace("{page}", page.toString());
-				config.setSiteConfig("{'page':" + page + ",'dataUrl':'dataUrl':'http://www.darbysmart.com/api/listicles?page={page}&per_page=20&categoryFilter=" + filter + "'}");
+				config.setSiteConfig("{'page':" + page + ",'dataUrl':'http://www.darbysmart.com/api/listicles?page={page}&per_page=20&categoryFilter=" + filter + "'}");
 				updateSiteConfig(config.getSiteConfig());
 				html = Tools.getRequest(url);
 				if (html != null) {

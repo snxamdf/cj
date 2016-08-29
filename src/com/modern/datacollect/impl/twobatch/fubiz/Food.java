@@ -39,7 +39,7 @@ public class Food extends FubizCollectors {
 		for (;;) {
 			try {
 				url = config.getSiteUrl() + dataUrl.replace("{page}", page.toString());
-				config.setSiteConfig("{'page':" + page + ",'dataUrl':'dataUrl':'page/{page}/'}");
+				config.setSiteConfig("{'page':" + page + ",'dataUrl':'page/{page}/'}");
 				updateSiteConfig(config.getSiteConfig());
 				html = Tools.getRequest(url);
 				if (html != null) {

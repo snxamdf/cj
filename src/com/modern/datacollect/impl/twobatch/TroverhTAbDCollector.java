@@ -49,7 +49,7 @@ public class TroverhTAbDCollector extends TroversCollector {
 		for (;;) {
 			try {
 				url = dataUrl.replace("{page}", page.toString())+ "&_" + new Date().getTime();
-				config.setSiteConfig("{'page':" + page + ",'dataUrl':'dataUrl':'http://www.trover.com/discoveries/wall?list=TAbD&ll=0.0,0.0&name=Seoul&anonymous=0&limit=24&offset={page}&callback=$'}");
+				config.setSiteConfig("{'page':" + page + ",'dataUrl':'http://www.trover.com/discoveries/wall?list=TAbD&ll=0.0,0.0&name=Seoul&anonymous=0&limit=24&offset={page}&callback=$'}");
 				updateSiteConfig(config.getSiteConfig());
 				html = Tools.getRequest1(url);
 				if (html != null) {

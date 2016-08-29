@@ -94,18 +94,30 @@ public class LookbookCollector extends Collector {
 				}
 				String html = Tools.getRequest(href);
 				Elements subheaderlinespaced = Tools.getBody("p[class=\"subheader linespaced\"]", html);
-				Elements ebody = Tools.getBody("div[itemprop=\"encoding\"]", html).select("#look_photo_container");
-				Elements itemtaglist = Tools.getBody(".item-tag-list", html);
+				// Elements ebody = Tools.getBody("div[itemprop=\"encoding\"]",
+				// html).select("#look_photo_container");
+				// Elements itemtaglist = Tools.getBody(".item-tag-list", html);
 
 				Elements bottomspaced = Tools.getBody(".bottomspaced", html);
 				String author = bottomspaced.select(".name").text();
+				subheaderlinespaced.select("a[data-page-track]").eq(0).html("photos by " + author);
 
-				this.downImg(ebody, tempFileDir, targetFileDir);
+				// this.downImg(ebody, tempFileDir, targetFileDir);
 				Tools.clearsAttr(subheaderlinespaced);
-				Tools.clearsAttr(ebody);
-				Tools.clearsAttr(itemtaglist);
-				String content = subheaderlinespaced.toString() + ebody.toString() + itemtaglist.toString() + "<br/><div>作者 : " + author + "</div>";
-				content += "<br/><div>原文链接 : <a href=\"" + href + "\">" + href + "</a></div>";
+				// Tools.clearsAttr(ebody);
+				// Tools.clearsAttr(itemtaglist);
+				String content = subheaderlinespaced.toString();/*
+																 * +
+																 * ebody.toString
+																 * () +
+																 * itemtaglist
+																 * .toString()+
+																 * "<br/><div>作者 : "
+																 * + author +
+																 * "</div>";
+																 */
+				// content += "<br/><div>原文链接 : <a href=\"" + href + "\">" +
+				// href + "</a></div>";
 				data.setTitle(title);
 				data.setContent(content);
 				whenOneData(data);

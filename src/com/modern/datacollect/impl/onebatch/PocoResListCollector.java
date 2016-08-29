@@ -102,7 +102,10 @@ public class PocoResListCollector extends Collector {
 				if (ebody.size() == 0) {
 					ebody = ebodypd120.select(".pic_text_content");
 				}
-				if (ebody.select(".content_text_con").size() > 0 && ebody.select(".content_text_con").last().text().indexOf("目录：") != -1) {
+				if (ebody.size() == 0) {
+					ebody = ebodypd120.select(".content_text_con");
+				}
+				if (ebody.select(".content_text_con").size() > 1 && ebody.select(".content_text_con").last().text().indexOf("目录：") != -1) {
 					ebody.select(".content_text_con").last().remove();
 				}
 				Elements info = Tools.getBody("div[class=\"tc mt5 zt_listItem_info pb10\"]", html);
@@ -110,7 +113,9 @@ public class PocoResListCollector extends Collector {
 				Elements source1 = info.select("span").eq(1);
 				Elements author = info.select("span").eq(2);
 				Elements author2 = info.select("span").eq(3);
-
+				if (author2.text().indexOf("点击数") != -1) {
+					author2 = new Elements();
+				}
 				this.downImg(ebody, tempFileDir, targetFileDir);
 
 				Tools.clearsAttr(ebody);
@@ -123,7 +128,7 @@ public class PocoResListCollector extends Collector {
 					String url = href.substring(0, href.lastIndexOf(".html")) + "-p-{page}.html";
 					ecotent = this.ebody(url, Integer.parseInt(p), tempFileDir, targetFileDir);
 				}
-				String content = source1.toString() + "&nbsp;" + author.toString() + "&nbsp;" + author2.toString() + "&nbsp;<br/>" + ebody.toString() + ecotent;
+				String content = ebody.toString() + ecotent + "<br/>" + source1.toString() + "&nbsp;" + author.toString() + "&nbsp;" + author2.toString() + "&nbsp;<br/>";
 				content += "<br/><div>原文链接 : <a href=\"" + href + "\">" + href + "</a></div>";
 				data.setTitle(title);
 				data.setContent(content);

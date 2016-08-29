@@ -105,14 +105,17 @@ public class PocoCookbook_diyCollector extends Collector {
 				if (type.indexOf("类型") == -1) {
 					type = "";
 				}
-				String author = "<div>作者 : " + author_info.select("strong").text() + "&nbsp;" + type + "</div>";
+				String author = "<div>作者 : " + author_info.select("strong").text() + "</div>";
 
 				this.downImg(ebody, tempFileDir, targetFileDir);
 
 				Tools.clearsAttr(ebody);
 				Tools.clearsAttr(keyword);
 
-				String content = author + ebody.toString() + "<br/><div>原文链接 : <a href=\"" + href + "\">" + href + "</a></div>";
+				String content = ebody.toString();
+				content += author;
+				content += "<br/><div>" + type.replace("类型：", "标签 : ") + "</div>";
+				content += "<br/><div>原文链接 : <a href=\"" + href + "\">" + href + "</a></div>";
 				data.setTitle(title);
 				data.setContent(content);
 				data.setKeywords(keywords.toString());
