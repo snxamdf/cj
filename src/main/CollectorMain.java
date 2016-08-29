@@ -1,7 +1,7 @@
 package main;
 
 import com.modern.datacollect.api.Collector;
-import com.modern.datacollect.impl.twobatch.fubiz.Concept;
+import com.modern.datacollect.impl.onebatch.PocoCookbook_diyCollector;
 
 public class CollectorMain {
 
@@ -30,7 +30,7 @@ public class CollectorMain {
 		// thread.start();
 		// }
 		try {
-			Collector collFashion = new Concept();
+			Collector collFashion = new PocoCookbook_diyCollector();
 			collFashion.begin();
 		} catch (Exception e) {
 			e.printStackTrace();

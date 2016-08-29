@@ -54,20 +54,19 @@ public class PocoCookbook_diyCollector extends Collector {
 				url = dataUrl.replace("{page}", page.toString());
 				config.setSiteConfig("{'page':" + (page) + ",'dataUrl':'http://cook.poco.cn/cookbook_diy.htx&p={page}&good=0&o=&show_type=img&b_id=0#main_list'}");
 				updateSiteConfig(config.getSiteConfig());
-				html = Tools.getRequest(url);
+				html = Tools.getRequest1(url);
 				Elements body = Tools.getBody("div[class=\"ul768_pic165 clear mt10\"]", html);
 				body = body.select("li");
 				Elements pages = Tools.getBody(".page", html);
-				this.dealwith(body, tempFileDir, targetFileDir);
 				if (!pages.toString().contains("下一页")) {
 					stop();
 					break;
 				}
+				this.dealwith(body, tempFileDir, targetFileDir);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			page++;
-
 		}
 	}
 
@@ -90,23 +89,41 @@ public class PocoCookbook_diyCollector extends Collector {
 					picList.add(dest);
 					data.setPicList(picList);
 				}
-				String html = Tools.getRequest(href);
+				String html = Tools.getRequest1(href);
 				Elements ebody = Tools.getBody("#plus_content", html);
+				Elements author_info = Tools.getBody(".author_info", html);
+				String type = author_info.select("tr").eq(0).select("td").last().text();
+				Elements keyword = Tools.getBody(".keyword", html);
+				keyword = keyword.select("a");
+				StringBuffer keywords = new StringBuffer();
+				for (int i = 0; i < keyword.size(); i++) {
+					if (i > 0) {
+						keywords.append(",");
+					}
+					keywords.append(keyword.get(i).text());
+				}
+				if (type.indexOf("类型") == -1) {
+					type = "";
+				}
+				String author = "<div>作者 : " + author_info.select("strong").text() + "&nbsp;" + type + "</div>";
 
 				this.downImg(ebody, tempFileDir, targetFileDir);
 
 				Tools.clearsAttr(ebody);
-				String content = ebody.toString();
+				Tools.clearsAttr(keyword);
+
+				String content = author + ebody.toString() + "<br/><div>原文链接 : " + href + "</div>";
 				data.setTitle(title);
 				data.setContent(content);
+				data.setKeywords(keywords.toString());
 				whenOneData(data);
 			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}
 
 	private void downImg(Elements ebody, String tempFileDir, String targetFileDir) {
-		ebody.select("a").attr("href", "javascript:void(0)");
 		Elements cimg = ebody.select("img");
 		for (Element cimgemt : cimg) {
 			String cimgSrc = cimgemt.attr("src");
@@ -116,9 +133,7 @@ public class PocoCookbook_diyCollector extends Collector {
 				String mydest = getMySiteImgSrc(cdest);
 				if (mydest != null) {
 					cimgemt.attr("src", mydest);
-					cimgemt.removeAttr("data-src");
 				}
-
 			}
 		}
 	}

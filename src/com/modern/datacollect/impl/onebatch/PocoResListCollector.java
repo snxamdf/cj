@@ -54,14 +54,14 @@ public class PocoResListCollector extends Collector {
 				url = dataUrl.replace("{page}", page.toString());
 				config.setSiteConfig("{'page':" + (page) + ",'dataUrl':'http://food.poco.cn/module/get_res_topic_list.js.php?p={page}&food_series=0'}");
 				updateSiteConfig(config.getSiteConfig());
-				html = Tools.getRequest(url);
+				html = Tools.getRequest1(url);
 				Elements body = Tools.getBody(".w768", html);
 				Elements pages = Tools.getBody(".show_page", html);
-				this.dealwith(body, tempFileDir, targetFileDir);
 				if (!pages.toString().contains("下一页")) {
 					stop();
 					break;
 				}
+				this.dealwith(body, tempFileDir, targetFileDir);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -96,27 +96,67 @@ public class PocoResListCollector extends Collector {
 					picList.add(dest);
 					data.setPicList(picList);
 				}
-				String html = Tools.getRequest(href);
-				Elements ebody = Tools.getBody(".content_text_con", html);
-				Elements time = Tools.getBody("div[class=\"tc mt5 zt_listItem_info pb10\"]", html);
-				time.select("a").attr("href", "javascript:void(0)");
-				time = time.select("span").eq(0);
+				String html = Tools.getRequest1(href);
+				Elements ebodypd120 = Tools.getBody(".pdl20", html);
+				Elements ebody = ebodypd120.select(".text_center");
+				if (ebody.size() == 0) {
+					ebody = ebodypd120.select(".pic_text_content");
+				}
+				if (ebody.select(".content_text_con").size() > 0 && ebody.select(".content_text_con").last().text().indexOf("目录：") != -1) {
+					ebody.select(".content_text_con").last().remove();
+				}
+				Elements info = Tools.getBody("div[class=\"tc mt5 zt_listItem_info pb10\"]", html);
+				Tools.clearsAttr(info);
+				Elements source1 = info.select("span").eq(1);
+				Elements author = info.select("span").eq(2);
+				Elements author2 = info.select("span").eq(3);
 
 				this.downImg(ebody, tempFileDir, targetFileDir);
 
 				Tools.clearsAttr(ebody);
-				String content = ebody.toString() + time.toString();
+
+				Elements page = Tools.getBody(".ztpage", html);
+				page = page.select("a");
+				String ecotent = "";
+				if (page.size() > 0) {
+					String p = page.get(page.size() - 2).text();
+					String url = href.substring(0, href.lastIndexOf(".html")) + "-p-{page}.html";
+					ecotent = this.ebody(url, Integer.parseInt(p), tempFileDir, targetFileDir);
+				}
+				String content = source1.toString() + "&nbsp;" + author.toString() + "&nbsp;" + author2.toString() + "&nbsp;<br/>" + ebody.toString() + ecotent;
+				content += "<br/><div>原文链接 : " + href + "</div>";
 				data.setTitle(title);
 				data.setContent(content);
 				data.setKeywords(keywords.toString());
 				whenOneData(data);
 			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}
 
+	private String ebody(String url, int p, String tempFileDir, String targetFileDir) {
+		StringBuffer result = new StringBuffer();
+		for (int i = 2; i < p; i++) {
+			try {
+				String href = url.replace("{page}", i + "");
+				String html = Tools.getRequest1(href);
+				Elements ebody = Tools.getBody(".pdl20", html);
+				ebody = ebody.select(".text_center");
+				if (ebody.select(".content_text_con").last().text().indexOf("目录：") != -1) {
+					ebody.select(".content_text_con").last().remove();
+				}
+				this.downImg(ebody, tempFileDir, targetFileDir);
+				Tools.clearsAttr(ebody);
+				result.append(ebody.toString());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return result.toString();
+	}
+
 	private void downImg(Elements ebody, String tempFileDir, String targetFileDir) {
-		ebody.select("a").attr("href", "javascript:void(0)");
 		Elements cimg = ebody.select("img");
 		for (Element cimgemt : cimg) {
 			String cimgSrc = cimgemt.attr("src");
@@ -126,9 +166,7 @@ public class PocoResListCollector extends Collector {
 				String mydest = getMySiteImgSrc(cdest);
 				if (mydest != null) {
 					cimgemt.attr("src", mydest);
-					cimgemt.removeAttr("data-src");
 				}
-
 			}
 		}
 	}
