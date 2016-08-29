@@ -62,6 +62,7 @@ public class Haibao211Collector extends HaibaosCollector {
 					break;
 				}
 			} catch (Exception e) {
+				e.printStackTrace();
 			}
 			page++;
 		}

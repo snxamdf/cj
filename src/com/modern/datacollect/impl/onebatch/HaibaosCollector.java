@@ -45,21 +45,23 @@ public abstract class HaibaosCollector extends Collector {
 
 				Elements ebody1 = ebody.select("div[class=\"hb_fl contentleft\"]");
 				Elements btcenter = Tools.getBody("#btcenter", html);
-				btcenter.select("div[class=\"p-dutu jsProperty jsClickRegion\"]").remove();
+				String author = btcenter.select("span").eq(2).text();
+				if (author.indexOf("编辑") == -1) {
+					author = "";
+				}
 				Elements keyword = btcenter.select(".uldiv").select("a");
 				StringBuffer keywords = new StringBuffer();
+				StringBuffer tags = new StringBuffer();
 				for (int i = 0; i < keyword.size(); i++) {
 					if (i > 0) {
 						keywords.append(",");
 					}
 					keywords.append(keyword.get(i).text());
+					tags.append("<span>").append(keyword.get(i).text()).append("</span>&nbsp;");
 				}
 				Elements ebody2 = ebody1.select("#jsArticleDesc");
 				this.downImg(ebody2, tempFileDir, targetFileDir);
-				// Elements body1 = ebody1.select(".desc_content");
-				// Tools.clearsAttr(body1);
 				Tools.clearsAttr(ebody2);
-				Tools.clearsAttr(btcenter.select(".uldiv"));
 				String content = ebody2.toString();
 
 				Elements pages = ebody.select(".pages");
@@ -73,7 +75,9 @@ public abstract class HaibaosCollector extends Collector {
 				if (result != null) {
 					content += result;
 				}
-				content += btcenter.toString();
+				content += "<div>来源 : 海报时尚网</div>";
+				content += "<br/><div>标签 : " + tags.toString() + "</div>";
+				content += "<br/><div>原谅链接 : <a href=\"" + href + "\">" + href + "</a>&nbsp;" + author + "</div>";
 				data.setTitle(title);
 				data.setContent(content);
 				data.setKeywords(keywords.toString());

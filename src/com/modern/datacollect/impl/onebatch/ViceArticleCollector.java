@@ -104,7 +104,7 @@ public class ViceArticleCollector extends Collector {
 				}
 				String html = Tools.getRequest(href, "UTF-8");
 				Elements ebody = Tools.getBody(".article_content", html);
-				ebody.select("a").attr("href", "javascript:void(0)");
+				Elements author = Tools.getBody(".article_meta", html);
 				Elements keyword = Tools.getBody("#tags-box", html);
 				keyword = keyword.select("a");
 				StringBuffer keywords = new StringBuffer();
@@ -127,9 +127,11 @@ public class ViceArticleCollector extends Collector {
 				}
 				Tools.clearsAttr(keyword);
 				Tools.clearsAttr(ebody);
+				Tools.clearsAttr(author);
 				// 获取内容
 				String content = ebody.toString();
-				content += keyword.toString() + "<br/><div>原文链接 : <a href=\"" + href + "\">" + href + "</a></div>";
+				content += author.toString() + "<br/>";
+				content += keyword.toString() + "<br/><br/><div>原文链接 : <a href=\"" + href + "\">" + href + "</a></div><br/>";
 				data.setTitle(title);
 				data.setContent(content);
 				data.setKeywords(keywords.toString());
