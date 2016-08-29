@@ -112,7 +112,11 @@ public class PocoCookbook_diyCollector extends Collector {
 				Tools.clearsAttr(ebody);
 				Tools.clearsAttr(keyword);
 
-				String content = author + ebody.toString() + "<br/><div>原文链接 : " + href + "</div>";
+				String content = author + ebody.toString() + "<br/><div>原文链接 : <a href=\"" + href + "\">" + href + "</a></div>";
+				// String iso = new String(content.getBytes("UTF-8"),
+				// "ISO-8859-1");
+				// String utf8 = new String(iso.getBytes("ISO-8859-1"),
+				// "UTF-8");
 				data.setTitle(title);
 				data.setContent(content);
 				data.setKeywords(keywords.toString());

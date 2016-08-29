@@ -124,7 +124,7 @@ public class PocoResListCollector extends Collector {
 					ecotent = this.ebody(url, Integer.parseInt(p), tempFileDir, targetFileDir);
 				}
 				String content = source1.toString() + "&nbsp;" + author.toString() + "&nbsp;" + author2.toString() + "&nbsp;<br/>" + ebody.toString() + ecotent;
-				content += "<br/><div>原文链接 : " + href + "</div>";
+				content += "<br/><div>原文链接 : <a href=\"" + href + "\">" + href + "</a></div>";
 				data.setTitle(title);
 				data.setContent(content);
 				data.setKeywords(keywords.toString());
