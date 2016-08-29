@@ -55,6 +55,10 @@ public class LookbookCollector extends Collector {
 				config.setSiteConfig("{'page':" + page + "}");
 				updateSiteConfig(config.getSiteConfig());
 				html = Tools.getRequest(url);
+				if (html == null) {
+					stop();
+					break;
+				}
 				Elements body = Tools.getBody("#looks", html);
 				body = body.select(".look_v2");
 				this.dealwith(body, tempFileDir, targetFileDir);
@@ -63,6 +67,7 @@ public class LookbookCollector extends Collector {
 					break;
 				}
 			} catch (Exception e) {
+				e.printStackTrace();
 			}
 			page++;
 		}
@@ -88,20 +93,24 @@ public class LookbookCollector extends Collector {
 					data.setPicList(picList);
 				}
 				String html = Tools.getRequest(href);
-				Elements ebody = Tools.getBody("#main_col", html);
-				ebody.select("div[data-view=\"SocialButtons\"]").remove();
-				ebody.select(".ultra_bottomspaced").remove();
-				ebody.select(".ultra_topspaced").remove();
-				ebody.select("script").remove();
-				ebody.select("#look_nav").remove();
+				Elements subheaderlinespaced = Tools.getBody("p[class=\"subheader linespaced\"]", html);
+				Elements ebody = Tools.getBody("div[itemprop=\"encoding\"]", html).select("#look_photo_container");
+				Elements itemtaglist = Tools.getBody(".item-tag-list", html);
+
+				Elements bottomspaced = Tools.getBody(".bottomspaced", html);
+				String author = bottomspaced.select(".name").text();
 
 				this.downImg(ebody, tempFileDir, targetFileDir);
+				Tools.clearsAttr(subheaderlinespaced);
 				Tools.clearsAttr(ebody);
-				String content = ebody.html();
+				Tools.clearsAttr(itemtaglist);
+				String content = subheaderlinespaced.toString() + ebody.toString() + itemtaglist.toString() + "<div>作者 : " + author + "</div>";
+				content += "<div>原文链接 : <a href=\"" + href + "\">" + href + "</a></div>";
 				data.setTitle(title);
 				data.setContent(content);
 				whenOneData(data);
 			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}

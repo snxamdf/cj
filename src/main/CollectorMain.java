@@ -1,7 +1,7 @@
 package main;
 
 import com.modern.datacollect.api.Collector;
-import com.modern.datacollect.impl.onebatch.YokaDna370Collector;
+import com.modern.datacollect.impl.onebatch.LookbookCollector;
 
 public class CollectorMain {
 
@@ -30,7 +30,7 @@ public class CollectorMain {
 		// thread.start();
 		// }
 		try {
-			Collector collFashion = new YokaDna370Collector();
+			Collector collFashion = new LookbookCollector();
 			collFashion.begin();
 		} catch (Exception e) {
 			e.printStackTrace();
