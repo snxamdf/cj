@@ -104,8 +104,8 @@ public class LookbookCollector extends Collector {
 				Tools.clearsAttr(subheaderlinespaced);
 				Tools.clearsAttr(ebody);
 				Tools.clearsAttr(itemtaglist);
-				String content = subheaderlinespaced.toString() + ebody.toString() + itemtaglist.toString() + "<div>作者 : " + author + "</div>";
-				content += "<div>原文链接 : <a href=\"" + href + "\">" + href + "</a></div>";
+				String content = subheaderlinespaced.toString() + ebody.toString() + itemtaglist.toString() + "<br/><div>作者 : " + author + "</div>";
+				content += "<br/><div>原文链接 : <a href=\"" + href + "\">" + href + "</a></div>";
 				data.setTitle(title);
 				data.setContent(content);
 				whenOneData(data);
