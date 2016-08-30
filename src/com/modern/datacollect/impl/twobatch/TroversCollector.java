@@ -84,7 +84,7 @@ public abstract class TroversCollector extends Collector {
 				String content = "<div>" + imgElm.toString() + "</div><br/><div>" + desc + "</div>";
 				content += "<br/><div>作者 : " + user_name + "</div>";
 				content += "<br/><div>标签 : " + stats.toString() + "</div>";
-				content += "<br/><div>原文链接 : <a href=\"" + href + "\">" + href + "</a></div>";
+				//content += "<br/><div>原文链接 : <a href=\"" + href + "\">" + href + "</a></div>";
 				data.setLongitude(llat[0]);
 				data.setLatitude(llat[1]);
 				data.setIsBaidu(false);
