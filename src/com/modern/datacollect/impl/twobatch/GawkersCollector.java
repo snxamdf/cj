@@ -45,7 +45,7 @@ public abstract class GawkersCollector extends Collector {
 					href = href.substring(href.lastIndexOf("https:"), href.length());
 				}
 
-				String author = "<br/><div>作者 : " + submitter + "</div>";
+				String author = "<br/><div>Photos by : " + submitter + "</div>";
 				String sourceUrl = author + "<br/>";
 				// <div>原文链接 : <a href=\"" + href + "\">" + href + "</a></div>
 				String content = "<div>" + description + "</div>" + sourceUrl;
