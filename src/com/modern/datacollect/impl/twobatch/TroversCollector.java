@@ -68,15 +68,29 @@ public abstract class TroversCollector extends Collector {
 				desc = bcolwrap.toString();
 				String photo4xHtml = "<img src=\"" + photo4x.replace("{photo_id}", photo_id) + "\"/>";
 				Elements imgElm = Tools.getBody("img", photo4xHtml);
+				Elements stats = Tools.getBody(".discovery-popup-2-stats", html);
+				stats = stats.select(".listed").select("a");
+				StringBuffer keywords = new StringBuffer();
+				for (int j = 0; j < stats.size(); j++) {
+					if (j > 0) {
+						keywords.append(",");
+					}
+					keywords.append(stats.get(i).text());
+				}
 				this.downImg(imgElm, tempFileDir, targetFileDir);
 				Tools.clearsAttr(imgElm);
+				Tools.clearsAttr(stats);
+
 				String content = "<div>" + imgElm.toString() + "</div><br/><div>" + desc + "</div>";
-				content += "<div>作者 : " + user_name + "</div>";
+				content += "<br/><div>作者 : " + user_name + "</div>";
+				content += "<br/><div>标签 : " + stats.toString() + "</div>";
+				content += "<br/><div>原文链接 : <a href=\"" + href + "\">" + href + "</a></div>";
 				data.setLongitude(llat[0]);
 				data.setLatitude(llat[1]);
 				data.setIsBaidu(false);
 				data.setTitle(title);
 				data.setContent(content);
+				data.setKeywords(keywords.toString());
 				whenOneData(data);
 			} catch (JSONException e) {
 				e.printStackTrace();

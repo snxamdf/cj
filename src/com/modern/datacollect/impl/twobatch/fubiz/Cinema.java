@@ -41,7 +41,7 @@ public class Cinema extends FubizCollectors {
 				url = config.getSiteUrl() + dataUrl.replace("{page}", page.toString());
 				config.setSiteConfig("{'page':" + page + ",'dataUrl':'page/{page}/'}");
 				updateSiteConfig(config.getSiteConfig());
-				html = Tools.getRequest(url);
+				html = Tools.getRequest1(url);
 				if (html != null) {
 					Elements body = Tools.getBody(".bloc-new-posts", html);
 					Elements rows = body.select(".row");

@@ -1,7 +1,7 @@
 package main;
 
 import com.modern.datacollect.api.Collector;
-import com.modern.datacollect.impl.onebatch.LookbookCollector;
+import com.modern.datacollect.impl.twobatch.Troverh7pzCollector;
 
 public class CollectorMain {
 
@@ -30,7 +30,7 @@ public class CollectorMain {
 		// thread.start();
 		// }
 		try {
-			Collector collFashion = new LookbookCollector();
+			Collector collFashion = new Troverh7pzCollector();
 			collFashion.begin();
 		} catch (Exception e) {
 			e.printStackTrace();

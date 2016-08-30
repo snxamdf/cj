@@ -37,7 +37,7 @@ public abstract class FubizCollectors extends Collector {
 					picList.add(dest);
 					data.setPicList(picList);
 				}
-				String html = Tools.getRequest(href);
+				String html = Tools.getRequest1(href);
 				Elements ebody = Tools.getBody(".inner-post-content", html);
 				ebody.select("noscript").remove();
 				titleElm = Tools.getBody("h1[class=\"title-part white-title\"]", html);
@@ -62,7 +62,7 @@ public abstract class FubizCollectors extends Collector {
 				this.downImg(ebody, tempFileDir, targetFileDir);
 				Tools.clearsAttr(ebody);
 
-				String content = "<div>" + authorElm.text() + "</div>" + ebody.toString() + tagpostElm.toString() + "<div>原文链接 : <a href=\"" + href + "\">" + href + "</a></div>";
+				String content = ebody.toString() + "<br/><div>" + authorElm.text() + "</div>" + "<br/><div>原文链接 : <a href=\"" + href + "\">" + href + "</a></div>" + tagpostElm.toString();
 
 				data.setTitle(title);
 				data.setContent(content);

@@ -46,7 +46,7 @@ public abstract class GawkersCollector extends Collector {
 				}
 
 				String author = "<br/><div>作者 : " + submitter + "</div>";
-				String sourceUrl = author + "<br/><div>阅读文章 : <a href=\"" + href + "\">" + href + "</a></div>";
+				String sourceUrl = author + "<br/><div>原文链接 : <a href=\"" + href + "\">" + href + "</a></div>";
 				String content = "<div>" + description + "</div>" + sourceUrl;
 				data.setTitle(title);
 				data.setContent(content);
