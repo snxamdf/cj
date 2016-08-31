@@ -229,10 +229,10 @@
 	http://www.darbysmart.com/c/food-and-drink
 	
 	艺术创意
-	http://www.notcot.org/page/1336/
+	http://www.notcot.org/page/1336/ //这个网站抓取不了，各种各样。
 	
 	生活居家与室内
-	http://www.homedit.com/page/1/
+	http://www.homedit.com/page/1/ ok Homedit.java
 	
 	图形创意设计
 	http://designspiration.net/popular/page/1/?marker=4335610832246
@@ -240,13 +240,13 @@
 	街头艺术
 	https://www.behance.net
 	
-	艺术创意
-	http://www.baubauhaus.com/photography
-	http://www.baubauhaus.com/graphic-design
-	http://www.baubauhaus.com/illustration
-	http://www.baubauhaus.com/poster
-	http://www.baubauhaus.com/typography
-	http://www.baubauhaus.com/black-and-white
+	艺术创意 //注意 这个网站 没有标题 
+	http://www.baubauhaus.com/photography ok Photography.java
+	http://www.baubauhaus.com/graphic-design ok GraphicDesign.java
+	http://www.baubauhaus.com/illustration ok Illustration.java
+	http://www.baubauhaus.com/poster ok Poster.java
+	http://www.baubauhaus.com/typography ok Typography.java
+	http://www.baubauhaus.com/black-and-white ok BlackAndWhite.java
 	
 	网页设计
 	http://www.awwwards.com/awards-of-the-day/

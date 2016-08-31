@@ -1,7 +1,7 @@
 package main;
 
 import com.modern.datacollect.api.Collector;
-import com.modern.datacollect.impl.twobatch.fubiz.Travel;
+import com.modern.datacollect.impl.twobatch.homedit.Homedit;
 
 public class CollectorMain {
 
@@ -30,7 +30,7 @@ public class CollectorMain {
 		// thread.start();
 		// }
 		try {
-			Collector collFashion = new Travel();
+			Collector collFashion = new Homedit();
 			collFashion.begin();
 		} catch (Exception e) {
 			e.printStackTrace();

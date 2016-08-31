@@ -345,8 +345,10 @@ public class Tools {
 			get = null;
 			return getLineFile(url, localDir, ++i);
 		} finally {
-			get.releaseConnection();
-			get = null;
+			if (get != null) {
+				get.releaseConnection();
+				get = null;
+			}
 		}
 	}
 
